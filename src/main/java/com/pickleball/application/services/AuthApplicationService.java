@@ -1,0 +1,134 @@
+package com.pickleball.application.services;
+
+import com.pickleball.application.dtos.AuthenticationResponse;
+import com.pickleball.application.dtos.CreateUserRequest;
+import com.pickleball.application.dtos.LoginRequest;
+import com.pickleball.application.dtos.UserDTO;
+import com.pickleball.application.usecases.user.LoginUserUseCase;
+import com.pickleball.application.usecases.user.RegisterUserUseCase;
+import com.pickleball.domain.entities.User;
+import com.pickleball.domain.repositories.UserRepository;
+import com.pickleball.infrastructure.security.JwtService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class AuthApplicationService {
+
+    private final RegisterUserUseCase registerUserUseCase;
+    private final LoginUserUseCase loginUserUseCase;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    /**
+     * Register a new user
+     */
+    @Transactional
+    public AuthenticationResponse register(CreateUserRequest request) {
+        // Build user from request
+        User user = User.builder()
+                .email(request.getEmail().toLowerCase().trim())
+                .passwordHash(request.getPassword()) // Will be encoded in use case
+                .fullName(request.getFullName().trim())
+                .phoneNumber(request.getPhoneNumber() != null ? request.getPhoneNumber().trim() : null)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        // Execute registration
+        User savedUser = registerUserUseCase.execute(user);
+
+        // Generate tokens
+        String accessToken = jwtService.generateToken(savedUser.getId(), savedUser.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(savedUser.getId(), savedUser.getEmail());
+
+        // Build response
+        return AuthenticationResponse.of(
+                accessToken,
+                refreshToken,
+                jwtService.getExpirationTime(),
+                convertToDTO(savedUser)
+        );
+    }
+
+    /**
+     * Login user with email and password
+     */
+    public AuthenticationResponse login(LoginRequest request) {
+        // Execute login
+        User user = loginUserUseCase.execute(request.getEmail(), request.getPassword());
+
+        // Generate tokens
+        String accessToken = jwtService.generateToken(user.getId(), user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());
+
+        // Build response
+        return AuthenticationResponse.of(
+                accessToken,
+                refreshToken,
+                jwtService.getExpirationTime(),
+                convertToDTO(user)
+        );
+    }
+
+    /**
+     * Refresh access token using refresh token
+     */
+    public AuthenticationResponse refreshToken(String refreshToken) {
+        // Extract email from refresh token
+        String email = jwtService.extractUsername(refreshToken);
+
+        // Validate refresh token
+        if (email == null || jwtService.isTokenExpired(refreshToken)) {
+            throw new IllegalArgumentException("Refresh token không hợp lệ hoặc đã hết hạn");
+        }
+
+        // Find user
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại"));
+
+        // Validate token belongs to this user
+        if (!jwtService.isTokenValid(refreshToken, user.getEmail())) {
+            throw new IllegalArgumentException("Refresh token không hợp lệ");
+        }
+
+        // Generate new tokens
+        String newAccessToken = jwtService.generateToken(user.getId(), user.getEmail());
+        String newRefreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());
+
+        // Build response
+        return AuthenticationResponse.of(
+                newAccessToken,
+                newRefreshToken,
+                jwtService.getExpirationTime(),
+                convertToDTO(user)
+        );
+    }
+
+    /**
+     * Get current user from token
+     */
+    public UserDTO getCurrentUser(String token) {
+        Long userId = jwtService.extractUserId(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại"));
+        return convertToDTO(user);
+    }
+
+    /**
+     * Convert User domain entity to UserDTO
+     */
+    private UserDTO convertToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setProfilePictureUrl(user.getProfilePictureUrl());
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
+    }
+}

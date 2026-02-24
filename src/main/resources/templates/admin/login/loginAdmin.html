@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pickleball Admin Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <style type="text/tailwindcss">
+        :root {
+            --primary: #00f583;
+            --bg-soft-grey: #f9fafb;
+            --text-main: #0c1d15;
+            --text-secondary: #6b7280;
+        }
+        .dot-pattern {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00f583",
+                        "brand-blue": "#1890ff",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-display bg-[#f3f4f6] text-[#0c1d15] antialiased min-h-screen w-full flex flex-col">
+    <header
+        class="w-full bg-white border-b border-gray-100 px-4 py-2 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="bg-primary p-1 rounded-lg">
+                <span class="material-symbols-outlined text-black text-xl font-bold">sports_tennis</span>
+            </div>
+            <span class="text-lg font-black tracking-tight">Pickleball Marketplace</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600">
+            <a class="hover:text-primary transition-colors" href="#">Trang chủ</a>
+            <a class="hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+            <a class="hover:text-primary transition-colors" href="#">Trợ giúp</a>
+            <button class="bg-gray-100 hover:bg-gray-200 text-black px-5 py-2 rounded-lg transition-colors">Đăng nhập
+                Chủ sân</button>
+        </nav>
+    </header>
+    <main class="flex-1 flex items-center justify-center p-2">
+        <div
+            class="bg-white w-full max-w-4xl min-h-[450px] rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row relative">
+            <div class="md:w-1/2 relative bg-white p-6 flex flex-col justify-center overflow-hidden">
+                <div class="absolute inset-0 dot-pattern opacity-40"></div>
+                <lottie-player src="../../../static/animations/pickleball.json" background="transparent" speed="1"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;"
+                    loop autoplay>
+                </lottie-player>
+            </div>
+            <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center bg-white">
+                <div class="max-w-xs mx-auto w-full">
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <span class="material-symbols-outlined text-primary text-lg fill-1">check_circle</span>
+                        <span class="text-gray-400 font-bold text-[10px] tracking-[0.2em] uppercase">Admin Portal</span>
+                    </div>
+                    <h2 class="text-xl font-black mb-1">Đăng nhập</h2>
+                    <p class="text-gray-400 mb-4 font-medium text-xs">Nhập thông tin xác thực để tiếp tục.</p>
+                    <form class="space-y-3" onsubmit="event.preventDefault();">
+                        <div class="space-y-1">
+                            <label class="text-[11px] font-bold text-gray-700">Email</label>
+                            <div class="relative group">
+                                <div
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-base">mail</span>
+                                </div>
+                                <input
+                                    class="w-full h-10 bg-gray-50 border-none rounded-lg pl-10 pr-3 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 font-bold text-xs"
+                                    placeholder="admin@example.com" type="email" />
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[11px] font-bold text-gray-700">Mật khẩu</label>
+                            </div>
+                            <div class="relative group">
+                                <div
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-base">lock</span>
+                                </div>
+                                <input
+                                    class="w-full h-10 bg-gray-50 border-none rounded-lg pl-10 pr-10 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 font-bold text-xs"
+                                    placeholder="Nhập mật khẩu" type="password" />
+                                <button
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    type="button">
+                                    <span class="material-symbols-outlined text-base">visibility</span>
+                                </button>
+                            </div>
+                            <div class="text-right">
+                                <a class="text-[10px] font-bold text-gray-500 hover:text-black transition-colors"
+                                    href="#">Quên mật khẩu?</a>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full h-10 bg-primary hover:brightness-105 active:scale-[0.98] text-black font-black rounded-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs"
+                            type="submit">
+                            Đăng nhập
+                            <span class="material-symbols-outlined text-base">login</span>
+                        </button>
+                    </form>
+                    <div class="relative my-4">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-100"></div>
+                        </div>
+                        <div class="relative flex justify-center text-[10px] uppercase">
+                            <span class="bg-white px-2 text-gray-400 font-bold tracking-widest">Hoặc</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-center">
+                        <p class="text-gray-400 text-[10px] font-medium">Bạn không phải là Admin?</p>
+                        <button
+                            class="w-full h-10 border border-gray-100 hover:bg-gray-50 transition-colors rounded-lg flex items-center justify-center gap-2 font-bold text-gray-800 text-xs">
+                            <span class="material-symbols-outlined text-base">storefront</span>
+                            Đăng nhập Chủ sân
+                        </button>
+                    </div>
+                    <div
+                        class="mt-4 flex items-center justify-center gap-3 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                        <a class="hover:text-black transition-colors" href="#">Điều khoản</a>
+                        <span class="w-0.5 h-0.5 bg-gray-300 rounded-full"></span>
+                        <a class="hover:text-black transition-colors" href="#">Bảo mật</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

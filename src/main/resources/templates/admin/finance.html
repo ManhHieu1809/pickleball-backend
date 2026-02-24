@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pickleball Admin - Financial Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00f583",
+                        "primary-dark": "#00d672",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e293b",
+                        "text-dark": "#0f172a",
+                        "text-light": "#64748b",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                        'glow': '0 0 15px rgba(0, 245, 131, 0.3)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="font-display text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <aside
+            class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+
+            <!-- Island 1: Management (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/dashboard"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/owner-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Owner Requests">
+                    <i data-lucide="user-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/venue-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venue Requests">
+                    <i data-lucide="map-pin-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Referee Requests">
+                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/users"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Users">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/venues"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venues">
+                    <i data-lucide="map-pin-house"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/bookings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Bookings">
+                    <i data-lucide="calendar"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/disputes"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Disputes">
+                    <i data-lucide="alert-triangle"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/finance"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/rankings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Rankings">
+                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Loyalty">
+                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Reports">
+                    <i data-lucide="bar-chart-3"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/system"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="System Config">
+                    <i data-lucide="settings"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 gap-6 relative">
+            <!-- Top Header -->
+            <header class="flex items-center justify-between mb-4">
+                <!-- Logo & Nav Tabs -->
+                <div class="flex items-center gap-12">
+                    <!-- Finexy Logo -->
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="coins" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Finexy
+                    </div>
+
+                    <!-- Central Navigation Tabs (Floating) -->
+                    <nav
+                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
+                        <a href="#"
+                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
+                    </nav>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="search" class="w-4 h-4"></i></button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            <span
+                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="info" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                        <div class="hidden lg:block text-left leading-tight">
+                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
+                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                <!-- Dashboard Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in-up">
+                    <div>
+                        <p class="text-text-light text-sm font-medium mb-1">Cập nhật lúc 09:41 AM</p>
+                        <h3 class="text-3xl font-black text-text-dark tracking-tight">Theo dõi hiệu suất</h3>
+                    </div>
+                    <div class="flex gap-3">
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 bg-white border border-border-light rounded-xl text-sm font-semibold text-text-dark shadow-sm hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-rounded text-[20px]">download</span>
+                            Xuất báo cáo
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 bg-text-dark text-white rounded-xl text-sm font-bold shadow-lg shadow-gray-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                            <span class="material-symbols-rounded text-[20px]">add</span>
+                            Nạp tiền quỹ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div
+                        class="bg-white rounded-2xl p-6 shadow-sm border border-border-light/60 hover:shadow-md hover:border-primary/30 transition-all duration-300 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div
+                                class="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-rounded text-2xl">account_balance_wallet</span>
+                            </div>
+                            <div
+                                class="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-xs font-bold">
+                                <span class="material-symbols-rounded text-[14px]">trending_up</span>
+                                <span>+15%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-text-light text-xs font-bold uppercase tracking-wider mb-1">Tổng GMV</p>
+                            <h4
+                                class="text-2xl lg:text-3xl font-extrabold text-text-dark tracking-tight leading-none mb-2">
+                                2.5B ₫</h4>
+                            <p class="text-xs text-text-light font-medium flex items-center gap-1">
+                                <span class="size-1.5 rounded-full bg-blue-500"></span>
+                                Tổng giá trị booking
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="bg-white rounded-2xl p-6 shadow-sm border border-border-light/60 hover:shadow-md hover:border-purple-300 transition-all duration-300 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div
+                                class="p-3 bg-purple-50 rounded-xl text-purple-600 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-rounded text-2xl">diamond</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-text-light text-xs font-bold uppercase tracking-wider mb-1">Doanh thu
+                                ròng</p>
+                            <h4
+                                class="text-2xl lg:text-3xl font-extrabold text-text-dark tracking-tight leading-none mb-2">
+                                500M ₫</h4>
+                            <p
+                                class="text-xs text-purple-600 font-bold bg-purple-50 inline-block px-2 py-0.5 rounded border border-purple-100">
+                                20% Hoa hồng</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div
+                        class="bg-white rounded-2xl p-6 shadow-sm border border-border-light/60 hover:shadow-md hover:border-orange-300 transition-all duration-300 group relative overflow-hidden">
+                        <div
+                            class="absolute -right-6 -top-6 bg-orange-50 rounded-full p-8 opacity-50 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="flex justify-between items-start mb-4 relative">
+                            <div
+                                class="p-3 bg-orange-50 rounded-xl text-orange-600 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-rounded text-2xl">pending_actions</span>
+                            </div>
+                            <button onclick="scrollToRequests()"
+                                class="bg-text-dark text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-orange-600 transition-colors shadow-sm">
+                                Xử lý ngay
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <p class="text-text-light text-xs font-bold uppercase tracking-wider mb-1">Chờ thanh
+                                toán</p>
+                            <h4
+                                class="text-2xl lg:text-3xl font-extrabold text-text-dark tracking-tight leading-none mb-2">
+                                150M ₫</h4>
+                            <div class="flex items-center gap-1.5">
+                                <span
+                                    class="bg-orange-100 text-orange-700 text-xs font-bold size-5 flex items-center justify-center rounded-full animate-pulse">12</span>
+                                <p class="text-xs text-text-light font-medium">yêu cầu chờ duyệt</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div
+                        class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 shadow-xl text-white flex flex-col justify-between h-full hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden group">
+                        <div class="absolute inset-0 opacity-10 pattern-dots"></div>
+                        <div class="absolute -right-10 -bottom-10 bg-primary/20 blur-3xl size-40 rounded-full">
+                        </div>
+
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div
+                                class="p-3 bg-white/10 rounded-xl text-primary backdrop-blur-sm group-hover:bg-white/20 transition-colors">
+                                <span class="material-symbols-rounded text-2xl">account_balance</span>
+                            </div>
+                            <span class="material-symbols-rounded text-white/30 text-3xl">contactless</span>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Số dư khả dụng
+                            </p>
+                            <h4 class="text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-none mb-2">
+                                850M ₫</h4>
+                            <div
+                                class="flex items-center gap-2 mt-3 bg-white/5 rounded-lg p-1.5 w-fit border border-white/10">
+                                <div class="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]">
+                                </div>
+                                <p class="text-xs text-slate-300 font-mono tracking-wide">TCB ••• 9981</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Line Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-border-light/60">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-text-dark">Biểu đồ dòng tiền</h3>
+                                <p class="text-xs text-text-light mt-0.5">Xu hướng doanh thu & phí nền tảng (30
+                                    ngày)</p>
+                            </div>
+                            <div class="flex gap-4 text-xs font-medium bg-slate-50 p-1.5 rounded-lg">
+                                <div class="flex items-center gap-2 px-2">
+                                    <span
+                                        class="size-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
+                                    <span>Tổng thu</span>
+                                </div>
+                                <div class="flex items-center gap-2 px-2 border-l border-border-light">
+                                    <span
+                                        class="size-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></span>
+                                    <span>Phí Platform</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1 w-full h-[320px] relative mt-4 group">
+                            <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 50">
+                                <!-- Grid Lines -->
+                                <line stroke="#f1f5f9" stroke-width="0.5" x1="0" x2="100" y1="0" y2="0"></line>
+                                <line stroke="#f1f5f9" stroke-width="0.5" x1="0" x2="100" y1="12.5" y2="12.5">
+                                </line>
+                                <line stroke="#f1f5f9" stroke-width="0.5" x1="0" x2="100" y1="25" y2="25"></line>
+                                <line stroke="#f1f5f9" stroke-width="0.5" x1="0" x2="100" y1="37.5" y2="37.5">
+                                </line>
+                                <line stroke="#f1f5f9" stroke-width="0.5" x1="0" x2="100" y1="50" y2="50"></line>
+
+                                <!-- Tooltip Line (Dynamic visual trick) -->
+                                <line class="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    stroke="#94a3b8" stroke-dasharray="2" stroke-width="0.5" x1="60" x2="60" y1="0"
+                                    y2="50"></line>
+
+                                <!-- Blue Area -->
+                                <path
+                                    d="M0 50 L0 30 C10 25, 20 35, 30 20 C40 10, 50 15, 60 25 C70 30, 80 15, 90 10 L100 5 L100 50 Z"
+                                    fill="url(#blueGradient)" opacity="0.3"></path>
+                                <path d="M0 30 C10 25, 20 35, 30 20 C40 10, 50 15, 60 25 C70 30, 80 15, 90 10 L100 5"
+                                    fill="none" stroke="#3b82f6" stroke-linecap="round" stroke-width="1.5"
+                                    class="drop-shadow-sm"></path>
+
+                                <!-- Orange Area -->
+                                <path
+                                    d="M0 50 L0 45 C10 42, 20 46, 30 40 C40 38, 50 42, 60 35 C70 38, 80 32, 90 30 L100 28 L100 50 Z"
+                                    fill="url(#orangeGradient)" opacity="0.3"></path>
+                                <path d="M0 45 C10 42, 20 46, 30 40 C40 38, 50 42, 60 35 C70 38, 80 32, 90 30 L100 28"
+                                    fill="none" stroke="#f97316" stroke-linecap="round" stroke-width="1.5"
+                                    class="drop-shadow-sm"></path>
+
+                                <!-- Hover Point -->
+                                <circle class="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    cx="60" cy="25" r="1.5" fill="#3b82f6" stroke="white" stroke-width="0.5">
+                                </circle>
+
+                                <defs>
+                                    <linearGradient id="blueGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#3b82f6"></stop>
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+                                    </linearGradient>
+                                    <linearGradient id="orangeGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#f97316"></stop>
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="flex justify-between text-xs text-text-light mt-3 font-medium px-1">
+                                <span>01/10</span>
+                                <span>05/10</span>
+                                <span>10/10</span>
+                                <span>15/10</span>
+                                <span>20/10</span>
+                                <span>25/10</span>
+                                <span>30/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart -->
+                    <div
+                        class="lg:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-border-light/60 flex flex-col">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-text-dark">Nguồn doanh thu</h3>
+                            <button class="text-text-light hover:text-text-dark"><span
+                                    class="material-symbols-rounded">more_horiz</span></button>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center justify-center relative">
+                            <div class="relative size-56">
+                                <svg class="size-full rotate-[-90deg] transform transition-transform hover:scale-105 duration-500 ease-out"
+                                    viewBox="0 0 100 100">
+                                    <!-- Ring segments -->
+                                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="#3b82f6"
+                                        stroke-dasharray="251.2" stroke-dashoffset="138.16" stroke-width="10"
+                                        stroke-linecap="round"></circle>
+                                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="#06b6d4"
+                                        stroke-dasharray="251.2" stroke-dashoffset="175.84" stroke-width="10"
+                                        stroke-linecap="round"
+                                        style="transform: rotate(162deg); transform-origin: 50px 50px;"></circle>
+                                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="#8b5cf6"
+                                        stroke-dasharray="251.2" stroke-dashoffset="213.52" stroke-width="10"
+                                        stroke-linecap="round"
+                                        style="transform: rotate(270deg); transform-origin: 50px 50px;"></circle>
+                                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="#f1f5f9"
+                                        stroke-dasharray="251.2" stroke-dashoffset="226.08" stroke-width="10"
+                                        stroke-linecap="round"
+                                        style="transform: rotate(324deg); transform-origin: 50px 50px;"></circle>
+                                </svg>
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span
+                                        class="text-xs text-text-light font-bold uppercase tracking-wider mb-1">Total</span>
+                                    <span class="text-3xl font-black text-text-dark">100%</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-3 mt-8 w-full">
+                                <div class="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                    <span class="size-2.5 rounded-full bg-blue-500 mt-1 shadow-sm"></span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-text-light font-medium">Private Booking</span>
+                                        <span class="text-sm font-bold text-text-dark">45%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                    <span class="size-2.5 rounded-full bg-cyan-500 mt-1 shadow-sm"></span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-text-light font-medium">Ranked Matches</span>
+                                        <span class="text-sm font-bold text-text-dark">30%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                    <span class="size-2.5 rounded-full bg-purple-500 mt-1 shadow-sm"></span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-text-light font-medium">Tournament Fee</span>
+                                        <span class="text-sm font-bold text-text-dark">15%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                    <span class="size-2.5 rounded-full bg-slate-200 mt-1 shadow-sm"></span>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-text-light font-medium">Other Services</span>
+                                        <span class="text-sm font-bold text-text-dark">10%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requests Table -->
+                <div id="requests-section"
+                    class="bg-white rounded-2xl shadow-sm border border-border-light/60 flex-1 flex flex-col overflow-hidden">
+                    <div
+                        class="p-6 border-b border-border-light/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                                <span class="material-symbols-rounded text-xl">payments</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-text-dark">Yêu cầu thanh toán</h3>
+                                <p class="text-xs text-text-light">Quản lý các khoản tiền cần chi trả cho Chủ sân
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-1 bg-slate-100 rounded-xl">
+                            <button
+                                class="px-4 py-1.5 text-xs font-bold rounded-lg bg-white text-text-dark shadow-sm transition-all transform scale-105">
+                                Tất cả
+                            </button>
+                            <button
+                                class="px-4 py-1.5 text-xs font-bold rounded-lg text-text-light hover:text-text-dark hover:bg-white/50 transition-all flex items-center gap-1.5">
+                                <span>Chờ duyệt</span>
+                                <span class="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">12</span>
+                            </button>
+                            <button
+                                class="px-4 py-1.5 text-xs font-bold rounded-lg text-text-light hover:text-text-dark hover:bg-white/50 transition-all">
+                                Đã chi
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-slate-50/50 text-xs text-text-light uppercase tracking-wider border-b border-border-light/60">
+                                    <th class="px-6 py-4 font-bold">Mã YC</th>
+                                    <th class="px-6 py-4 font-bold">Chủ sân / Venue</th>
+                                    <th class="px-6 py-4 font-bold">Thông tin Ngân hàng</th>
+                                    <th class="px-6 py-4 font-bold text-right">Số tiền Payout</th>
+                                    <th class="px-6 py-4 font-bold">Thời gian tạo</th>
+                                    <th class="px-6 py-4 font-bold text-center">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border-light/60 text-sm text-text-dark">
+                                <tr class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-text-light font-medium">#PAY-8821</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-gray-100 bg-cover bg-center border border-gray-200 shadow-sm"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDumzZNZ-gjmmuw-WwdCF77dA0pJ-fa0iSbgKiGp-1ieA0VoSM9H4Q9O3ILbvfA7fkhfEjahvdKxScr_CRFqeBj4x7aliuw4Co9Jh3eT3hMPFuxkvdLU0RptzGXpUdivaVaomkZGqvoSkZU7q3Us8lMPjPfoeeMk7Yazb-Nb19oN_SoB6DJaimcKebL0H8vAeoKjbqWMKdZIp_XSg7WmwdK9YZSWHW_Kf9k7Qg4QauZL41zX1r2lvJC_1sLRiMmn2gHuWYRoDhP68w');">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-text-dark">Nguyễn Văn A</span>
+                                                <span class="text-xs text-text-light flex items-center gap-1">
+                                                    <span
+                                                        class="material-symbols-rounded text-[14px]">location_on</span>
+                                                    Sân Cầu Giấy
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2">
+                                                <span
+                                                    class="text-[10px] font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded border border-green-200">VCB</span>
+                                                <span class="text-text-dark font-mono font-medium">1902...</span>
+                                                <button
+                                                    class="text-text-light hover:text-primary transition-colors"><span
+                                                        class="material-symbols-rounded text-[14px]">content_copy</span></button>
+                                            </div>
+                                            <span class="text-xs text-text-light">NGUYEN VAN A</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-black text-text-dark text-base">50,000,000 ₫</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-text-dark font-medium">Hôm nay</span>
+                                            <span class="text-xs text-text-light">09:30 AM</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button onclick="openPaymentModal('#PAY-8821', 'Nguyễn Văn A', '50,000,000 ₫')"
+                                            class="bg-text-dark hover:bg-primary hover:text-text-dark text-white text-xs font-bold px-4 py-2 rounded-lg transition-all shadow-sm transform hover:scale-105 active:scale-95 flex items-center gap-2 mx-auto group">
+                                            <span>Duyệt Chi</span>
+                                            <span
+                                                class="material-symbols-rounded text-[16px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 transition-colors bg-slate-50/50">
+                                    <td class="px-6 py-4 font-mono text-text-light font-medium">#PAY-8820</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-gray-100 bg-cover bg-center border border-gray-200 shadow-sm"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDDyvRS-lebCS2t0gd2a1hnuQa-HsBlpl1RgEGbHvVetn_IRNWB9dXM8muRlONVKIhrCXY5ZOWKxBeHpMpOGcd0I0gNY4OrqqiaQWZaL0Rvm1GTibU_dluKMPXgfAu3pFcyuGyg8INzktrxPlFRQ1RvRercZB7bk2WU92LYDckfAiYn7096qc7urDsQ-4lHFBG_Kw9S7yGH7hvyrz5ZIN_AsTU1FXVJcHvcO-65EEFwW8YogQWB-SJ0iZXKuA3j7UYeNDvsaU-3Qro');">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-text-dark">Phạm Thị B</span>
+                                                <span class="text-xs text-text-light flex items-center gap-1">
+                                                    <span
+                                                        class="material-symbols-rounded text-[14px]">location_on</span>
+                                                    Sân Thanh Xuân
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2">
+                                                <span
+                                                    class="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded border border-blue-200">MB</span>
+                                                <span class="text-text-dark font-mono font-medium">8821...</span>
+                                            </div>
+                                            <span class="text-xs text-text-light">PHAM THI B</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span
+                                            class="font-bold text-text-light text-base decoration-1 line-through decoration-slate-400">25,000,000
+                                            ₫</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-text-dark font-medium">Hôm qua</span>
+                                            <span class="text-xs text-text-light">14:30 PM</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div
+                                            class="bg-green-100 text-green-700 border border-green-200 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center justify-center gap-1.5 w-fit mx-auto">
+                                            <span class="material-symbols-rounded text-[16px]">check_circle</span>
+                                            Đã Chi
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-border-light/60 bg-slate-50 flex items-center justify-center">
+                        <button
+                            class="text-sm font-bold text-text-light hover:text-primary transition-colors flex items-center gap-1 group">
+                            Xem tất cả yêu cầu
+                            <span
+                                class="material-symbols-rounded text-[18px] group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-border-light/60 flex-1 flex flex-col overflow-hidden">
+                    <div
+                        class="p-6 border-b border-border-light/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h3 class="text-lg font-bold text-text-dark whitespace-nowrap">Lịch sử giao dịch ví</h3>
+                        <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                            <div class="relative w-full md:w-64">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="material-symbols-rounded text-text-light text-[20px]">search</span>
+                                </span>
+                                <input
+                                    class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors placeholder:text-text-light/50 font-medium"
+                                    placeholder="Tìm kiếm giao dịch..." type="text">
+                            </div>
+                            <button
+                                class="flex items-center gap-2 bg-white border border-border-light rounded-xl px-4 py-2 text-sm font-bold text-text-light hover:text-text-dark hover:border-text-dark/20 transition-all shadow-sm">
+                                <span class="material-symbols-rounded text-[20px]">filter_list</span>
+                                Bộ lọc
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-slate-50/50 text-xs text-text-light uppercase tracking-wider border-b border-border-light/60">
+                                    <th class="px-6 py-4 font-bold">Mã GD</th>
+                                    <th class="px-6 py-4 font-bold">Đối tượng</th>
+                                    <th class="px-6 py-4 font-bold">Loại giao dịch</th>
+                                    <th class="px-6 py-4 font-bold text-right">Số tiền</th>
+                                    <th class="px-6 py-4 font-bold text-center">Trạng thái</th>
+                                    <th class="px-6 py-4 font-bold text-right text-gray-400"><span
+                                            class="material-symbols-rounded text-[16px]">schedule</span></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border-light/60 text-sm text-text-dark">
+                                <tr class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-text-light font-medium">#TRX-9981</td>
+                                    <td class="px-6 py-4 font-medium flex items-center gap-2">
+                                        <span
+                                            class="size-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold">A</span>
+                                        Nguyễn Văn A
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2.5 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-xs font-bold">Booking</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-bold text-emerald-600">+ 150,000 ₫</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-xs font-bold border border-emerald-100">
+                                            Success
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right text-text-light text-xs font-medium">10:23 AM
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-text-light font-medium">#TRX-9980</td>
+                                    <td class="px-6 py-4 font-medium flex items-center gap-2">
+                                        <span
+                                            class="size-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-[10px] font-bold">S</span>
+                                        Sân Cầu Giấy
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2.5 py-1 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-xs font-bold">Payout</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-bold text-text-dark">- 50,000,000 ₫</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center gap-1 text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full text-xs font-bold border border-orange-100 animate-pulse">
+                                            Processing
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right text-text-light text-xs font-medium">09:00 AM
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </main>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Modal: Payment Confirmation -->
+    <div id="payment-modal" class="hidden fixed inset-0 z-50">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"
+            onclick="closePaymentModal()"></div>
+
+        <!-- Modal Panel -->
+        <div class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
+            <div id="modal-panel"
+                class="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-border-light overflow-hidden transform transition-all scale-95 opacity-0 pointer-events-auto">
+                <div
+                    class="px-6 py-4 border-b border-border-light flex items-center justify-between bg-slate-50/80 backdrop-blur-md">
+                    <h3 class="text-lg font-bold text-text-dark">Xác nhận thanh toán</h3>
+                    <button onclick="closePaymentModal()"
+                        class="text-text-light hover:text-text-dark hover:bg-slate-200/50 transition-all rounded-full p-1">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Summary Card -->
+                    <div
+                        class="bg-slate-50 border border-border-light rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-5">
+                            <span class="material-symbols-rounded text-6xl">payments</span>
+                        </div>
+                        <div class="flex items-start justify-between relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="size-12 rounded-full bg-gray-200 bg-center bg-cover border-2 border-white shadow-md"
+                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDumzZNZ-gjmmuw-WwdCF77dA0pJ-fa0iSbgKiGp-1ieA0VoSM9H4Q9O3ILbvfA7fkhfEjahvdKxScr_CRFqeBj4x7aliuw4Co9Jh3eT3hMPFuxkvdLU0RptzGXpUdivaVaomkZGqvoSkZU7q3Us8lMPjPfoeeMk7Yazb-Nb19oN_SoB6DJaimcKebL0H8vAeoKjbqWMKdZIp_XSg7WmwdK9YZSWHW_Kf9k7Qg4QauZL41zX1r2lvJC_1sLRiMmn2gHuWYRoDhP68w');">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-text-dark" id="modal-user-name">Nguyễn Văn A</p>
+                                    <p
+                                        class="text-xs text-text-light font-medium bg-white px-1.5 py-0.5 rounded border border-border-light w-fit mt-0.5">
+                                        #PAY-8821</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-text-light font-semibold mb-0.5 uppercase tracking-wider">Total
+                                    Payout</p>
+                                <p class="text-xl font-black text-primary-dark" id="modal-amount">50,000,000 ₫</p>
+                            </div>
+                        </div>
+                        <div class="h-px bg-border-light/80 w-full relative z-10"></div>
+                        <div class="flex items-center gap-2 text-sm relative z-10">
+                            <div
+                                class="size-8 rounded bg-white border border-border-light flex items-center justify-center shadow-sm">
+                                <img src="https://img.icons8.com/color/48/vietcombank.png" class="size-5 object-contain"
+                                    alt="Bank Logo">
+                            </div>
+                            <div>
+                                <p class="text-xs text-text-light font-medium">Vietcombank</p>
+                                <p class="font-mono text-text-dark font-bold">1902 8839 2210</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div>
+                        <label class="block text-sm font-bold text-text-dark mb-3">Phương thức thanh toán <span
+                                class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label
+                                class="relative flex flex-col p-4 border-2 border-border-light bg-white rounded-xl cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all peer-checked:border-primary peer-checked:bg-primary/5 group"
+                                id="method-auto">
+                                <input class="peer sr-only" name="payment_method" type="radio" value="auto"
+                                    onclick="toggleUploadSection(false)" />
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-text-dark flex items-center gap-2">
+                                        <span class="material-symbols-rounded text-primary text-[20px]">bolt</span> Auto
+                                    </span>
+                                    <div
+                                        class="size-5 rounded-full border-2 border-border-light peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center transition-colors">
+                                        <div
+                                            class="size-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity">
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-text-light leading-relaxed">Chuyển tiền ngay lập tức qua API
+                                    ngân hàng.</span>
+                            </label>
+
+                            <label
+                                class="relative flex flex-col p-4 border-2 border-border-light bg-white rounded-xl cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all peer-checked:border-primary peer-checked:bg-primary/5 group"
+                                id="method-manual">
+                                <input class="peer sr-only" name="payment_method" type="radio" value="manual" checked
+                                    onclick="toggleUploadSection(true)" />
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-sm text-text-dark flex items-center gap-2">
+                                        <span
+                                            class="material-symbols-rounded text-orange-500 text-[20px]">upload_file</span>
+                                        Manual
+                                    </span>
+                                    <div
+                                        class="size-5 rounded-full border-2 border-border-light group-hover:border-primary peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center transition-colors">
+                                        <div
+                                            class="size-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity">
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-text-light leading-relaxed">Tải lên ủy nhiệm chi hoặc ảnh chụp
+                                    màn hình.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Upload Section -->
+                    <div id="upload-section" class="transition-all duration-300 overflow-hidden"
+                        style="max-height: 200px; opacity: 1;">
+                        <label class="block text-sm font-bold text-text-dark mb-2">Bằng chứng thanh toán</label>
+                        <div
+                            class="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-border-light border-dashed rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group bg-slate-50">
+                            <div class="space-y-2 text-center">
+                                <div
+                                    class="mx-auto size-14 bg-white border border-border-light text-text-light rounded-full flex items-center justify-center group-hover:text-primary group-hover:border-primary group-hover:scale-110 transition-all shadow-sm">
+                                    <span class="material-symbols-rounded text-[28px]">cloud_upload</span>
+                                </div>
+                                <div class="text-sm text-text-light">
+                                    <span class="font-bold text-primary hover:underline">Click tải ảnh</span> hoặc kéo
+                                    thả vào đây
+                                </div>
+                                <p class="text-[10px] text-text-light uppercase font-bold tracking-wide">PNG, JPG, PDF
+                                    (MAX. 5MB)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-slate-50 border-t border-border-light flex justify-end gap-3">
+                    <button onclick="closePaymentModal()"
+                        class="px-5 py-2.5 rounded-xl border border-border-light bg-white text-text-dark font-bold text-sm hover:bg-slate-100 hover:border-slate-300 transition-all shadow-sm">
+                        Hủy bỏ
+                    </button>
+                    <button onclick="confirmPayment()"
+                        class="px-6 py-2.5 rounded-xl bg-text-dark text-white font-bold text-sm shadow-lg shadow-gray-300 hover:shadow-xl hover:-translate-y-0.5 hover:bg-primary hover:text-text-dark transition-all flex items-center gap-2 group">
+                        <span>Xác nhận &amp; Hoàn tất</span>
+                        <span
+                            class="material-symbols-rounded text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-4 right-4 z-[60] transform translate-x-[150%] transition-transform duration-500 ease-out">
+        <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-start gap-3 min-w-[320px]">
+            <div class="bg-green-100 text-green-600 rounded-full p-1 shrink-0">
+                <span class="material-symbols-rounded text-[20px]">check</span>
+            </div>
+            <div>
+                <h4 class="font-bold text-text-dark text-sm">Thanh toán thành công!</h4>
+                <p class="text-xs text-text-light mt-1">Đã cập nhật trạng thái giao dịch.</p>
+            </div>
+            <button class="ml-auto text-text-light hover:text-text-dark" onclick="hideToast()">
+                <span class="material-symbols-rounded text-[18px]">close</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        function openPaymentModal(id, name, amount) {
+            const modal = document.getElementById('payment-modal');
+            const backdrop = document.getElementById('modal-backdrop');
+            const panel = document.getElementById('modal-panel');
+
+            // Set dynamic content (optional, added for realism)
+            if (name) document.getElementById('modal-user-name').innerText = name;
+            if (amount) document.getElementById('modal-amount').innerText = amount;
+
+            modal.classList.remove('hidden');
+            // Trigger animation after slightly letting the DOM render the removal of hidden
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                panel.classList.remove('scale-95', 'opacity-0');
+                panel.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const backdrop = document.getElementById('modal-backdrop');
+            const panel = document.getElementById('modal-panel');
+
+            backdrop.classList.add('opacity-0');
+            panel.classList.remove('scale-100', 'opacity-100');
+            panel.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Wait for transition
+        }
+
+        // Toggle Upload Section based on radio selection
+        function toggleUploadSection(show) {
+            const section = document.getElementById('upload-section');
+            if (show) {
+                section.style.maxHeight = '200px';
+                section.style.opacity = '1';
+                section.style.marginTop = '0px';
+            } else {
+                section.style.maxHeight = '0px';
+                section.style.opacity = '0';
+                section.style.marginTop = '-10px'; // slight pull up
+            }
+        }
+
+        // Confirm Payment Action
+        function confirmPayment() {
+            // Close modal
+            closePaymentModal();
+
+            // Show loading state or processing simulated here, then show toast
+            setTimeout(() => {
+                showToast();
+            }, 500);
+        }
+
+        // Toast Logic
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-x-[150%]');
+
+            // Auto hide after 3s
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('translate-x-[150%]');
+        }
+
+        function scrollToRequests() {
+            document.getElementById('requests-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Date Menu Logic
+        function toggleDateMenu(btn) {
+            const existingMenu = document.getElementById('date-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            const menu = document.createElement('div');
+            menu.id = 'date-menu';
+            menu.className = 'absolute top-full right-0 mt-2 w-48 bg-white border border-border-light rounded-xl shadow-xl z-50 animate-fade-in-up overflow-hidden';
+
+            const options = [
+                { label: 'Hôm nay', range: 'Today' },
+                { label: 'Hôm qua', range: 'Yesterday' },
+                { label: 'Tuần này', range: 'This Week' },
+                { label: 'Tháng này', range: '01/10 - 31/10' },
+                { label: 'Tháng trước', range: '01/09 - 30/09' }
+            ];
+
+            options.forEach(opt => {
+                const item = document.createElement('button');
+                item.className = 'w-full text-left px-4 py-2.5 text-sm font-medium text-text-dark hover:bg-slate-50 hover:text-primary transition-colors border-b border-slate-50 last:border-0';
+                item.innerHTML = opt.label;
+                item.onclick = (e) => {
+                    e.stopPropagation(); // Avoid triggering document click
+                    document.getElementById('current-date-range').innerText = opt.range === 'Today' || opt.range === 'Yesterday' || opt.range === 'This Week' ? opt.label : opt.range;
+                    menu.remove();
+                };
+                menu.appendChild(item);
+            });
+
+            btn.appendChild(menu);
+
+            // Close on click outside
+            const closeMenu = (e) => {
+                if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        }
+    </script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

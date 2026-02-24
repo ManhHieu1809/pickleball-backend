@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pickleball Admin Dashboard - Venue Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00f583",
+                        "primary-dark": "#00cf6e",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162e24",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: #e5e7eb;
+            border-radius: 20px;
+        }
+
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: #2f453a;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .active-icon .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .drawer-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden relative">
+    <div id="venue-detail-panel" aria-modal="true" class="absolute inset-0 z-50 flex justify-end hidden" role="dialog">
+        <div aria-hidden="true" class="absolute inset-0 drawer-overlay backdrop-blur-sm transition-opacity"
+            onclick="toggleVenueDetail(false)"></div>
+        <div
+            class="relative w-full max-w-2xl bg-surface-light dark:bg-surface-dark h-full shadow-2xl transform transition-transform border-l border-slate-200 dark:border-slate-800 flex flex-col">
+            <div
+                class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Sân Pickleball Cầu Giấy</h2>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span
+                            class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400 ring-1 ring-inset ring-slate-500/10">Mã:
+                            #V01</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Tạo ngày: 01/01/2025</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleLockStatus(this)"
+                        class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">lock</span>
+                        Khóa
+                    </button>
+                    <button onclick="toggleEditMode(this)"
+                        class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold text-slate-900 bg-primary rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                        Sửa
+                    </button>
+                    <button
+                        class="ml-2 p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-white/10"
+                        onclick="toggleVenueDetail(false)">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto scrollbar-hide">
+                <div
+                    class="sticky top-0 z-10 bg-surface-light dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 px-6 pt-2">
+                    <nav aria-label="Tabs" class="-mb-px flex space-x-6">
+                        <button
+                            class="tab-btn border-primary text-primary whitespace-nowrap border-b-2 py-3 px-1 text-sm font-semibold transition-colors"
+                            onclick="switchTab('overview')" id="btn-overview">
+                            Tổng quan
+                        </button>
+                        <button
+                            class="tab-btn border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors"
+                            onclick="switchTab('sub-venues')" id="btn-sub-venues">
+                            Danh sách sân con
+                        </button>
+                        <button
+                            class="tab-btn border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors"
+                            onclick="switchTab('finance')" id="btn-finance">
+                            Tài chính &amp; Hợp đồng
+                        </button>
+                    </nav>
+                </div>
+                <div class="p-6">
+                    <!-- Tab: Overview -->
+                    <div id="tab-overview" class="space-y-6 tab-content">
+                        <div class="space-y-3">
+                            <div
+                                class="aspect-video w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 relative group">
+                                <img alt="Cover" class="w-full h-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuClHgVXCP3sf4WL-tawr2takhxfawqtozmm6i-gfs7SqiEfgaYjUpDsrPiSsnLToTNVNbgLKwmJKWozOvtQakoqy75WK0XeQO4THSJrk46JtQphm2dihHmMQpWMXsAXZQ9LPpIFN7b4XvhS4m5aylSb7VTZMzpQC-1tAkIhYGcin5CedT9A3hbLTNphG5qb4iyLU_H6w48Zabkgx7BakwoFGMfWWWwsIt39p0aDMRwgi7qYL9ScHchPo09YefZjGJrV34tJY5v80Ns" />
+                                <div
+                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                    <button
+                                        class="bg-white/90 text-slate-900 px-4 py-2 rounded-lg text-sm font-semibold shadow-lg">Change
+                                        Cover</button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-4 gap-3">
+                                <div class="aspect-square rounded-lg overflow-hidden bg-slate-100"><img
+                                        class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6purjN1dGztkFsF4tTUhgZwGKcX9Qkg4m-NVH0y0ccqEuRQYpSd9BueXmTLWKWXW6u9WylhQdi7OrDTeTuqMijYIlxIKAKJQ7KB1pj4Azu5ZailF62WAHlxVW_6vrmlh1AWN_qpdvPh3SErI7jpWgf_CCGp1bmxmDLSD9sVMH47RHwQxbozDnyzNCs-CIYgMFGNjpXltfIyXMVTaxBRL0HqP-wtL_XYht2fHIPKO43-nX1X36lG1e3tjlukw4oYCLmMmP1ZMBuwQ" />
+                                </div>
+                                <div class="aspect-square rounded-lg overflow-hidden bg-slate-100"><img
+                                        class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTMMML0OMk6Zv9ITCDZX02s4HXkA_cXE_3VVSOeCuUHvOgH-rt7HaLzihAXZ21SGAJkIB5csPvRmh8MLBFIYzQhHnmDXDsBZ2dDyLyDKSLGYItmQD3SZLpShHMGlIuC0XprD2PBn7B1G1brteuXH7sr13d_7BIk8ZzejoU--kYctYhKLBl-LJRtJcS14o3ZhFDGW8YhDLuXVtepsERkNK6aGf4uuG94S8odayKeGtljZ5F23D4c5N01YSLaGX5YeaE3TzRLKs_BSs" />
+                                </div>
+                                <div class="aspect-square rounded-lg overflow-hidden bg-slate-100"><img
+                                        class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzA6FHXLbqbyK1AOfuFbc_NrH43HsIJtstzQU62D7uQT9Up2afa8mFdDs9wtDaUtna1t27EOvtGxDYLtASt7oTvzIkeA_Se5fmEfJXVrt_ge9acd_XxOaCvE00rTUHrvQFxWi6Cde6_ZCLgOOZ7TGdSd5tp5sG94YXaQoMk8TAtyYXwKulKryQAH08IJlbkngkMLdamUMM2H7iIB9d0nb4nm9mkvs_RGPMqBnQdvdxmXdc449iVlAj7XXR0TNMJBB9eUbGsU_EWRw" />
+                                </div>
+                                <div
+                                    class="aspect-square rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-300 hover:border-primary hover:text-primary cursor-pointer transition-colors">
+                                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                                    Thông tin cơ bản</h3>
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                        <span class="material-symbols-outlined text-[20px]">location_on</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Địa chỉ</p>
+                                        <p class="text-sm font-medium text-slate-900 dark:text-white">123 Nguyen Van
+                                            Linh, Cau Giay, Hanoi</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                        <span class="material-symbols-outlined text-[20px]">schedule</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Giờ mở cửa</p>
+                                        <p class="text-sm font-medium text-slate-900 dark:text-white">06:00 - 23:00
+                                            (Hàng ngày)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                        <span class="material-symbols-outlined text-[20px]">call</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Hotline</p>
+                                        <p class="text-sm font-medium text-slate-900 dark:text-white">0905 123 456</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                                    Tiện ích</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 ring-1 ring-inset ring-blue-700/10">
+                                        <span class="material-symbols-outlined text-[16px]">umbrella</span> Có mái che
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 px-3 py-1.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+                                        <span class="material-symbols-outlined text-[16px]">lightbulb</span> Đèn chiếu
+                                        sáng
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400 ring-1 ring-inset ring-green-600/20">
+                                        <span class="material-symbols-outlined text-[16px]">wifi</span> Wifi miễn phí
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 dark:bg-purple-900/20 dark:text-purple-400 ring-1 ring-inset ring-purple-600/20">
+                                        <span class="material-symbols-outlined text-[16px]">storefront</span> Pro Shop
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400 ring-1 ring-inset ring-slate-500/10">
+                                        <span class="material-symbols-outlined text-[16px]">local_parking</span> Bãi đỗ
+                                        xe
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                                Mô tả</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Sân Pickleball tiêu chuẩn quốc tế với mặt sân cứng cao cấp, hệ thống đèn LED chống lóa
+                                hiện đại phục vụ chơi đêm. Có khu vực nghỉ ngơi thoáng mát và quầy giải khát phục vụ
+                                người chơi.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Sub-venues -->
+                    <div id="tab-sub-venues"
+                        class="pt-6 border-t border-slate-100 dark:border-slate-800 tab-content hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Danh sách sân con (8)</h3>
+                            <button onclick="viewAllSubVenues()"
+                                class="text-xs font-semibold text-primary hover:text-primary-dark">Xem tất
+                                cả</button>
+                        </div>
+                        <div class="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                                <thead class="bg-slate-50 dark:bg-slate-800">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                                            scope="col">Tên sân</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                                            scope="col">Loại</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                                            scope="col">Giá CB</th>
+                                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                                            scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody
+                                    class="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-900">
+                                    <tr>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                                            Sân 01</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            Tiêu chuẩn</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            150k/h</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+                                            <span
+                                                class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800 dark:bg-green-900/30 dark:text-green-400">Sẵn
+                                                sàng</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                                            Sân 02</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            Tiêu chuẩn</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            150k/h</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+                                            <span
+                                                class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800 dark:bg-green-900/30 dark:text-green-400">Sẵn
+                                                sàng</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                                            Sân VIP</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            VIP (Mái che)</td>
+                                        <td
+                                            class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            250k/h</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+                                            <span
+                                                class="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800 dark:bg-red-900/30 dark:text-red-400">Bảo
+                                                trì</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Finance -->
+                    <div id="tab-finance"
+                        class="pt-6 border-t border-slate-100 dark:border-slate-800 tab-content hidden">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Thông tin Tài chính</h3>
+                        <div
+                            class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-200 dark:border-slate-700">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Chủ sở hữu</p>
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary-dark">
+                                            TV</div>
+                                        <span class="text-sm font-medium text-slate-900 dark:text-white">Tran Van
+                                            A</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Tài khoản ngân hàng</p>
+                                    <span class="text-sm font-mono text-slate-900 dark:text-white">**** 8829
+                                        (VCB)</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Phí hoa hồng hệ thống</p>
+                                    <span class="text-lg font-bold text-orange-600 dark:text-orange-400">20%</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Tổng doanh thu tháng</p>
+                                    <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">125.4M
+                                        đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="border-t border-slate-200 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-900/50 flex justify-end gap-3">
+                <button
+                    class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700">Đóng</button>
+                <button
+                    class="px-4 py-2 text-sm font-bold text-slate-900 bg-primary rounded-lg hover:bg-primary-dark shadow-sm">Lưu
+                    thay đổi</button>
+            </div>
+        </div>
+    </div>
+    <div id="main-layout" class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <aside
+            class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+
+            <!-- Island 1: Management (5 icons) -->
+            <!-- Island 1: Management (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/dashboard"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/owner-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Owner Requests">
+                    <i data-lucide="user-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/venue-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venue Requests">
+                    <i data-lucide="map-pin-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Referee Requests">
+                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/users"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Users">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/venues"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venues">
+                    <i data-lucide="map-pin-house"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/bookings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Bookings">
+                    <i data-lucide="calendar"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/disputes"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Disputes">
+                    <i data-lucide="alert-triangle"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/finance"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/rankings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Rankings">
+                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Loyalty">
+                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Reports">
+                    <i data-lucide="bar-chart-3"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/system"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="System Config">
+                    <i data-lucide="settings"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 gap-6 relative">
+            <!-- Top Header -->
+            <header class="flex items-center justify-between mb-4">
+                <!-- Logo & Nav Tabs -->
+                <div class="flex items-center gap-12">
+                    <!-- Finexy Logo -->
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="coins" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Finexy
+                    </div>
+
+                    <!-- Central Navigation Tabs (Floating) -->
+                    <nav
+                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
+                        <a href="#"
+                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
+                    </nav>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="search" class="w-4 h-4"></i></button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            <span
+                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="info" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                        <div class="hidden lg:block text-left leading-tight">
+                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
+                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="max-w-7xl mx-auto flex flex-col gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        class="flex flex-col justify-between rounded-lg bg-surface-light dark:bg-surface-dark p-5 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Tổng Venues</p>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">128</h3>
+                            </div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                                <span class="material-symbols-outlined">stadium</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-xs text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px] mr-1">trending_up</span>
+                            <span class="font-medium">+12% tháng này</span>
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col justify-between rounded-lg bg-surface-light dark:bg-surface-dark p-5 shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                        <div
+                            class="absolute right-0 top-0 h-16 w-16 translate-x-4 -translate-y-4 bg-orange-500/10 blur-xl rounded-full">
+                        </div>
+                        <div class="flex items-start justify-between relative z-10">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Chờ phê duyệt</p>
+                                <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-2">5</h3>
+                            </div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                <span class="material-symbols-outlined">pending_actions</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-xs text-slate-500 dark:text-slate-400">
+                            <span>Cần xử lý trong 24h</span>
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col justify-between rounded-lg bg-surface-light dark:bg-surface-dark p-5 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Tổng số Sân</p>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">856</h3>
+                            </div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary-dark dark:text-primary">
+                                <span class="material-symbols-outlined">grid_view</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-xs text-emerald-600 dark:text-emerald-400">
+                            <span class="material-symbols-outlined text-[16px] mr-1">add_circle</span>
+                            <span class="font-medium">+24 sân mới</span>
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col justify-between rounded-lg bg-surface-light dark:bg-surface-dark p-5 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Đánh giá TB</p>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">4.8</h3>
+                            </div>
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                                <span class="material-symbols-outlined">star</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-1">
+                            <div class="flex text-yellow-400">
+                                <span class="material-symbols-outlined text-[16px] fill-current"
+                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[16px] fill-current"
+                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[16px] fill-current"
+                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[16px] fill-current"
+                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[16px] fill-current"
+                                    style="font-variation-settings: 'FILL' 1;">star_half</span>
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 ml-1">(2.1k reviews)</span>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="rounded-xl bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col h-full min-h-[500px]">
+                    <div class="flex flex-col border-b border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center px-6 pt-2 overflow-x-auto">
+                            <button
+                                class="relative px-4 py-4 text-sm font-semibold text-slate-900 dark:text-white border-b-2 border-primary">
+                                <span class="mr-2">📋</span> Tất cả Venues
+                            </button>
+                            <button
+                                class="relative px-4 py-4 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+                                <span class="mr-2">⏳</span> Chờ phê duyệt
+                                <span
+                                    class="ml-2 inline-flex items-center justify-center rounded-full bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">5</span>
+                            </button>
+                            <button
+                                class="relative px-4 py-4 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+                                <span class="mr-2">🛑</span> Đã dừng
+                            </button>
+                        </div>
+                        <div
+                            class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-slate-50/50 dark:bg-slate-800/20">
+                            <div class="flex flex-1 items-center gap-3 w-full md:w-auto">
+                                <div class="relative w-full md:w-64">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                        <span class="material-symbols-outlined text-[20px]">search</span>
+                                    </span>
+                                    <input
+                                        class="block w-full rounded-lg border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                        placeholder="Tìm tên sân..." type="text" />
+                                </div>
+                                <select
+                                    class="rounded-lg border border-slate-200 bg-white py-2 pl-3 pr-8 text-sm text-slate-700 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                                    <option>Khu vực: Tất cả</option>
+                                    <option>Hà Nội</option>
+                                    <option>TP. Hồ Chí Minh</option>
+                                    <option>Đà Nẵng</option>
+                                </select>
+                                <select
+                                    class="rounded-lg border border-slate-200 bg-white py-2 pl-3 pr-8 text-sm text-slate-700 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                                    <option>Trạng thái: Tất cả</option>
+                                    <option>Hoạt động</option>
+                                    <option>Tạm đóng</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3 w-full md:w-auto">
+                                <button
+                                    class="flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                                    <span class="material-symbols-outlined text-[20px]">download</span>
+                                    Xuất Excel
+                                </button>
+                                <button
+                                    class="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-slate-900 hover:bg-primary/90 transition-colors shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]">add</span>
+                                    + Thêm Venue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase text-slate-500 dark:text-slate-400">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold">ID</th>
+                                    <th class="px-6 py-4 font-semibold min-w-[250px]">Thông tin Cơ sở</th>
+                                    <th class="px-6 py-4 font-semibold min-w-[200px]">Chủ sở hữu</th>
+                                    <th class="px-6 py-4 font-semibold">Quy mô</th>
+                                    <th class="px-6 py-4 font-semibold">Doanh thu</th>
+                                    <th class="px-6 py-4 font-semibold">Trạng thái</th>
+                                    <th class="px-6 py-4 font-semibold text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    onclick="toggleVenueDetail(true)">
+                                    <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V01
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                                                <img alt="Venue Thumbnail" class="h-full w-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuClHgVXCP3sf4WL-tawr2takhxfawqtozmm6i-gfs7SqiEfgaYjUpDsrPiSsnLToTNVNbgLKwmJKWozOvtQakoqy75WK0XeQO4THSJrk46JtQphm2dihHmMQpWMXsAXZQ9LPpIFN7b4XvhS4m5aylSb7VTZMzpQC-1tAkIhYGcin5CedT9A3hbLTNphG5qb4iyLU_H6w48Zabkgx7BakwoFGMfWWWwsIt39p0aDMRwgi7qYL9ScHchPo09YefZjGJrV34tJY5v80Ns" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-bold text-slate-900 dark:text-white line-clamp-1">Pickleball
+                                                    Pro Center</span>
+                                                <div
+                                                    class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">location_on</span>
+                                                    <span class="truncate max-w-[150px]">123 Nguyen Van Linh, Da
+                                                        Nang</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img alt="Avatar"
+                                                class="h-8 w-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrn2R06kurCw4JCM2kgOIXgj7nUTA2Z24fMGcHf54d7T-1eBBcJqYYlkX9EfV6uW0Lx3f8oDg3C1hK2djELq4721UFLhtADRmo3cxhv2w_xf05sx6y5xaPx8K3EK2hecarDsVrjNjFI2HcxZ3LfJl_837op98-NXCFbw_di8wtgUqCpyo2Ev9mmJgJigfDi5mRuEIwUT2XF0Dcqa9-sQvC98AS0HxDd99ECt2VSN5mgsCxGlkm72QE_dFvIEF0CsBmVWzPQ1nhAMw" />
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-slate-900 dark:text-white">Tran Van
+                                                    A</span>
+                                                <span class="text-xs text-slate-500">0905 123 456</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-sm font-semibold text-slate-900 dark:text-white">8
+                                                Sân</span>
+                                            <div class="flex gap-1">
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-blue-100 text-[10px] text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                                                    title="Có mái che">☂️</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-yellow-100 text-[10px] text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                    title="Đèn chiếu sáng">💡</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-purple-100 text-[10px] text-purple-600 dark:bg-purple-900/30 dark:text-purple-400"
+                                                    title="Pro Shop">🛒</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-emerald-600 dark:text-emerald-400">125.4M
+                                                đ</span>
+                                            <div class="flex items-center gap-1 text-xs text-slate-500">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] text-yellow-500 fill-current"
+                                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                                <span>4.9</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
+                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    onclick="toggleVenueDetail(true)">
+                                    <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V02
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                                                <img alt="Venue Thumbnail" class="h-full w-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6purjN1dGztkFsF4tTUhgZwGKcX9Qkg4m-NVH0y0ccqEuRQYpSd9BueXmTLWKWXW6u9WylhQdi7OrDTeTuqMijYIlxIKAKJQ7KB1pj4Azu5ZailF62WAHlxVW_6vrmlh1AWN_qpdvPh3SErI7jpWgf_CCGp1bmxmDLSD9sVMH47RHwQxbozDnyzNCs-CIYgMFGNjpXltfIyXMVTaxBRL0HqP-wtL_XYht2fHIPKO43-nX1X36lG1e3tjlukw4oYCLmMmP1ZMBuwQ" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-slate-900 dark:text-white line-clamp-1">City
+                                                    Sports Complex</span>
+                                                <div
+                                                    class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">location_on</span>
+                                                    <span class="truncate max-w-[150px]">45 Le Duan, Hanoi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img alt="Avatar"
+                                                class="h-8 w-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwd8INVbD6euWu_fx35l1jWK7YPvcO2sByj1QrnxATbDtSr9uuxNy8kLjf3Pc2TOU-h-9LYV9xJqsNNydhIyLiPKv10qIB-j3vWVglyHLa33hACPv7LlJaL2TH3z2N9-rDYury5bbysCvRRIVIPrnkRTxUSIBcTPa6y-Xiq1WI5EKysJB-05diak92nhXNc3BKPYWRz44gtiu8c0smoWVZQbNq3R9ZzaCJ0pU6OvRFCz5L-tsNZd26rHIz4OXM-vHo_x_-utTFkak" />
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-slate-900 dark:text-white">Nguyen Thi
+                                                    B</span>
+                                                <span class="text-xs text-slate-500">0912 345 678</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-sm font-semibold text-slate-900 dark:text-white">12
+                                                Sân</span>
+                                            <div class="flex gap-1">
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-blue-100 text-[10px] text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                                                    title="Có mái che">☂️</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-yellow-100 text-[10px] text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                    title="Đèn chiếu sáng">💡</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-emerald-600 dark:text-emerald-400">205.1M
+                                                đ</span>
+                                            <div class="flex items-center gap-1 text-xs text-slate-500">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] text-yellow-500 fill-current"
+                                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                                <span>4.7</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
+                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    onclick="toggleVenueDetail(true)">
+                                    <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V03
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                                                <img alt="Venue Thumbnail" class="h-full w-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTMMML0OMk6Zv9ITCDZX02s4HXkA_cXE_3VVSOeCuUHvOgH-rt7HaLzihAXZ21SGAJkIB5csPvRmh8MLBFIYzQhHnmDXDsBZ2dDyLyDKSLGYItmQD3SZLpShHMGlIuC0XprD2PBn7B1G1brteuXH7sr13d_7BIk8ZzejoU--kYctYhKLBl-LJRtJcS14o3ZhFDGW8YhDLuXVtepsERkNK6aGf4uuG94S8odayKeGtljZ5F23D4c5N01YSLaGX5YeaE3TzRLKs_BSs" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-bold text-slate-900 dark:text-white line-clamp-1">Sunset
+                                                    Pickleball Club</span>
+                                                <div
+                                                    class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">location_on</span>
+                                                    <span class="truncate max-w-[150px]">88 Vo Van Kiet, HCM</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xs font-bold border border-slate-200 dark:border-slate-700">
+                                                LD</div>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-slate-900 dark:text-white">Le Van
+                                                    D</span>
+                                                <span class="text-xs text-slate-500">0987 654 321</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-sm font-semibold text-slate-900 dark:text-white">4
+                                                Sân</span>
+                                            <div class="flex gap-1">
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-yellow-100 text-[10px] text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                    title="Đèn chiếu sáng">💡</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-[10px] text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                                                    title="Cafe">☕</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-slate-400 dark:text-slate-500">--</span>
+                                            <div class="flex items-center gap-1 text-xs text-slate-500">
+                                                <span class="material-symbols-outlined text-[14px]">star_border</span>
+                                                <span>New</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                                            Chờ duyệt
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
+                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    onclick="toggleVenueDetail(true)">
+                                    <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V04
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                                                <img alt="Venue Thumbnail" class="h-full w-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzA6FHXLbqbyK1AOfuFbc_NrH43HsIJtstzQU62D7uQT9Up2afa8mFdDs9wtDaUtna1t27EOvtGxDYLtASt7oTvzIkeA_Se5fmEfJXVrt_ge9acd_XxOaCvE00rTUHrvQFxWi6Cde6_ZCLgOOZ7TGdSd5tp5sG94YXaQoMk8TAtyYXwKulKryQAH08IJlbkngkMLdamUMM2H7iIB9d0nb4nm9mkvs_RGPMqBnQdvdxmXdc449iVlAj7XXR0TNMJBB9eUbGsU_EWRw" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-bold text-slate-900 dark:text-white line-clamp-1">Green
+                                                    Field Arena</span>
+                                                <div
+                                                    class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">location_on</span>
+                                                    <span class="truncate max-w-[150px]">Khu do thi Ciputra,
+                                                        Hanoi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img alt="Avatar"
+                                                class="h-8 w-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3n1vF72ih8IYVNDcXghfADjffhLvVuXUUko18kq-ZPXbTnAIlMron4gkmftjTsjY8YXZkf-t854TcyCJ0JvzniPHlZXtE-jhH5kLU6XJ_3HCmGE2Jx008LKNu7k7013eprE1JWpXUpbsEpyX_TWKx6G4vOfWa7N-6pBgs6SBHGZprVuvf400C_bmUsFN-7NcFoytGnykuYh9t5XNO2X23Mul8fJxHrkdwNL7zjHwclOk8tWB_-N4kGo4PfaGH72WAXrNyD0BnNoM" />
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-slate-900 dark:text-white">Pham Minh
+                                                    T</span>
+                                                <span class="text-xs text-slate-500">0999 888 777</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-sm font-semibold text-slate-900 dark:text-white">6
+                                                Sân</span>
+                                            <div class="flex gap-1">
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-blue-100 text-[10px] text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                                                    title="Có mái che">☂️</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-red-100 text-[10px] text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                                                    title="Y tế">🚑</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-emerald-600 dark:text-emerald-400">85.2M
+                                                đ</span>
+                                            <div class="flex items-center gap-1 text-xs text-slate-500">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] text-yellow-500 fill-current"
+                                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                                <span>4.5</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                            Tạm dừng
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
+                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                                    onclick="toggleVenueDetail(true)">
+                                    <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V05
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200">
+                                                <img alt="Venue Thumbnail" class="h-full w-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-GoiMQe4-uQ6NxxN4ugkRkyPd-MxLAgJRxhkcFvb43pVhaQyImQSgOrlFQ3NcR9JWzD9dD_OZi8WTRqNganKT8Lwa2nvNwYawbzIsvP6OzTHghyDiXtRwHg6RUAwA9vmMulycvDyrw75fdEVhYfT_0wkVVxqJVFcA49OhISaCEpLtEjrI45Jfg_geajUPyNWMcEUZpTq1xRjTRwnmi75BTZQImdyhAV_xgHipvh0KXQKW4IOvKinBITFcxNG-hR7tGWAXq5-gEnE" />
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-bold text-slate-900 dark:text-white line-clamp-1">Ocean
+                                                    View Courts</span>
+                                                <div
+                                                    class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">location_on</span>
+                                                    <span class="truncate max-w-[150px]">Tran Phu, Nha Trang</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold border border-slate-200 dark:border-slate-700">
+                                                DK</div>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-slate-900 dark:text-white">Dao Kim
+                                                    C</span>
+                                                <span class="text-xs text-slate-500">0933 222 111</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-sm font-semibold text-slate-900 dark:text-white">10
+                                                Sân</span>
+                                            <div class="flex gap-1">
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-yellow-100 text-[10px] text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                                    title="Đèn chiếu sáng">💡</span>
+                                                <span
+                                                    class="inline-flex h-5 w-5 items-center justify-center rounded bg-green-100 text-[10px] text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                                                    title="Wifi">📶</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold text-emerald-600 dark:text-emerald-400">180.5M
+                                                đ</span>
+                                            <div class="flex items-center gap-1 text-xs text-slate-500">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] text-yellow-500 fill-current"
+                                                    style="font-variation-settings: 'FILL' 1;">star</span>
+                                                <span>4.8</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            Hoạt động
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
+                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
+                                            <span class="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3 sm:px-6">
+                        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-slate-700 dark:text-slate-400">
+                                    Showing
+                                    <span class="font-medium text-slate-900 dark:text-white">1</span>
+                                    to
+                                    <span class="font-medium text-slate-900 dark:text-white">5</span>
+                                    of
+                                    <span class="font-medium text-slate-900 dark:text-white">128</span>
+                                    results
+                                </p>
+                            </div>
+                            <div>
+                                <nav aria-label="Pagination"
+                                    class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                    <a class="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        href="#">
+                                        <span class="sr-only">Previous</span>
+                                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                                    </a>
+                                    <a aria-current="page"
+                                        class="relative z-10 inline-flex items-center bg-primary px-4 py-2 text-sm font-semibold text-slate-900 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                        href="#">1</a>
+                                    <a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        href="#">2</a>
+                                    <a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        href="#">3</a>
+                                    <span
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-300 focus:outline-offset-0 dark:text-slate-400 dark:ring-slate-700">...</span>
+                                    <a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        href="#">8</a>
+                                    <a class="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        href="#">
+                                        <span class="sr-only">Next</span>
+                                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleVenueDetail(show) {
+            const panel = document.getElementById('venue-detail-panel');
+            const mainLayout = document.getElementById('main-layout');
+            if (show) {
+                panel.classList.remove('hidden');
+                mainLayout.classList.add('blur-[2px]', 'pointer-events-none', 'select-none');
+            } else {
+                panel.classList.add('hidden');
+                mainLayout.classList.remove('blur-[2px]', 'pointer-events-none', 'select-none');
+            }
+        }
+
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+
+            // Show active content
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Update button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'text-primary');
+                btn.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+            activeBtn.classList.add('border-primary', 'text-primary');
+        }
+
+        function toggleLockStatus(btn) {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (btn.classList.contains('bg-red-50')) {
+                // Unlock
+                btn.classList.remove('bg-red-50', 'text-red-700', 'border-red-200');
+                btn.classList.add('bg-white', 'text-slate-600', 'border-slate-300');
+                icon.innerText = 'lock';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">lock</span> Khóa';
+            } else {
+                // Lock
+                btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-300');
+                btn.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+                icon.innerText = 'lock_open';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">lock_open</span> Mở khóa';
+            }
+        }
+
+        function toggleEditMode(btn) {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            const isEditing = btn.getAttribute('data-editing') === 'true';
+
+            if (isEditing) {
+                // Save
+                btn.setAttribute('data-editing', 'false');
+                btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+                btn.classList.add('bg-primary', 'hover:bg-primary-dark', 'text-slate-900');
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">edit</span> Sửa';
+            } else {
+                // Edit
+                btn.setAttribute('data-editing', 'true');
+                btn.classList.remove('bg-primary', 'hover:bg-primary-dark', 'text-slate-900');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span> Lưu';
+            }
+        }
+
+        function viewAllSubVenues() {
+            const listContainer = document.querySelector('#tab-subvenues .space-y-3');
+            const btn = document.querySelector("#tab-subvenues button:last-child");
+
+            if (!btn) return;
+
+            // Simulate loading
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="animate-spin material-symbols-outlined text-[18px]">progress_activity</span> Đang tải...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            setTimeout(() => {
+                // Add dummy items
+                const newItems = `
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-primary/50 transition-colors group flex items-center justify-between animate-fade-in-up">
+                        <div class="flex items-center gap-4">
+                            <div class="size-12 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold">S4</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 group-hover:text-primary transition-colors">Sân 4 - VIP</h4>
+                                <p class="text-xs text-slate-500">Người chơi: 4</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg text-xs font-bold">Trống</span>
+                    </div>
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-primary/50 transition-colors group flex items-center justify-between animate-fade-in-up" style="animation-delay: 100ms">
+                        <div class="flex items-center gap-4">
+                            <div class="size-12 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">S5</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 group-hover:text-primary transition-colors">Sân 5 - Tập</h4>
+                                <p class="text-xs text-slate-500">Người chơi: 2</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-500 border border-slate-200 rounded-lg text-xs font-bold">Bảo trì</span>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', newItems);
+                btn.remove(); // Remove the button after loading all
+            }, 600);
+        }
+
+        function showActionMenu(btn) {
+            // Remove any existing menus
+            const existingMenu = document.getElementById('action-menu');
+            if (existingMenu) existingMenu.remove();
+
+            // Create menu
+            const menu = document.createElement('div');
+            menu.id = 'action-menu';
+            menu.className = 'fixed z-[60] w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 animate-fade-in-up transform origin-top-right overflow-hidden';
+
+            // Position
+            const rect = btn.getBoundingClientRect();
+            menu.style.top = `${rect.bottom + 8}px`;
+            // Align right edge of menu with right edge of button, but nudge left slightly
+            menu.style.left = `${rect.right - 192}px`; // 192px is w-48
+
+            // Menu Items Actions
+            const handleAction = (action) => {
+                menu.remove();
+                if (action === 'view') toggleVenueDetail(true);
+                else if (action === 'edit') alert('Chức năng chỉnh sửa đang phát triển');
+                else if (action === 'lock') alert('Đã khóa tài khoản chủ sân');
+                else if (action === 'delete') {
+                    if (confirm('Bạn có chắc chắn muốn xóa sân này?')) {
+                        alert('Đã xóa sân');
+                    }
+                }
+            };
+
+            // Menu Content
+            menu.innerHTML = `
+                <button onclick="this.parentElement.remove(); toggleVenueDetail(true)" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                    Xem chi tiết
+                </button>
+                <button onclick="this.parentElement.remove(); alert('Chức năng chỉnh sửa đang phát triển')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                    Chỉnh sửa
+                </button>
+                <button onclick="this.parentElement.remove(); alert('Đã khóa tài khoản chủ sân')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-orange-600 hover:bg-orange-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">lock</span>
+                    Khóa tài khoản
+                </button>
+                <div class="h-px bg-slate-100 my-1"></div>
+                <button onclick="this.parentElement.remove(); confirm('Bạn có chắc chắn muốn xóa sân này?')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                    Xóa vĩnh viễn
+                </button>
+            `;
+
+            // Add to body
+            document.body.appendChild(menu);
+
+            // Close on click outside
+            const closeMenu = (e) => {
+                if (!menu.contains(e.target) && e.target !== btn) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        }
+    </script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

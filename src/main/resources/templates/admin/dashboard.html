@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Finexy Dashboard - Overview</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols (Keeping for compatibility if needed, but primary is now Lucide) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F97316", // Finexy Orange
+                        "primary-dark": "#EA580C",
+                        secondary: "#1E293B", // Slate 800
+                        background: "#F8FAFC", // Light Gray Background
+                        surface: "#FFFFFF",
+                        "card-dark": "#1F2937",
+
+                        // Compatibility aliases for existing content
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#0F172A",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                        '3xl': '2rem',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8FAFC;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        .sidebar-item.active {
+            background-color: #1E293B;
+            /* Black active state */
+            color: #ffffff;
+        }
+
+        .sidebar-item.active .material-symbols-outlined {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="font-sans text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <!-- Floating Sidebar Area -->
+        <aside
+            class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+
+            <!-- Island 1: Management (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/dashboard"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Owner Requests">
+                    <i data-lucide="user-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/venue-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venue Requests">
+                    <i data-lucide="map-pin-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Referee Requests">
+                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/users"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Users">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/venues"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venues">
+                    <i data-lucide="map-pin-house"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/bookings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Bookings">
+                    <i data-lucide="calendar"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/disputes"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Disputes">
+                    <i data-lucide="alert-triangle"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/finance"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/rankings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Rankings">
+                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Loyalty">
+                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Reports">
+                    <i data-lucide="bar-chart-3"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/system"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="System Config">
+                    <i data-lucide="settings"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 pr-6">
+            <!-- Top Header -->
+            <header class="flex items-center justify-between mb-8">
+                <!-- Logo & Nav Tabs -->
+                <div class="flex items-center gap-12">
+                    <!-- Finexy Logo -->
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="coins" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Finexy
+                    </div>
+
+                    <!-- Central Navigation Tabs (Floating) -->
+                    <nav
+                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
+                        <a href="#"
+                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
+                    </nav>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="search" class="w-4 h-4"></i></button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            <span
+                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="info" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                        <div class="hidden lg:block text-left leading-tight">
+                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
+                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PRESERVED CONTENT FROM ORIGINAL DASHBOARD -->
+            <div class="flex h-full w-full flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard Overview</h2>
+                    <div class="flex gap-3">
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-surface-dark dark:text-slate-200 dark:hover:bg-white/5">
+                            <span class="material-symbols-outlined text-[20px]">cloud_download</span>
+                            Export
+                        </button>
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            New Booking
+                        </button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div
+                        class="flex items-center gap-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 p-3 border-l-4 border-yellow-400 shadow-sm">
+                        <div
+                            class="p-1.5 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                            <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">3 Chủ sân</span>
+                            <span
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ
+                                duyệt</span>
+                        </div>
+                        <button class="ml-auto text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 rounded-lg bg-blue-50 dark:bg-blue-900/10 p-3 border-l-4 border-blue-400 shadow-sm">
+                        <div
+                            class="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                            <span class="material-symbols-outlined text-[20px]">stadium</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">5 Venue</span>
+                            <span
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ
+                                duyệt</span>
+                        </div>
+                        <button class="ml-auto text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 rounded-lg bg-red-50 dark:bg-red-900/10 p-3 border-l-4 border-red-400 shadow-sm">
+                        <div class="p-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                            <span class="material-symbols-outlined text-[20px]">gavel</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">2 Tranh chấp</span>
+                            <span
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Cần
+                                xử lý</span>
+                        </div>
+                        <button class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-3">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                                <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            </div>
+                            <span
+                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +12%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">1,234</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Total Bookings</p>
+                    </div>
+                    <div
+                        class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-3">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                                <span class="material-symbols-outlined text-[18px]">schedule</span>
+                            </div>
+                            <span
+                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +5%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">45</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Today's Bookings</p>
+                    </div>
+                    <div
+                        class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-3">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                                <span class="material-symbols-outlined text-[18px]">payments</span>
+                            </div>
+                            <span
+                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +8.2%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">50M VND</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Monthly Revenue</p>
+                    </div>
+                    <div
+                        class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-3">
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                <span class="material-symbols-outlined text-[18px]">group_add</span>
+                            </div>
+                            <span
+                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +24%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">128</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">New Users</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div
+                        class="lg:col-span-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex flex-col">
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Revenue Overview</h3>
+                                <p class="text-sm text-slate-500">Daily revenue comparison</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select
+                                    class="rounded-lg border-slate-200 bg-transparent text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                                    <option>Last 7 Days</option>
+                                    <option>Last 30 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="relative w-full h-64 overflow-hidden">
+                            <div id="revenueChart" class="w-full h-full"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="rounded-lg bg-surface-light dark:bg-surface-dark p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-full relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Booking Types</h3>
+                                <p class="text-sm text-slate-500">Distribution by category</p>
+                            </div>
+                            <button class="text-slate-400 hover:text-slate-600 transition-colors">
+                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 flex flex-col items-center justify-center relative -mt-4">
+                            <!-- ApexChart Container -->
+                            <div id="bookingTypesChart" class="w-full h-full flex justify-center items-center"></div>
+
+                            <!-- Center Label Overlay -->
+                            <div
+                                class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-4">
+                                <span class="text-4xl font-extrabold text-slate-800 dark:text-white">100%</span>
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
+                            </div>
+                        </div>
+
+                        <!-- Custom Legend Grid -->
+                        <div class="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-slate-50 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-200"></span>
+                                <div class="flex flex-col leading-none">
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Private</span>
+                                    <span class="text-[10px] text-slate-400">35%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-200"></span>
+                                <div class="flex flex-col leading-none">
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Casual</span>
+                                    <span class="text-[10px] text-slate-400">25%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-sm shadow-purple-200"></span>
+                                <div class="flex flex-col leading-none">
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ranked</span>
+                                    <span class="text-[10px] text-slate-400">20%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
+                                <div class="flex flex-col leading-none">
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Walk-in</span>
+                                    <span class="text-[10px] text-slate-400">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div
+                        class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
+                        <div
+                            class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Bookings</h3>
+                            <a class="text-sm font-medium text-primary hover:underline" href="#">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+                                <thead class="bg-slate-50 dark:bg-slate-800/50 uppercase text-slate-500">
+                                    <tr>
+                                        <th class="px-3 py-2">ID</th>
+                                        <th class="px-3 py-2">Court</th>
+                                        <th class="px-3 py-2">Type</th>
+                                        <th class="px-3 py-2">Status</th>
+                                        <th class="px-3 py-2 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-092
+                                        </td>
+                                        <td class="px-3 py-2">Court A1</td>
+                                        <td class="px-3 py-2">
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-purple-50 dark:bg-purple-900/20 px-1.5 py-0.5 text-xs font-medium text-purple-700 dark:text-purple-300 ring-1 ring-inset ring-purple-700/10">Ranked</span>
+                                        </td>
+                                        <td class="px-3 py-2">
+                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">250k</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-091
+                                        </td>
+                                        <td class="px-3 py-2">Court B3</td>
+                                        <td class="px-3 py-2">
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10">Casual</span>
+                                        </td>
+                                        <td class="px-3 py-2">
+                                            <span class="flex h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">180k</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-090
+                                        </td>
+                                        <td class="px-3 py-2">Court A2</td>
+                                        <td class="px-3 py-2">
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 text-xs font-medium text-green-700 dark:text-green-300 ring-1 ring-inset ring-green-600/20">Private</span>
+                                        </td>
+                                        <td class="px-3 py-2">
+                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">300k</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-089
+                                        </td>
+                                        <td class="px-3 py-2">Court C1</td>
+                                        <td class="px-3 py-2">
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300 ring-1 ring-inset ring-orange-600/20">Walk-in</span>
+                                        </td>
+                                        <td class="px-3 py-2">
+                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">150k</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div
+                        class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
+                        <div
+                            class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pending Actions</h3>
+                            <span
+                                class="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400">High
+                                Priority</span>
+                        </div>
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-3 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                                                    <span class="material-symbols-outlined text-[14px]">person</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">New Owner
+                                                        Reg.</p>
+                                                    <p class="text-xs text-slate-500">John D. - Pickle Pro
+                                                        Center</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <button
+                                                class="rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Review</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-3 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                                                    <span class="material-symbols-outlined text-[14px]">gavel</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">Dispute
+                                                        #402</p>
+                                                    <p class="text-xs text-slate-500">Refund request - Weather
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <button
+                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Resolve</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-3 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                                                    <span
+                                                        class="material-symbols-outlined text-[14px]">domain_add</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">Venue
+                                                        Update</p>
+                                                    <p class="text-[10px] text-slate-500">City Sports Complex -
+                                                        Photos</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <button
+                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Approve</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td class="px-3 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                                                    <span class="material-symbols-outlined text-[14px]">person</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">Referee
+                                                        App</p>
+                                                    <p class="text-[10px] text-slate-500">Mike T. - Certification
+                                                        Lvl 1</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-2 text-right">
+                                            <button
+                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Review</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <button
+                        class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                        </div>
+                        <span
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Create
+                            User</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            <span class="material-symbols-outlined text-[20px]">flag</span>
+                        </div>
+                        <span
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Report
+                            Issue</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            <span class="material-symbols-outlined text-[20px]">campaign</span>
+                        </div>
+                        <span
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Send
+                            Alert</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            <span class="material-symbols-outlined text-[20px]">settings_suggest</span>
+                        </div>
+                        <span
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Quick
+                            Config</span>
+                    </button>
+                </div>
+            </div>
+            <!-- END PRESERVED CONTENT -->
+
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var options = {
+                series: [{
+                    name: 'Current Week',
+                    data: [31000, 40000, 28000, 51000, 42000, 109000, 100000]
+                }, {
+                    name: 'Last Week',
+                    data: [11000, 32000, 45000, 32000, 34000, 52000, 41000]
+                }],
+                chart: {
+                    type: 'area',
+                    height: '100%',
+                    toolbar: { show: false },
+                    fontFamily: 'Inter, sans-serif'
+                },
+                colors: ['#F97316', '#94a3b8'], // Updated to Finexy Orange and Slate
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.4,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: {
+                    curve: 'smooth',
+                    width: [3, 2],
+                    dashArray: [0, 5]
+                },
+                xaxis: {
+                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    tooltip: { enabled: false }
+                },
+                yaxis: {
+                    show: false,
+                },
+                grid: {
+                    show: true,
+                    borderColor: 'rgba(0,0,0,0.05)', // Softer grid for light mode
+                    strokeDashArray: 4,
+                },
+                legend: { show: false },
+                tooltip: {
+                    theme: 'light' // Consistent with light theme default
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#revenueChart"), options);
+            chart.render();
+
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Booking Types Donut Chart
+            var bookingOptions = {
+                series: [35, 25, 20, 20],
+                chart: {
+                    type: 'donut',
+                    height: 220,
+                    fontFamily: 'Inter, sans-serif',
+                },
+                labels: ['Private', 'Casual', 'Ranked', 'Walk-in'],
+                colors: ['#F97316', '#3B82F6', '#A855F7', '#10B981'], // Orange, Blue, Purple, Emerald
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '75%',
+                            labels: {
+                                show: false, // Using custom overlay
+                            }
+                        }
+                    }
+                },
+                dataLabels: { enabled: false },
+                legend: { show: false }, // Custom legend
+                stroke: {
+                    show: true,
+                    width: 0, // seamless
+                },
+                tooltip: {
+                    enabled: true,
+                    theme: 'dark',
+                    y: {
+                        formatter: function (val) {
+                            return val + "%"
+                        }
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                    }
+                }]
+            };
+
+            var bookingChart = new ApexCharts(document.querySelector("#bookingTypesChart"), bookingOptions);
+            bookingChart.render();
+
+            // JS-based Tooltips for Floating Sidebar
+            const tooltip = document.createElement('div');
+            tooltip.className = 'fixed z-[100] bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200';
+            tooltip.style.whiteSpace = 'nowrap';
+            document.body.appendChild(tooltip);
+
+            document.querySelectorAll('[data-tooltip]').forEach(el => {
+                el.addEventListener('mouseenter', e => {
+                    tooltip.textContent = el.dataset.tooltip;
+                    tooltip.style.opacity = '1';
+                    const rect = el.getBoundingClientRect();
+                    // Position to the right of the element
+                    tooltip.style.top = rect.top + (rect.height - tooltip.offsetHeight) / 2 + 'px';
+                    tooltip.style.left = rect.right + 12 + 'px';
+                });
+                el.addEventListener('mouseleave', () => {
+                    tooltip.style.opacity = '0';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

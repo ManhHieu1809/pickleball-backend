@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pickleball Admin Dashboard - User Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00f583",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162e24",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: #e5e7eb;
+            border-radius: 20px;
+        }
+
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: #2f453a;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .active-icon .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="font-sans text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <aside
+            class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+
+            <!-- Island 1: Management (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/dashboard"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/owner-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Owner Requests">
+                    <i data-lucide="user-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/venue-requests"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venue Requests">
+                    <i data-lucide="map-pin-plus"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Referee Requests">
+                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/users"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Users">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/venues"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Venues">
+                    <i data-lucide="map-pin-house"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/bookings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Bookings">
+                    <i data-lucide="calendar"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/disputes"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Disputes">
+                    <i data-lucide="alert-triangle"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance (5 icons) -->
+            <div
+                class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="/admin/finance"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/rankings"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Rankings">
+                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Loyalty">
+                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="Reports">
+                    <i data-lucide="bar-chart-3"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/admin/system"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    data-tooltip="System Config">
+                    <i data-lucide="settings"
+                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 gap-6 relative">
+            <!-- Top Header -->
+            <header class="flex items-center justify-between mb-4">
+                <!-- Logo & Nav Tabs -->
+                <div class="flex items-center gap-12">
+                    <!-- Finexy Logo -->
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="coins" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Finexy
+                    </div>
+
+                    <!-- Central Navigation Tabs (Floating) -->
+                    <nav
+                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
+                        <a href="#"
+                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
+                        <a href="#"
+                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
+                    </nav>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="search" class="w-4 h-4"></i></button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                            <span
+                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+                        </button>
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
+                                data-lucide="info" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                        <div class="hidden lg:block text-left leading-tight">
+                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
+                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Header & Actions -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">User Management</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">View, manage and moderate user accounts.</p>
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors shadow-sm text-slate-700 dark:text-slate-300">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity shadow-lg shadow-slate-200/50">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Invite User
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Users</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="text-2xl font-black text-slate-900 dark:text-white">8,540</span>
+                            <span
+                                class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5"><i
+                                    data-lucide="trending-up" class="w-3 h-3"></i> +14%</span>
+                        </div>
+                    </div>
+                    <div
+                        class="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg group-hover:bg-blue-100 transition-colors">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">New Today</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="text-2xl font-black text-slate-900 dark:text-white">124</span>
+                            <span
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-0.5">signups</span>
+                        </div>
+                    </div>
+                    <div
+                        class="p-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg group-hover:bg-green-100 transition-colors">
+                        <i data-lucide="user-plus" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Suspended</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="text-2xl font-black text-slate-900 dark:text-white">42</span>
+                            <span
+                                class="text-xs font-medium text-red-500 dark:text-red-400 flex items-center gap-0.5"><i
+                                    data-lucide="alert-circle" class="w-3 h-3"></i> action needed</span>
+                        </div>
+                    </div>
+                    <div
+                        class="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg group-hover:bg-red-100 transition-colors">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Split Layout -->
+            <div class="flex flex-col xl:flex-row gap-6 h-full min-h-[500px]">
+                <!-- Left Panel: User List -->
+                <div
+                    class="flex-1 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+                    <!-- Toolbar -->
+                    <div
+                        class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <!-- Search -->
+                        <div class="relative max-w-sm w-full group">
+                            <i data-lucide="search"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors"></i>
+                            <input type="text" placeholder="Search users..."
+                                class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white dark:focus:bg-surface-dark transition-all placeholder:text-slate-500 dark:text-white">
+                        </div>
+
+                        <!-- Filter -->
+                        <div class="flex items-center gap-2">
+                            <div class="relative">
+                                <select
+                                    class="appearance-none bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm pl-4 pr-10 py-2 focus:ring-2 focus:ring-primary/20 cursor-pointer text-slate-700 dark:text-slate-200 font-medium">
+                                    <option>All Roles</option>
+                                    <option>Player</option>
+                                    <option>Owner</option>
+                                    <option>Referee</option>
+                                </select>
+                                <i data-lucide="chevron-down"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto flex-1">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                                        User</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                                        Email</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                                        Role</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                                        Elo</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                                        Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <!-- User 1 (Active) -->
+                                <tr onclick="selectUser(this)" data-avatar="https://i.pravatar.cc/150?u=u1"
+                                    data-name="Alex Johnson" data-email="alex.j@example.com"
+                                    data-phone="+1 (555) 123-4567" data-address="123 Pickleball Lane, Austin, TX 78701"
+                                    data-role="Player" data-elo="1,240" data-join="Aug 15, 2023"
+                                    data-active="2 mins ago" data-win-rate="68%"
+                                    class="group bg-slate-50 dark:bg-white/5 border-l-4 border-primary cursor-pointer transition-colors user-row">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?u=u1"
+                                                class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700"
+                                                alt="User">
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white">Alex
+                                                Johnson</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">alex.j@example.com
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50 px-2 py-0.5 text-xs font-bold">Player</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
+                                        1,240</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-0.5 text-xs font-bold">Active</span>
+                                    </td>
+                                </tr>
+
+                                <!-- User 2 -->
+                                <tr onclick="selectUser(this)" data-avatar="https://i.pravatar.cc/150?u=u2"
+                                    data-name="Sarah Wilson" data-email="sarah.w@venue.com"
+                                    data-phone="+1 (555) 987-6543" data-address="789 Venue Blvd, Miami, FL 33101"
+                                    data-role="Owner" data-elo="-" data-join="Sep 20, 2023" data-active="1 hour ago"
+                                    data-business="Sunny Courts LLC" data-venue-count="3"
+                                    class="group hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors border-l-4 border-transparent user-row">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?u=u2"
+                                                class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700"
+                                                alt="User">
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white">Sarah
+                                                Wilson</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">sarah.w@venue.com
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border border-purple-100 dark:border-purple-900/50 px-2 py-0.5 text-xs font-bold">Owner</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
+                                        -</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-0.5 text-xs font-bold">Active</span>
+                                    </td>
+                                </tr>
+
+                                <!-- User 3 -->
+                                <tr onclick="selectUser(this)" data-avatar="https://i.pravatar.cc/150?u=u3"
+                                    data-name="Mike Brown" data-email="mike.b@banned.com" data-phone="+1 (555) 555-5555"
+                                    data-address="Unknown Location" data-role="Player" data-elo="850"
+                                    data-join="Jan 10, 2024" data-active="3 days ago" data-win-rate="42%"
+                                    class="group hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors border-l-4 border-transparent user-row">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?u=u3"
+                                                class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700 grayscale"
+                                                alt="User">
+                                            <span class="text-sm font-bold text-slate-500 dark:text-slate-400">Mike
+                                                Brown</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">mike.b@banned.com
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-2 py-0.5 text-xs font-bold">Player</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
+                                        850</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-2 py-0.5 text-xs font-bold">Suspended</span>
+                                    </td>
+                                </tr>
+
+                                <!-- User 4 -->
+                                <tr onclick="selectUser(this)" data-avatar="https://i.pravatar.cc/150?u=u4"
+                                    data-name="Emily Davis" data-email="emily.d@example.com"
+                                    data-phone="+1 (555) 222-3333" data-address="456 Court St, Seattle, WA 98101"
+                                    data-role="Player" data-elo="1,420" data-join="Nov 05, 2023"
+                                    data-active="5 hours ago" data-win-rate="72%"
+                                    class="group hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors border-l-4 border-transparent user-row">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?u=u4"
+                                                class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700"
+                                                alt="User">
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white">Emily
+                                                Davis</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">emily.d@example.com
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50 px-2 py-0.5 text-xs font-bold">Player</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
+                                        1,420</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-0.5 text-xs font-bold">Active</span>
+                                    </td>
+                                </tr>
+
+                                <!-- User 5 -->
+                                <tr onclick="selectUser(this)" data-avatar="https://i.pravatar.cc/150?u=u5"
+                                    data-name="David Miller" data-email="david.m@example.com"
+                                    data-phone="+1 (555) 777-8888" data-address="999 Whistle Rd, Chicago, IL 60601"
+                                    data-role="Referee" data-elo="-" data-join="Dec 12, 2023" data-active="1 day ago"
+                                    data-certification="Level 2 Certified" data-matches="45"
+                                    class="group hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-colors border-l-4 border-transparent user-row">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://i.pravatar.cc/150?u=u5"
+                                                class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-700"
+                                                alt="User">
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white">David
+                                                Miller</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">david.m@example.com
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-900/50 px-2 py-0.5 text-xs font-bold">Referee</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
+                                        -</td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-0.5 text-xs font-bold">Active</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-sm text-slate-500 dark:text-slate-400">Showing 1-5 of 8,540</span>
+                        <div class="flex items-center gap-1">
+                            <button
+                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors">Previous</button>
+                            <button
+                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: User Details -->
+                <div class="w-full xl:w-[400px] shrink-0 transition-all duration-300">
+                    <!-- Placeholder State -->
+                    <div id="userPlaceholder"
+                        class="h-full flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 border-dashed">
+                        <div
+                            class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                            <i data-lucide="user" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Select a User</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Click on any user from the list to view
+                            their full profile details.</p>
+                    </div>
+
+                    <!-- Details Card -->
+                    <div id="userDetailsPanel"
+                        class="hidden bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 sticky top-6">
+                        <!-- Profile Header -->
+                        <div class="flex items-start justify-between mb-6">
+                            <img id="detail-avatar" src=""
+                                class="w-20 h-20 rounded-full border-4 border-slate-50 dark:border-slate-800 shadow-sm"
+                                alt="Profile">
+                            <div class="flex gap-2">
+                                <button
+                                    class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i> Edit
+                                </button>
+                                <button
+                                    class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h2 id="detail-name" class="text-xl font-bold text-slate-900 dark:text-white mb-1"></h2>
+                            <p id="detail-email" class="text-slate-500 dark:text-slate-400 text-sm"></p>
+                        </div>
+
+                        <!-- Info Sections -->
+                        <div class="space-y-8">
+                            <!-- Profile Details -->
+                            <div>
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Profile
+                                    Details</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Full
+                                            Name</span>
+                                        <span id="detail-full-name"
+                                            class="text-sm font-bold text-slate-900 dark:text-white"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center group">
+                                        <span
+                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Phone</span>
+                                        <span id="detail-phone"
+                                            class="text-sm font-bold text-slate-900 dark:text-white"></span>
+                                    </div>
+                                    <div class="flex justify-between items-start group">
+                                        <span
+                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Address</span>
+                                        <span id="detail-address"
+                                            class="text-sm font-bold text-slate-900 dark:text-white text-right max-w-[200px]"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Role Specific Details Container -->
+                            <div id="roleSpecificContainer" class="hidden">
+                                <div class="w-full h-px bg-slate-100 dark:bg-slate-800 mb-8"></div>
+                                <h3 id="roleSpecificTitle"
+                                    class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4"></h3>
+                                <div id="roleSpecificDetails" class="space-y-4">
+                                    <!-- Dynamic Content Injected Here -->
+                                </div>
+                            </div>
+
+                            <div class="w-full h-px bg-slate-100 dark:bg-slate-800"></div>
+
+                            <!-- System Details -->
+                            <div>
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">System
+                                    Information</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Role</span>
+                                        <span id="detail-role"
+                                            class="text-sm font-bold text-slate-900 dark:text-white"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Elo
+                                            Rating</span>
+                                        <span id="detail-elo"
+                                            class="text-sm font-bold text-slate-900 dark:text-white font-mono"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Join
+                                            Date</span>
+                                        <span id="detail-join-date"
+                                            class="text-sm font-bold text-slate-900 dark:text-white"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Last
+                                            Active</span>
+                                        <span id="detail-last-active"
+                                            class="text-sm font-bold text-slate-900 dark:text-white"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-full h-px bg-slate-100 dark:bg-slate-800"></div>
+
+                            <!-- Account Settings btn -->
+                            <button
+                                class="w-full py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                <i data-lucide="settings" class="w-4 h-4"></i> Account Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        function selectUser(row) {
+            // Remove active class from all rows
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                tr.classList.remove('bg-blue-50', 'dark:bg-white/10', 'border-primary');
+                tr.classList.add('border-transparent');
+            });
+
+            // Add active class to clicked row
+            row.classList.remove('border-transparent');
+            row.classList.add('bg-blue-50', 'dark:bg-white/10', 'border-primary');
+
+            // Show details panel, hide placeholder
+            document.getElementById('userPlaceholder').classList.add('hidden');
+            document.getElementById('userDetailsPanel').classList.remove('hidden');
+
+            // Populate common data
+            const data = row.dataset;
+            document.getElementById('detail-avatar').src = data.avatar;
+            document.getElementById('detail-name').textContent = data.name;
+            document.getElementById('detail-email').textContent = data.email;
+            document.getElementById('detail-full-name').textContent = data.name;
+            document.getElementById('detail-phone').textContent = data.phone;
+            document.getElementById('detail-address').textContent = data.address;
+            document.getElementById('detail-role').textContent = data.role;
+            document.getElementById('detail-elo').textContent = data.elo;
+            document.getElementById('detail-join-date').textContent = data.join;
+            document.getElementById('detail-last-active').textContent = data.active;
+
+            // Handle Role Specific Data
+            const specificContainer = document.getElementById('roleSpecificContainer');
+            const specificDetails = document.getElementById('roleSpecificDetails');
+            const specificTitle = document.getElementById('roleSpecificTitle');
+
+            specificDetails.innerHTML = ''; // Clear previous
+
+            if (data.role === 'Owner') {
+                specificContainer.classList.remove('hidden');
+                specificTitle.textContent = 'Owner Details';
+                specificDetails.innerHTML = `
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Business Name</span>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white">${data.business || '-'}</span>
+                    </div>
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Venues</span>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${data.venueCount || '0'}</span>
+                    </div>
+                `;
+            } else if (data.role === 'Referee') {
+                specificContainer.classList.remove('hidden');
+                specificTitle.textContent = 'Referee Details';
+                specificDetails.innerHTML = `
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Certification</span>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white">${data.certification || '-'}</span>
+                    </div>
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Matches Officiated</span>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${data.matches || '0'}</span>
+                    </div>
+                `;
+            } else if (data.role === 'Player') {
+                specificContainer.classList.remove('hidden');
+                specificTitle.textContent = 'Player Statistics';
+                specificDetails.innerHTML = `
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Win Rate</span>
+                        <span class="text-sm font-bold text-green-600 dark:text-green-400">${data.winRate || '0%'}</span>
+                    </div>
+                `;
+            } else {
+                specificContainer.classList.add('hidden');
+            }
+            // Re-initialize icons inside the panel
+            lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>
