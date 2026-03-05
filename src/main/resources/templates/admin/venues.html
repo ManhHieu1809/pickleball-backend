@@ -71,6 +71,34 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* Sidebar Tooltip */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 9999;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -374,27 +402,16 @@
             <div
                 class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
                 <a href="/admin/dashboard"
-                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
                     data-tooltip="Dashboard">
                     <i data-lucide="layout-grid"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/admin/owner-requests"
+                <a href="/admin/approvals"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Owner Requests">
-                    <i data-lucide="user-plus"
+                    data-tooltip="Approvals">
+                    <i data-lucide="clipboard-check"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="/admin/venue-requests"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Venue Requests">
-                    <i data-lucide="map-pin-plus"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Referee Requests">
-                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/admin/users"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
@@ -407,7 +424,7 @@
             <div
                 class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
                 <a href="/admin/venues"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
                     data-tooltip="Venues">
                     <i data-lucide="map-pin-house"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
@@ -434,22 +451,12 @@
                     data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/admin/rankings"
+                <a href="/admin/programs"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Rankings">
-                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    data-tooltip="Programs">
+                    <i data-lucide="star" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Loyalty">
-                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Reports">
-                    <i data-lucide="bar-chart-3"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
+
                 <a href="/admin/system"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
                     data-tooltip="System Config">
@@ -460,9 +467,10 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 gap-6 relative">
+        <main
+            class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
             <!-- Top Header -->
-            <header class="flex items-center justify-between mb-4">
+            <header class="flex items-center justify-between mb-8">
                 <!-- Logo & Nav Tabs -->
                 <div class="flex items-center gap-12">
                     <!-- Finexy Logo -->
@@ -510,14 +518,21 @@
                     </div>
 
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
-                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
-                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                            <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
+                            <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                        <div
+                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout
+                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -529,7 +544,8 @@
                         <div class="flex items-start justify-between">
                             <div>
                                 <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Tổng Venues</p>
-                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">128</h3>
+                                <h3 id="stat-total-venues"
+                                    class="text-2xl font-bold text-slate-900 dark:text-white mt-2">—</h3>
                             </div>
                             <div
                                 class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
@@ -678,7 +694,7 @@
                                     <th class="px-6 py-4 font-semibold text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            <tbody id="venues-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
                                 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
                                     onclick="toggleVenueDetail(true)">
                                     <td class="px-6 py-4 h-[72px] font-medium text-slate-900 dark:text-white">#V01
@@ -752,9 +768,34 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
-                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
-                                            <span class="material-symbols-outlined">more_vert</span>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group relative">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            <div
+                                                class="hidden group-focus-within:block absolute right-8 top-0 w-48 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-[100] overflow-hidden text-left">
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#" onclick="toggleVenueDetail(true)">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    Chỉnh sửa
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">lock</span> Khóa
+                                                    tài khoản
+                                                </a>
+                                                <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    Xóa vĩnh viễn
+                                                </a>
+                                            </div>
                                         </button>
                                     </td>
                                 </tr>
@@ -826,9 +867,34 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
-                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
-                                            <span class="material-symbols-outlined">more_vert</span>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group relative">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            <div
+                                                class="hidden group-focus-within:block absolute right-8 top-0 w-48 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-[100] overflow-hidden text-left">
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#" onclick="toggleVenueDetail(true)">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    Chỉnh sửa
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">lock</span> Khóa
+                                                    tài khoản
+                                                </a>
+                                                <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    Xóa vĩnh viễn
+                                                </a>
+                                            </div>
                                         </button>
                                     </td>
                                 </tr>
@@ -898,9 +964,34 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
-                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
-                                            <span class="material-symbols-outlined">more_vert</span>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group relative">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            <div
+                                                class="hidden group-focus-within:block absolute right-8 top-0 w-48 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-[100] overflow-hidden text-left">
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#" onclick="toggleVenueDetail(true)">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    Chỉnh sửa
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">lock</span> Khóa
+                                                    tài khoản
+                                                </a>
+                                                <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    Xóa vĩnh viễn
+                                                </a>
+                                            </div>
                                         </button>
                                     </td>
                                 </tr>
@@ -974,9 +1065,34 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
-                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
-                                            <span class="material-symbols-outlined">more_vert</span>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group relative">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            <div
+                                                class="hidden group-focus-within:block absolute right-8 top-0 w-48 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-[100] overflow-hidden text-left">
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#" onclick="toggleVenueDetail(true)">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    Chỉnh sửa
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">lock</span> Khóa
+                                                    tài khoản
+                                                </a>
+                                                <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    Xóa vĩnh viễn
+                                                </a>
+                                            </div>
                                         </button>
                                     </td>
                                 </tr>
@@ -1049,9 +1165,34 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button onclick="event.stopPropagation(); showActionMenu(this)"
-                                            class="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300">
-                                            <span class="material-symbols-outlined">more_vert</span>
+                                        <button
+                                            class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group relative">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            <div
+                                                class="hidden group-focus-within:block absolute right-8 top-0 w-48 bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-[100] overflow-hidden text-left">
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#" onclick="toggleVenueDetail(true)">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    Chỉnh sửa
+                                                </a>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">lock</span> Khóa
+                                                    tài khoản
+                                                </a>
+                                                <div class="h-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                                <a class="block px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                    href="#">
+                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    Xóa vĩnh viễn
+                                                </a>
+                                            </div>
                                         </button>
                                     </td>
                                 </tr>
@@ -1212,74 +1353,284 @@
             }, 600);
         }
 
-        function showActionMenu(btn) {
-            // Remove any existing menus
-            const existingMenu = document.getElementById('action-menu');
-            if (existingMenu) existingMenu.remove();
-
-            // Create menu
-            const menu = document.createElement('div');
-            menu.id = 'action-menu';
-            menu.className = 'fixed z-[60] w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 py-2 animate-fade-in-up transform origin-top-right overflow-hidden';
-
-            // Position
-            const rect = btn.getBoundingClientRect();
-            menu.style.top = `${rect.bottom + 8}px`;
-            // Align right edge of menu with right edge of button, but nudge left slightly
-            menu.style.left = `${rect.right - 192}px`; // 192px is w-48
-
-            // Menu Items Actions
-            const handleAction = (action) => {
-                menu.remove();
-                if (action === 'view') toggleVenueDetail(true);
-                else if (action === 'edit') alert('Chức năng chỉnh sửa đang phát triển');
-                else if (action === 'lock') alert('Đã khóa tài khoản chủ sân');
-                else if (action === 'delete') {
-                    if (confirm('Bạn có chắc chắn muốn xóa sân này?')) {
-                        alert('Đã xóa sân');
-                    }
-                }
-            };
-
-            // Menu Content
-            menu.innerHTML = `
-                <button onclick="this.parentElement.remove(); toggleVenueDetail(true)" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">visibility</span>
-                    Xem chi tiết
-                </button>
-                <button onclick="this.parentElement.remove(); alert('Chức năng chỉnh sửa đang phát triển')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                    Chỉnh sửa
-                </button>
-                <button onclick="this.parentElement.remove(); alert('Đã khóa tài khoản chủ sân')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-orange-600 hover:bg-orange-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">lock</span>
-                    Khóa tài khoản
-                </button>
-                <div class="h-px bg-slate-100 my-1"></div>
-                <button onclick="this.parentElement.remove(); confirm('Bạn có chắc chắn muốn xóa sân này?')" class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                    Xóa vĩnh viễn
-                </button>
-            `;
-
-            // Add to body
-            document.body.appendChild(menu);
-
-            // Close on click outside
-            const closeMenu = (e) => {
-                if (!menu.contains(e.target) && e.target !== btn) {
-                    menu.remove();
-                    document.removeEventListener('click', closeMenu);
-                }
-            };
-
-            setTimeout(() => {
-                document.addEventListener('click', closeMenu);
-            }, 0);
-        }
     </script>
     <script>
         lucide.createIcons();
+    </script>
+    <script src="/js/admin-auth.js"></script>
+    <script>
+        // ─── State ───────────────────────────────────────────────────
+        let allVenues = [];
+        let selectedVenueId = null;
+
+        // ─── Init ────────────────────────────────────────────────────
+        AdminAuth.checkAuth().then(ok => {
+            if (!ok) return;
+            AdminAuth.populateUserInfo();
+            document.querySelectorAll('[data-logout]').forEach(btn => {
+                btn.addEventListener('click', () => AdminAuth.logout());
+            });
+            loadVenues();
+            lucide.createIcons();
+        });
+
+        // ─── Load active venues ───────────────────────────────────────
+        async function loadVenues(page = 0, statusLabel = null) {
+            const tbody = document.getElementById('venues-tbody');
+            if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-slate-400">
+                <span class="animate-spin inline-block material-symbols-outlined text-2xl">progress_activity</span>
+                <p class="mt-2 text-sm">Đang tải dữ liệu...</p></td></tr>`;
+
+            try {
+                // Determine API endpoint filter
+                let url = `/api/admin/venues?page=${page}&size=20`;
+                if (statusLabel) {
+                    url += `&status=${statusLabel}`;
+                }
+
+                // Fetch data
+                const res = await AdminAuth.authFetch(url);
+                const json = await res.json();
+
+                if (json.success && json.data) {
+                    const venues = json.data.content || [];
+                    allVenues = venues;
+
+                    // Fetch count stats
+                    const statsRes = await AdminAuth.authFetch('/api/admin/venues/stats');
+                    const statsJson = await statsRes.json();
+                    if (statsJson.success) {
+                        updateStats(statsJson.data);
+                    }
+
+                    renderVenuesTable(venues);
+                }
+            } catch (e) {
+                console.error('Failed to load venues', e);
+                if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-400">Lỗi tải dữ liệu</td></tr>`;
+            }
+        }
+
+        function updateStats(stats) {
+            const statTotal = document.getElementById('stat-total-venues');
+            if (statTotal) statTotal.textContent = stats.totalVenues;
+
+            // Note: you can add IDs to the other stat boxes in HTML to update them here
+            const pendingTags = document.querySelectorAll('button:nth-child(2) span.ml-2.bg-orange-100');
+            pendingTags.forEach(tag => tag.textContent = stats.pendingVenues);
+        }
+
+        function escHtml(str) {
+            if (!str) return '—';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function getStatusChip(status) {
+            switch (status) {
+                case 'ACTIVE': return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Hoạt động</span>`;
+                case 'PENDING': return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-400 border border-orange-200 dark:border-orange-800/50"><span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Chờ duyệt</span>`;
+                case 'LOCKED': return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800/50"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Tạm dừng</span>`;
+                default: return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">${status}</span>`;
+            }
+        }
+
+        // ─── Render venues table ─────────────────────────────────────
+        function renderVenuesTable(venues) {
+            const tbody = document.getElementById('venues-tbody');
+            if (!tbody) return;
+            if (venues.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 border-b border-slate-100 dark:border-slate-800">Không có venue nào</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = venues.map(v => `
+                <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                    onclick="openVenueDetail(${v.id})">
+                    <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">#${v.id}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                                <span class="material-symbols-outlined text-slate-400">stadium</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-slate-900 dark:text-white line-clamp-1">${escHtml(v.name)}</span>
+                                <div class="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                                    <span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    <span class="line-clamp-1 break-all max-w-[200px]" title="${escHtml(v.address)}">${escHtml(v.address)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700 shadow-sm">
+                                ${v.ownerName ? v.ownerName.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-medium text-sm text-slate-900 dark:text-white line-clamp-1">${escHtml(v.ownerName)}</span>
+                                <span class="text-xs text-slate-500">${escHtml(v.ownerPhone)}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white">${v.totalCourts || 0} Sân</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-sm text-slate-400">—</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        ${getStatusChip(v.status)}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2" onclick="event.stopPropagation()">
+                            ${v.status === 'PENDING' ? `
+                            <button onclick="approveVenue(${v.id}, event)"
+                                class="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-[14px] align-middle mr-1">check_circle</span>Duyệt
+                            </button>` : ''}
+                            ${v.status === 'ACTIVE' ? `
+                            <button onclick="deactivateVenue(${v.id}, event)"
+                                class="px-3 py-1.5 text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors shadow-sm">
+                                Khoá
+                            </button>` : ''}
+                            <button onclick="openVenueDetail(${v.id})"
+                                class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 border border-transparent rounded-lg transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // ─── Open venue detail panel ──────────────────────────────────
+        async function openVenueDetail(venueId) {
+            selectedVenueId = venueId;
+            toggleVenueDetail(true);
+            try {
+                // Fetch basic venue structure
+                const res = await AdminAuth.authFetch(`/api/admin/venues/${venueId}`);
+                const json = await res.json();
+                const v = json.data;
+                if (!v) return;
+
+                // Update panel titles
+                const titleEl = document.querySelector('#venue-detail-panel h2');
+                if (titleEl) titleEl.textContent = v.name;
+
+                // Update specific venue info fields mapping logic could go here
+
+                // Load courts for this venue
+                loadCourts(venueId);
+            } catch (e) {
+                console.error('Failed to load venue detail', e);
+            }
+        }
+
+        // ─── Load courts for venue ────────────────────────────────────
+        async function loadCourts(venueId) {
+            try {
+                const res = await AdminAuth.authFetch(`/api/courts/venue/${venueId}`);
+                const json = await res.json();
+                const courts = json.data || [];
+                const tbody = document.querySelector('#venue-detail-panel tbody');
+                if (!tbody) return;
+                if (courts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400 text-sm">Chưa có sân nào</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = courts.map(c => `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">${escHtml(c.name)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">${escHtml(c.courtType || 'Tiêu chuẩn')}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">${c.basePrice ? c.basePrice.toLocaleString('vi-VN') + 'đ/h' : '—'}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+                            <span class="inline-flex rounded-full ${c.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 text-xs font-semibold leading-5">
+                                ${c.isActive ? 'Sẵn sàng' : 'Đã tắt'}
+                            </span>
+                        </td>
+                    </tr>`).join('');
+            } catch (e) {
+                console.error('Failed to load courts', e);
+            }
+        }
+
+        // ─── Filter & Init ───────────────────────────────────────────
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.flex.items-center.px-6.pt-2.overflow-x-auto button');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    // Remove active style from all tabs
+                    tabs.forEach(t => {
+                        t.classList.remove('border-b-2', 'border-primary', 'text-slate-900', 'dark:text-white', 'font-semibold');
+                        t.classList.add('text-slate-500', 'dark:text-slate-400', 'font-medium');
+                    });
+
+                    // Add active style to clicked tab
+                    const btn = e.currentTarget;
+                    btn.classList.add('border-b-2', 'border-primary', 'text-slate-900', 'dark:text-white', 'font-semibold');
+                    btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-medium');
+
+                    // Load data based on tab text
+                    const text = btn.textContent.trim().toLowerCase();
+                    if (text.includes('tất cả')) {
+                        loadVenues(0, null);
+                    } else if (text.includes('chờ phê duyệt')) {
+                        loadVenues(0, 'PENDING');
+                    } else if (text.includes('đã dừng')) {
+                        loadVenues(0, 'LOCKED');
+                    }
+                });
+            });
+
+            // Search input
+            const searchInput = document.querySelector('input[placeholder="Tìm tên sân..."]');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') {
+                        // Normally you would add a search param to loadVenues,
+                        // for now just simple client side filter or reload
+                        const query = e.target.value.toLowerCase();
+                        if (allVenues.length > 0) {
+                            const filtered = allVenues.filter(v =>
+                                v.name.toLowerCase().includes(query) ||
+                                (v.address && v.address.toLowerCase().includes(query))
+                            );
+                            renderVenuesTable(filtered);
+                        }
+                    }
+                });
+            }
+        });
+
+        // ─── Deactivate venue ─────────────────────────────────────────
+        async function deactivateVenue(venueId, event) {
+            if (event) event.stopPropagation();
+            if (!confirm('Bạn có chắc muốn khoá venue này?')) return;
+            try {
+                await AdminAuth.authFetch(`/api/venues/${venueId}/deactivate`, { method: 'PUT' });
+                // Refresh list
+                loadVenues();
+                toggleVenueDetail(false);
+            } catch (e) {
+                alert('Tắt venue thất bại: ' + e.message);
+            }
+        }
+
+        // ─── Approve venue ─────────────────────────────────────────
+        async function approveVenue(venueId, event) {
+            if (event) event.stopPropagation();
+            if (!confirm('Bạn có chắc muốn duyệt venue này?')) return;
+            try {
+                await AdminAuth.authFetch(`/api/venues/${venueId}/approve`, { method: 'PUT' });
+                // Refresh list
+                loadVenues();
+                toggleVenueDetail(false);
+            } catch (e) {
+                alert('Duyệt venue thất bại: ' + e.message);
+            }
+        }
     </script>
 </body>
 
