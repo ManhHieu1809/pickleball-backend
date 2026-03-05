@@ -65,6 +65,28 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* Sidebar Tooltip */
+        [data-tooltip] { position: relative; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 9999;
+        }
+        [data-tooltip]:hover::after { opacity: 1; }
     </style>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -78,27 +100,15 @@
             <div
                 class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
                 <a href="/admin/dashboard"
-                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
+                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
                     data-tooltip="Dashboard">
                     <i data-lucide="layout-grid"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/admin/owner-requests"
+                <a href="/admin/approvals"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Owner Requests">
-                    <i data-lucide="user-plus"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="/admin/venue-requests"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Venue Requests">
-                    <i data-lucide="map-pin-plus"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Referee Requests">
-                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    data-tooltip="Approvals">
+                    <i data-lucide="clipboard-check" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/admin/users"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
@@ -138,24 +148,14 @@
                     data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/admin/rankings"
+                <a href="/admin/programs"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Rankings">
-                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    data-tooltip="Programs">
+                    <i data-lucide="star" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Loyalty">
-                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Reports">
-                    <i data-lucide="bar-chart-3"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
+                
                 <a href="/admin/system"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                    class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group"
                     data-tooltip="System Config">
                     <i data-lucide="settings"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
@@ -164,9 +164,9 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 gap-6 relative">
+        <main class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
             <!-- Top Header -->
-            <header class="flex items-center justify-between mb-4">
+            <header class="flex items-center justify-between mb-8">
                 <!-- Logo & Nav Tabs -->
                 <div class="flex items-center gap-12">
                     <!-- Finexy Logo -->
@@ -214,14 +214,19 @@
                     </div>
 
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
-                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
-                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                            <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
+                            <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                        <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -391,6 +396,12 @@
     <script>
         lucide.createIcons();
     </script>
+    <script src="/js/admin-auth.js"></script>
+    <script>AdminAuth.checkAuth().then(ok => {
+        if (!ok) return;
+        AdminAuth.populateUserInfo();
+        document.querySelectorAll('[data-logout]').forEach(btn => btn.addEventListener('click', () => AdminAuth.logout()));
+    });</script>
 </body>
 
 </html>

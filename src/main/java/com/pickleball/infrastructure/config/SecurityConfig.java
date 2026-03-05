@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        // Static resources
+                        .requestMatchers("/js/**", "/css/**", "/animations/**", "/images/**", "/favicon.ico").permitAll()
                         // Public endpoints - Authentication
                         .requestMatchers("/api/auth/**").permitAll()
                         // Staff login endpoint

@@ -25,6 +25,7 @@ public class BookingMapper {
         entity.setCreatedByPlayerId(domainBooking.getCreatedByPlayerId());
         entity.setCreatedByStaffId(domainBooking.getCreatedByStaffId());
         entity.setCreatedAt(domainBooking.getCreatedAt());
+        entity.setNotes(domainBooking.getNotes());
 
         // Convert Money objects to BigDecimal
         if (domainBooking.getVenueFee() != null) {
@@ -62,8 +63,8 @@ public class BookingMapper {
                 .platformFee(entity.getPlatformFee() != null ? new Money(entity.getPlatformFee(), "VND") : null)
                 .totalCost(entity.getTotalCost() != null ? new Money(entity.getTotalCost(), "VND") : null)
                 .createdAt(entity.getCreatedAt())
+                .notes(entity.getNotes())
                 .build();
-
 
         return domainBooking;
     }

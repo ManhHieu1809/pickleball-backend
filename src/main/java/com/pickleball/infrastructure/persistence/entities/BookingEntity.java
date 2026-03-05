@@ -64,6 +64,9 @@ public class BookingEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<BookingParticipantEntity> participants = new ArrayList<>();

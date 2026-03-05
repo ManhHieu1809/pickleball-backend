@@ -5,17 +5,12 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Finexy Dashboard - Overview</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <!-- Material Symbols (Keeping for compatibility if needed, but primary is now Lucide) -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
@@ -24,14 +19,12 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#F97316", // Finexy Orange
+                        primary: "#F97316",
                         "primary-dark": "#EA580C",
-                        secondary: "#1E293B", // Slate 800
-                        background: "#F8FAFC", // Light Gray Background
+                        secondary: "#1E293B",
+                        background: "#F8FAFC",
                         surface: "#FFFFFF",
                         "card-dark": "#1F2937",
-
-                        // Compatibility aliases for existing content
                         "surface-light": "#FFFFFF",
                         "surface-dark": "#1F2937",
                         "background-light": "#F8FAFC",
@@ -67,7 +60,6 @@
             font-variation-settings: 'FILL' 1;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -86,25 +78,65 @@
             background: #94A3B8;
         }
 
-        .sidebar-item.active {
-            background-color: #1E293B;
-            /* Black active state */
-            color: #ffffff;
+        /* Sidebar Tooltip */
+        [data-tooltip] {
+            position: relative;
         }
 
-        .sidebar-item.active .material-symbols-outlined {
-            color: #ffffff;
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 9999;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+        }
+
+        /* Loading skeleton */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 0.375rem;
+        }
+
+        /* Animate numbers */
+        .stat-value {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
 
 <body class="font-sans text-slate-800 antialiased overflow-hidden">
     <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
-        <!-- Floating Sidebar Area -->
+        <!-- Floating Sidebar -->
         <aside
             class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
-
-            <!-- Island 1: Management (5 icons) -->
+            <!-- Island 1: Management -->
             <div
                 class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
                 <a href="/admin/dashboard"
@@ -113,22 +145,11 @@
                     <i data-lucide="layout-grid"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="#"
+                <a href="/admin/approvals"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Owner Requests">
-                    <i data-lucide="user-plus"
+                    data-tooltip="Approvals">
+                    <i data-lucide="clipboard-check"
                         class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="/admin/venue-requests"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Venue Requests">
-                    <i data-lucide="map-pin-plus"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Referee Requests">
-                    <i data-lucide="flag" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/admin/users"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
@@ -160,7 +181,7 @@
                 </a>
             </div>
 
-            <!-- Island 3: System & Finance (5 icons) -->
+            <!-- Island 3: System & Finance -->
             <div
                 class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
                 <a href="/admin/finance"
@@ -168,21 +189,10 @@
                     data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/admin/rankings"
+                <a href="/admin/programs"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Rankings">
-                    <i data-lucide="trophy" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Loyalty">
-                    <i data-lucide="heart" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
-                </a>
-                <a href="#"
-                    class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
-                    data-tooltip="Reports">
-                    <i data-lucide="bar-chart-3"
-                        class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    data-tooltip="Programs">
+                    <i data-lucide="star" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/admin/system"
                     class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
@@ -194,12 +204,11 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex flex-1 flex-col overflow-y-auto p-4 lg:p-6 pr-6">
+        <main
+            class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
             <!-- Top Header -->
             <header class="flex items-center justify-between mb-8">
-                <!-- Logo & Nav Tabs -->
                 <div class="flex items-center gap-12">
-                    <!-- Finexy Logo -->
                     <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
                         <div
                             class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
@@ -207,8 +216,6 @@
                         </div>
                         Finexy
                     </div>
-
-                    <!-- Central Navigation Tabs (Floating) -->
                     <nav
                         class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
                         <a href="#"
@@ -225,8 +232,6 @@
                             class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
                     </nav>
                 </div>
-
-                <!-- Right Actions -->
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
                         <button
@@ -242,87 +247,53 @@
                             class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
                                 data-lucide="info" class="w-4 h-4"></i></button>
                     </div>
-
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
-                        <img src="https://i.pravatar.cc/150?u=sajibur" alt="Profile"
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
-                            <p class="text-sm font-bold text-slate-900">Sajibur Rahman</p>
-                            <p class="text-xs text-slate-400">sajibur.rahman@gm...</p>
+                            <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
+                            <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
+                        <div
+                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout
+                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <!-- PRESERVED CONTENT FROM ORIGINAL DASHBOARD -->
+            <!-- Dashboard Content -->
             <div class="flex h-full w-full flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard Overview</h2>
                     <div class="flex gap-3">
                         <button
                             class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-surface-dark dark:text-slate-200 dark:hover:bg-white/5">
-                            <span class="material-symbols-outlined text-[20px]">cloud_download</span>
-                            Export
-                        </button>
-                        <button
-                            class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-primary/90 transition-colors">
-                            <span class="material-symbols-outlined text-[20px]">add</span>
-                            New Booking
-                        </button>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div
-                        class="flex items-center gap-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 p-3 border-l-4 border-yellow-400 shadow-sm">
-                        <div
-                            class="p-1.5 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
-                            <span class="material-symbols-outlined text-[20px]">person_add</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">3 Chủ sân</span>
-                            <span
-                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ
-                                duyệt</span>
-                        </div>
-                        <button class="ml-auto text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                        </button>
-                    </div>
-                    <div
-                        class="flex items-center gap-3 rounded-lg bg-blue-50 dark:bg-blue-900/10 p-3 border-l-4 border-blue-400 shadow-sm">
-                        <div
-                            class="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                            <span class="material-symbols-outlined text-[20px]">stadium</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">5 Venue</span>
-                            <span
-                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ
-                                duyệt</span>
-                        </div>
-                        <button class="ml-auto text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                        </button>
-                    </div>
-                    <div
-                        class="flex items-center gap-3 rounded-lg bg-red-50 dark:bg-red-900/10 p-3 border-l-4 border-red-400 shadow-sm">
-                        <div class="p-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                            <span class="material-symbols-outlined text-[20px]">gavel</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">2 Tranh chấp</span>
-                            <span
-                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Cần
-                                xử lý</span>
-                        </div>
-                        <button class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400">
-                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                            <span class="material-symbols-outlined text-[20px]">cloud_download</span> Export
                         </button>
                     </div>
                 </div>
 
+                <!-- Alert Banners (Pending Actions) -->
+                <div id="alertBanners" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- Skeleton -->
+                    <div class="rounded-lg p-3 border-l-4 border-slate-200">
+                        <div class="skeleton h-12 w-full"></div>
+                    </div>
+                    <div class="rounded-lg p-3 border-l-4 border-slate-200">
+                        <div class="skeleton h-12 w-full"></div>
+                    </div>
+                    <div class="rounded-lg p-3 border-l-4 border-slate-200">
+                        <div class="skeleton h-12 w-full"></div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div
                         class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -331,12 +302,9 @@
                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
                                 <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                             </div>
-                            <span
-                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
-                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +12%
-                            </span>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">1,234</h3>
+                        <h3 id="stat-totalBookings"
+                            class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400">Total Bookings</p>
                     </div>
                     <div
@@ -346,12 +314,9 @@
                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                                 <span class="material-symbols-outlined text-[18px]">schedule</span>
                             </div>
-                            <span
-                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
-                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +5%
-                            </span>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">45</h3>
+                        <h3 id="stat-todayBookings"
+                            class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400">Today's Bookings</p>
                     </div>
                     <div
@@ -359,15 +324,12 @@
                         <div class="flex items-center justify-between mb-3">
                             <div
                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-                                <span class="material-symbols-outlined text-[18px]">payments</span>
+                                <span class="material-symbols-outlined text-[18px]">stadium</span>
                             </div>
-                            <span
-                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
-                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +8.2%
-                            </span>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">50M VND</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Monthly Revenue</p>
+                        <h3 id="stat-activeVenues" class="text-3xl font-bold text-slate-900 dark:text-white stat-value">
+                            --</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Active Venues</p>
                     </div>
                     <div
                         class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -376,36 +338,30 @@
                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
                                 <span class="material-symbols-outlined text-[18px]">group_add</span>
                             </div>
-                            <span
-                                class="flex items-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full">
-                                <span class="material-symbols-outlined text-[12px] mr-0.5">trending_up</span> +24%
-                            </span>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white">128</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">New Users</p>
+                        <h3 id="stat-newUsers" class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">New Users (This Month)</p>
                     </div>
                 </div>
 
+                <!-- Charts Row -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Revenue Chart -->
                     <div
                         class="lg:col-span-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex flex-col">
-                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Revenue Overview</h3>
-                                <p class="text-sm text-slate-500">Daily revenue comparison</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <select
-                                    class="rounded-lg border-slate-200 bg-transparent text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
-                                    <option>Last 7 Days</option>
-                                    <option>Last 30 Days</option>
-                                </select>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Booking Activity</h3>
+                                <p class="text-sm text-slate-500">Daily booking comparison</p>
                             </div>
                         </div>
                         <div class="relative w-full h-64 overflow-hidden">
                             <div id="revenueChart" class="w-full h-full"></div>
                         </div>
                     </div>
+
+                    <!-- Booking Types Donut -->
                     <div
                         class="rounded-lg bg-surface-light dark:bg-surface-dark p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-full relative overflow-hidden">
                         <div class="flex items-center justify-between mb-4">
@@ -413,63 +369,34 @@
                                 <h3 class="text-lg font-bold text-slate-900 dark:text-white">Booking Types</h3>
                                 <p class="text-sm text-slate-500">Distribution by category</p>
                             </div>
-                            <button class="text-slate-400 hover:text-slate-600 transition-colors">
-                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                            </button>
                         </div>
-
                         <div class="flex-1 flex flex-col items-center justify-center relative -mt-4">
-                            <!-- ApexChart Container -->
                             <div id="bookingTypesChart" class="w-full h-full flex justify-center items-center"></div>
-
-                            <!-- Center Label Overlay -->
                             <div
                                 class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-4">
-                                <span class="text-4xl font-extrabold text-slate-800 dark:text-white">100%</span>
+                                <span id="donutTotalLabel"
+                                    class="text-4xl font-extrabold text-slate-800 dark:text-white">--</span>
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
                             </div>
                         </div>
-
-                        <!-- Custom Legend Grid -->
-                        <div class="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-slate-50 dark:border-slate-800">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-200"></span>
-                                <div class="flex flex-col leading-none">
-                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Private</span>
-                                    <span class="text-[10px] text-slate-400">35%</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-200"></span>
-                                <div class="flex flex-col leading-none">
-                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Casual</span>
-                                    <span class="text-[10px] text-slate-400">25%</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-purple-500 shadow-sm shadow-purple-200"></span>
-                                <div class="flex flex-col leading-none">
-                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ranked</span>
-                                    <span class="text-[10px] text-slate-400">20%</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
-                                <div class="flex flex-col leading-none">
-                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Walk-in</span>
-                                    <span class="text-[10px] text-slate-400">20%</span>
-                                </div>
-                            </div>
+                        <!-- Custom Legend -->
+                        <div id="donutLegend"
+                            class="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-slate-50 dark:border-slate-800">
+                            <!-- Injected by JS -->
                         </div>
                     </div>
                 </div>
+
+                <!-- Tables Row -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Recent Bookings -->
                     <div
                         class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
                         <div
                             class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Bookings</h3>
-                            <a class="text-sm font-medium text-primary hover:underline" href="#">View All</a>
+                            <a class="text-sm font-medium text-primary hover:underline" href="/admin/bookings">View
+                                All</a>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
@@ -482,154 +409,53 @@
                                         <th class="px-3 py-2 text-right">Amount</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <tbody id="recentBookingsBody" class="divide-y divide-slate-100 dark:divide-slate-800">
                                     <tr>
-                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-092
+                                        <td colspan="5" class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
-                                        <td class="px-3 py-2">Court A1</td>
-                                        <td class="px-3 py-2">
-                                            <span
-                                                class="inline-flex items-center rounded-md bg-purple-50 dark:bg-purple-900/20 px-1.5 py-0.5 text-xs font-medium text-purple-700 dark:text-purple-300 ring-1 ring-inset ring-purple-700/10">Ranked</span>
-                                        </td>
-                                        <td class="px-3 py-2">
-                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">250k</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-091
+                                        <td colspan="5" class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
-                                        <td class="px-3 py-2">Court B3</td>
-                                        <td class="px-3 py-2">
-                                            <span
-                                                class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10">Casual</span>
-                                        </td>
-                                        <td class="px-3 py-2">
-                                            <span class="flex h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">180k</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-090
+                                        <td colspan="5" class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
-                                        <td class="px-3 py-2">Court A2</td>
-                                        <td class="px-3 py-2">
-                                            <span
-                                                class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 text-xs font-medium text-green-700 dark:text-green-300 ring-1 ring-inset ring-green-600/20">Private</span>
-                                        </td>
-                                        <td class="px-3 py-2">
-                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">300k</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-089
-                                        </td>
-                                        <td class="px-3 py-2">Court C1</td>
-                                        <td class="px-3 py-2">
-                                            <span
-                                                class="inline-flex items-center rounded-md bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300 ring-1 ring-inset ring-orange-600/20">Walk-in</span>
-                                        </td>
-                                        <td class="px-3 py-2">
-                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">150k</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
+                    <!-- Pending Actions -->
                     <div
                         class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
                         <div
                             class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pending Actions</h3>
-                            <span
-                                class="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400">High
+                            <span id="pendingPriorityBadge"
+                                class="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400 hidden">High
                                 Priority</span>
                         </div>
                         <div class="flex-1 overflow-x-auto">
                             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td class="px-3 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <div
-                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
-                                                    <span class="material-symbols-outlined text-[14px]">person</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">New Owner
-                                                        Reg.</p>
-                                                    <p class="text-xs text-slate-500">John D. - Pickle Pro
-                                                        Center</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">
-                                            <button
-                                                class="rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Review</button>
+                                <tbody id="pendingActionsBody" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr>
+                                        <td class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
                                     </tr>
-                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td class="px-3 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <div
-                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                                                    <span class="material-symbols-outlined text-[14px]">gavel</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">Dispute
-                                                        #402</p>
-                                                    <p class="text-xs text-slate-500">Refund request - Weather
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">
-                                            <button
-                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Resolve</button>
+                                    <tr>
+                                        <td class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
                                     </tr>
-                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td class="px-3 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <div
-                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                                                    <span
-                                                        class="material-symbols-outlined text-[14px]">domain_add</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">Venue
-                                                        Update</p>
-                                                    <p class="text-[10px] text-slate-500">City Sports Complex -
-                                                        Photos</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">
-                                            <button
-                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Approve</button>
-                                        </td>
-                                    </tr>
-                                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td class="px-3 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <div
-                                                    class="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
-                                                    <span class="material-symbols-outlined text-[14px]">person</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">Referee
-                                                        App</p>
-                                                    <p class="text-[10px] text-slate-500">Mike T. - Certification
-                                                        Lvl 1</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-3 py-2 text-right">
-                                            <button
-                                                class="rounded-md bg-white px-2 py-1 text-[10px] font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">Review</button>
+                                    <tr>
+                                        <td class="px-3 py-4">
+                                            <div class="skeleton h-6 w-full"></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -637,18 +463,20 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Quick Actions -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <button
+                    <a href="/admin/users"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
                             <span class="material-symbols-outlined text-[20px]">add_circle</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Create
-                            User</span>
-                    </button>
-                    <button
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Manage
+                            Users</span>
+                    </a>
+                    <a href="/admin/disputes"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
@@ -657,18 +485,17 @@
                         <span
                             class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Report
                             Issue</span>
-                    </button>
-                    <button
+                    </a>
+                    <a href="/admin/approvals"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
                             <span class="material-symbols-outlined text-[20px]">campaign</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Send
-                            Alert</span>
-                    </button>
-                    <button
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Approvals</span>
+                    </a>
+                    <a href="/admin/system"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
@@ -677,22 +504,27 @@
                         <span
                             class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Quick
                             Config</span>
-                    </button>
+                    </a>
                 </div>
             </div>
-            <!-- END PRESERVED CONTENT -->
-
         </main>
     </div>
+
+    <script src="/js/admin-auth.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var options = {
+        // ==================== Charts (initialized with empty data, updated dynamically) ====================
+        let revenueChart = null;
+        let bookingTypesChart = null;
+
+        function initCharts() {
+            // Revenue/Booking Activity Chart (static mock for now — no daily breakdown API yet)
+            const revenueOptions = {
                 series: [{
-                    name: 'Current Week',
-                    data: [31000, 40000, 28000, 51000, 42000, 109000, 100000]
+                    name: 'This Week',
+                    data: [0, 0, 0, 0, 0, 0, 0]
                 }, {
                     name: 'Last Week',
-                    data: [11000, 32000, 45000, 32000, 34000, 52000, 41000]
+                    data: [0, 0, 0, 0, 0, 0, 0]
                 }],
                 chart: {
                     type: 'area',
@@ -700,7 +532,7 @@
                     toolbar: { show: false },
                     fontFamily: 'Inter, sans-serif'
                 },
-                colors: ['#F97316', '#94a3b8'], // Updated to Finexy Orange and Slate
+                colors: ['#F97316', '#94a3b8'],
                 fill: {
                     type: 'gradient',
                     gradient: {
@@ -722,92 +554,319 @@
                     axisTicks: { show: false },
                     tooltip: { enabled: false }
                 },
-                yaxis: {
-                    show: false,
-                },
+                yaxis: { show: false },
                 grid: {
                     show: true,
-                    borderColor: 'rgba(0,0,0,0.05)', // Softer grid for light mode
+                    borderColor: 'rgba(0,0,0,0.05)',
                     strokeDashArray: 4,
                 },
                 legend: { show: false },
-                tooltip: {
-                    theme: 'light' // Consistent with light theme default
-                }
+                tooltip: { theme: 'light' }
             };
+            revenueChart = new ApexCharts(document.querySelector("#revenueChart"), revenueOptions);
+            revenueChart.render();
 
-            var chart = new ApexCharts(document.querySelector("#revenueChart"), options);
-            chart.render();
-
-            // Initialize Lucide Icons
-            lucide.createIcons();
-
-            // Booking Types Donut Chart
-            var bookingOptions = {
-                series: [35, 25, 20, 20],
+            // Booking Types Donut (initialized empty, updated by API)
+            const donutOptions = {
+                series: [1, 1, 1, 1],
                 chart: {
                     type: 'donut',
                     height: 220,
                     fontFamily: 'Inter, sans-serif',
                 },
                 labels: ['Private', 'Casual', 'Ranked', 'Walk-in'],
-                colors: ['#F97316', '#3B82F6', '#A855F7', '#10B981'], // Orange, Blue, Purple, Emerald
+                colors: ['#F97316', '#3B82F6', '#A855F7', '#10B981'],
                 plotOptions: {
                     pie: {
                         donut: {
                             size: '75%',
-                            labels: {
-                                show: false, // Using custom overlay
-                            }
+                            labels: { show: false }
                         }
                     }
                 },
                 dataLabels: { enabled: false },
-                legend: { show: false }, // Custom legend
-                stroke: {
-                    show: true,
-                    width: 0, // seamless
-                },
+                legend: { show: false },
+                stroke: { show: true, width: 0 },
                 tooltip: {
                     enabled: true,
                     theme: 'dark',
                     y: {
-                        formatter: function (val) {
-                            return val + "%"
-                        }
+                        formatter: function (val) { return val + " bookings" }
                     }
                 },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                    }
-                }]
+            };
+            bookingTypesChart = new ApexCharts(document.querySelector("#bookingTypesChart"), donutOptions);
+            bookingTypesChart.render();
+        }
+
+        // ==================== Load Dashboard Data ====================
+        async function loadDashboard() {
+            try {
+                const res = await AdminAuth.authFetch('/api/admin/dashboard/stats');
+                if (!res || !res.ok) {
+                    console.error('Failed to load dashboard stats');
+                    return;
+                }
+                const json = await res.json();
+                if (!json.success || !json.data) return;
+
+                const data = json.data;
+                populateStats(data);
+                populateAlertBanners(data);
+                populateBookingTypesChart(data);
+                populateRecentBookings(data.recentBookings || []);
+                populatePendingActions(data.pendingActions || []);
+            } catch (err) {
+                console.error('Dashboard load error:', err);
+            }
+        }
+
+        // ==================== Populate Stats Cards ====================
+        function populateStats(data) {
+            animateValue('stat-totalBookings', data.totalBookings);
+            animateValue('stat-todayBookings', data.todayBookings);
+            animateValue('stat-activeVenues', data.activeVenues);
+            animateValue('stat-newUsers', data.newUsersThisMonth);
+        }
+
+        function animateValue(elementId, value) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            // Simple count-up animation
+            const duration = 600;
+            const start = 0;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.round(start + (value - start) * easeOut(progress));
+                el.textContent = current.toLocaleString();
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+        // ==================== Alert Banners ====================
+        function populateAlertBanners(data) {
+            const container = document.getElementById('alertBanners');
+            const banners = [];
+
+            if (data.pendingOwnerRequests > 0) {
+                banners.push(`
+                    <a href="/admin/approvals" class="flex items-center gap-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 p-3 border-l-4 border-yellow-400 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="p-1.5 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                            <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingOwnerRequests} Role Request${data.pendingOwnerRequests > 1 ? 's' : ''}</span>
+                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ duyệt</span>
+                        </div>
+                        <button class="ml-auto text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </a>
+                `);
+            }
+
+            if (data.pendingVenues > 0) {
+                banners.push(`
+                    <a href="/admin/approvals" class="flex items-center gap-3 rounded-lg bg-blue-50 dark:bg-blue-900/10 p-3 border-l-4 border-blue-400 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                            <span class="material-symbols-outlined text-[20px]">stadium</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingVenues} Venue${data.pendingVenues > 1 ? 's' : ''}</span>
+                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ duyệt</span>
+                        </div>
+                        <button class="ml-auto text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </a>
+                `);
+            }
+
+            if (banners.length === 0) {
+                banners.push(`
+                    <div class="flex items-center gap-3 rounded-lg bg-green-50 dark:bg-green-900/10 p-3 border-l-4 border-green-400 shadow-sm col-span-full">
+                        <div class="p-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">All clear!</span>
+                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">No pending approvals</span>
+                        </div>
+                    </div>
+                `);
+            }
+
+            container.innerHTML = banners.join('');
+        }
+
+        // ==================== Booking Types Chart ====================
+        function populateBookingTypesChart(data) {
+            const dist = data.bookingTypeDistribution || {};
+            const typeMap = {
+                'PRIVATE': { label: 'Private', color: '#F97316' },
+                'CASUAL': { label: 'Casual', color: '#3B82F6' },
+                'RANKED': { label: 'Ranked', color: '#A855F7' },
+                'WALK_IN': { label: 'Walk-in', color: '#10B981' },
             };
 
-            var bookingChart = new ApexCharts(document.querySelector("#bookingTypesChart"), bookingOptions);
-            bookingChart.render();
+            const labels = [];
+            const series = [];
+            const colors = [];
+            let total = 0;
 
-            // JS-based Tooltips for Floating Sidebar
-            const tooltip = document.createElement('div');
-            tooltip.className = 'fixed z-[100] bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200';
-            tooltip.style.whiteSpace = 'nowrap';
-            document.body.appendChild(tooltip);
+            for (const [key, info] of Object.entries(typeMap)) {
+                const count = dist[key] || 0;
+                labels.push(info.label);
+                series.push(count);
+                colors.push(info.color);
+                total += count;
+            }
 
-            document.querySelectorAll('[data-tooltip]').forEach(el => {
-                el.addEventListener('mouseenter', e => {
-                    tooltip.textContent = el.dataset.tooltip;
-                    tooltip.style.opacity = '1';
-                    const rect = el.getBoundingClientRect();
-                    // Position to the right of the element
-                    tooltip.style.top = rect.top + (rect.height - tooltip.offsetHeight) / 2 + 'px';
-                    tooltip.style.left = rect.right + 12 + 'px';
+            // Update donut chart
+            if (bookingTypesChart) {
+                bookingTypesChart.updateOptions({
+                    labels: labels,
+                    colors: colors,
                 });
-                el.addEventListener('mouseleave', () => {
-                    tooltip.style.opacity = '0';
+                bookingTypesChart.updateSeries(series.map(s => s || 0));
+            }
+
+            // Update center label
+            document.getElementById('donutTotalLabel').textContent = total.toLocaleString();
+
+            // Update legend
+            const legendContainer = document.getElementById('donutLegend');
+            const colorClasses = ['orange', 'blue', 'purple', 'emerald'];
+            legendContainer.innerHTML = labels.map((label, i) => {
+                const pct = total > 0 ? ((series[i] / total) * 100).toFixed(0) : 0;
+                return `
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full shadow-sm" style="background:${colors[i]}"></span>
+                        <div class="flex flex-col leading-none">
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">${label}</span>
+                            <span class="text-[10px] text-slate-400">${pct}% (${series[i]})</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== Recent Bookings Table ====================
+        function populateRecentBookings(bookings) {
+            const tbody = document.getElementById('recentBookingsBody');
+            if (!bookings || bookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-3 py-6 text-center text-slate-400">No recent bookings</td></tr>`;
+                return;
+            }
+
+            const typeColors = {
+                'RANKED': 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 ring-purple-700/10',
+                'CASUAL': 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 ring-blue-700/10',
+                'PRIVATE': 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 ring-green-600/20',
+                'WALK_IN': 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 ring-orange-600/20',
+            };
+
+            const statusColors = {
+                'CONFIRMED': 'bg-green-500',
+                'PENDING': 'bg-yellow-500',
+                'COMPLETED': 'bg-blue-500',
+                'CANCELLED': 'bg-red-500',
+            };
+
+            tbody.innerHTML = bookings.map(b => {
+                const typeClass = typeColors[b.bookingType] || typeColors['CASUAL'];
+                const statusClass = statusColors[b.status] || 'bg-slate-400';
+                const amount = b.totalCost ? formatCurrency(b.totalCost) : '-';
+
+                return `
+                    <tr>
+                        <td class="px-3 py-2 font-medium text-slate-900 dark:text-white">#BK-${String(b.id).padStart(3, '0')}</td>
+                        <td class="px-3 py-2">${escapeHtml(b.courtName)}</td>
+                        <td class="px-3 py-2">
+                            <span class="inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset ${typeClass}">${b.bookingType}</span>
+                        </td>
+                        <td class="px-3 py-2"><span class="flex h-1.5 w-1.5 rounded-full ${statusClass}" title="${b.status}"></span></td>
+                        <td class="px-3 py-2 text-right">${amount}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ==================== Pending Actions Table ====================
+        function populatePendingActions(actions) {
+            const tbody = document.getElementById('pendingActionsBody');
+            const badge = document.getElementById('pendingPriorityBadge');
+
+            if (!actions || actions.length === 0) {
+                tbody.innerHTML = `<tr><td class="px-3 py-6 text-center text-slate-400">No pending actions 🎉</td></tr>`;
+                badge.classList.add('hidden');
+                return;
+            }
+
+            badge.classList.remove('hidden');
+
+            const iconMap = {
+                'OWNER_REQUEST': { icon: 'person', bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-600 dark:text-yellow-400', action: 'Review' },
+                'VENUE_PENDING': { icon: 'domain_add', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', action: 'Approve' },
+            };
+
+            tbody.innerHTML = actions.map(a => {
+                const config = iconMap[a.type] || iconMap['OWNER_REQUEST'];
+                return `
+                    <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="px-3 py-2">
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-6 w-6 items-center justify-center rounded-full ${config.bg} ${config.text}">
+                                    <span class="material-symbols-outlined text-[14px]">${config.icon}</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-slate-900 dark:text-white">${escapeHtml(a.title)}</p>
+                                    <p class="text-xs text-slate-500">${escapeHtml(a.description)}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-3 py-2 text-right">
+                            <a href="/admin/approvals"
+                                class="rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700">${config.action}</a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ==================== Helpers ====================
+        function formatCurrency(amount) {
+            if (amount >= 1000000) return (amount / 1000000).toFixed(1) + 'M';
+            if (amount >= 1000) return Math.round(amount / 1000) + 'k';
+            return amount.toString();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ==================== Init ====================
+        document.addEventListener('DOMContentLoaded', function () {
+            initCharts();
+            lucide.createIcons();
+
+            AdminAuth.checkAuth().then(ok => {
+                if (!ok) return;
+                AdminAuth.populateUserInfo();
+                document.querySelectorAll('[data-logout]').forEach(btn => {
+                    btn.addEventListener('click', () => AdminAuth.logout());
                 });
+
+                // Load live dashboard data
+                loadDashboard();
             });
         });
     </script>

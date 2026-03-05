@@ -71,7 +71,7 @@
             class="bg-white w-full max-w-4xl min-h-[450px] rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row relative">
             <div class="md:w-1/2 relative bg-white p-6 flex flex-col justify-center overflow-hidden">
                 <div class="absolute inset-0 dot-pattern opacity-40"></div>
-                <lottie-player src="../../../static/animations/pickleball.json" background="transparent" speed="1"
+                <lottie-player src="/animations/pickleball.json" background="transparent" speed="1"
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;"
                     loop autoplay>
                 </lottie-player>
@@ -84,7 +84,14 @@
                     </div>
                     <h2 class="text-xl font-black mb-1">Đăng nhập</h2>
                     <p class="text-gray-400 mb-4 font-medium text-xs">Nhập thông tin xác thực để tiếp tục.</p>
-                    <form class="space-y-3" onsubmit="event.preventDefault();">
+                    <!-- Error message -->
+                    <div id="login-error" class="hidden mb-3 p-2.5 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-red-600 text-[11px] font-bold flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span id="login-error-text"></span>
+                        </p>
+                    </div>
+                    <form id="login-form" class="space-y-3">
                         <div class="space-y-1">
                             <label class="text-[11px] font-bold text-gray-700">Email</label>
                             <div class="relative group">
@@ -92,9 +99,9 @@
                                     class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
                                     <span class="material-symbols-outlined text-base">mail</span>
                                 </div>
-                                <input
+                                <input id="login-email"
                                     class="w-full h-10 bg-gray-50 border-none rounded-lg pl-10 pr-3 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 font-bold text-xs"
-                                    placeholder="admin@example.com" type="email" />
+                                    placeholder="admin@example.com" type="email" required />
                             </div>
                         </div>
                         <div class="space-y-1">
@@ -106,13 +113,13 @@
                                     class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
                                     <span class="material-symbols-outlined text-base">lock</span>
                                 </div>
-                                <input
+                                <input id="login-password"
                                     class="w-full h-10 bg-gray-50 border-none rounded-lg pl-10 pr-10 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-gray-400 font-bold text-xs"
-                                    placeholder="Nhập mật khẩu" type="password" />
+                                    placeholder="Nhập mật khẩu" type="password" required />
                                 <button
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                    type="button">
-                                    <span class="material-symbols-outlined text-base">visibility</span>
+                                    type="button" onclick="togglePassword()">
+                                    <span id="toggle-pw-icon" class="material-symbols-outlined text-base">visibility</span>
                                 </button>
                             </div>
                             <div class="text-right">
@@ -120,11 +127,12 @@
                                     href="#">Quên mật khẩu?</a>
                             </div>
                         </div>
-                        <button
+                        <button id="login-btn"
                             class="w-full h-10 bg-primary hover:brightness-105 active:scale-[0.98] text-black font-black rounded-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs"
                             type="submit">
-                            Đăng nhập
-                            <span class="material-symbols-outlined text-base">login</span>
+                            <span id="login-btn-text">Đăng nhập</span>
+                            <span id="login-btn-icon" class="material-symbols-outlined text-base">login</span>
+                            <span id="login-spinner" class="hidden animate-spin material-symbols-outlined text-base">progress_activity</span>
                         </button>
                     </form>
                     <div class="relative my-4">
@@ -154,6 +162,84 @@
         </div>
     </main>
 
+    <script src="/js/admin-auth.js"></script>
+    <script>
+        // If already logged in as admin, redirect to dashboard
+        (async () => {
+            const token = AdminAuth.getToken();
+            if (token) {
+                const user = AdminAuth.getUser();
+                if (user && user.roles && user.roles.includes('ADMIN')) {
+                    window.location.href = '/admin/dashboard';
+                    return;
+                }
+            }
+        })();
+
+        function togglePassword() {
+            const input = document.getElementById('login-password');
+            const icon = document.getElementById('toggle-pw-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('login-error');
+            document.getElementById('login-error-text').textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('login-btn');
+            const text = document.getElementById('login-btn-text');
+            const icon = document.getElementById('login-btn-icon');
+            const spinner = document.getElementById('login-spinner');
+            btn.disabled = loading;
+            if (loading) {
+                text.textContent = 'Đang xử lý...';
+                icon.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+            } else {
+                text.textContent = 'Đăng nhập';
+                icon.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showError('Vui lòng nhập đầy đủ email và mật khẩu');
+                return;
+            }
+
+            setLoading(true);
+            try {
+                await AdminAuth.login(email, password);
+                window.location.href = '/admin/dashboard';
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+    </script>
 </body>
 
 </html>

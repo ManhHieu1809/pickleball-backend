@@ -8,12 +8,17 @@ import com.pickleball.application.usecases.user.LoginUserUseCase;
 import com.pickleball.application.usecases.user.RegisterUserUseCase;
 import com.pickleball.domain.entities.User;
 import com.pickleball.domain.repositories.UserRepository;
+import com.pickleball.infrastructure.persistence.repositories.AdminJpaRepository;
+import com.pickleball.infrastructure.persistence.repositories.PlayerJpaRepository;
+import com.pickleball.infrastructure.persistence.repositories.VenueOwnerJpaRepository;
 import com.pickleball.infrastructure.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,9 @@ public class AuthApplicationService {
     private final LoginUserUseCase loginUserUseCase;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AdminJpaRepository adminJpaRepository;
+    private final PlayerJpaRepository playerJpaRepository;
+    private final VenueOwnerJpaRepository venueOwnerJpaRepository;
 
     /**
      * Register a new user
@@ -129,6 +137,22 @@ public class AuthApplicationService {
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setProfilePictureUrl(user.getProfilePictureUrl());
         dto.setCreatedAt(user.getCreatedAt());
+
+        List<String> roles = new ArrayList<>();
+        if (adminJpaRepository.existsByUserId(user.getId())) {
+            roles.add("ADMIN");
+        }
+        if (venueOwnerJpaRepository.existsByUserId(user.getId())) {
+            roles.add("VENUE_OWNER");
+        }
+        if (playerJpaRepository.existsByUserId(user.getId())) {
+            roles.add("PLAYER");
+        }
+        if (roles.isEmpty()) {
+            roles.add("PLAYER");
+        }
+        dto.setRoles(roles);
+
         return dto;
     }
 }

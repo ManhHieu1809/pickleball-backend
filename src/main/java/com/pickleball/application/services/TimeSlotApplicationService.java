@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Simplified TimeSlot service - no DB storage, generate on-demand
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
