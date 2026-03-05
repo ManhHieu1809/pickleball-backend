@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminViewController {
 
+    @GetMapping("/login")
+    public String login() {
+        return "admin/login/loginAdmin";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard() {
         return "admin/dashboard";
@@ -33,14 +38,9 @@ public class AdminViewController {
         return "admin/user";
     }
 
-    @GetMapping("/owner-requests")
-    public String ownerRequests() {
-        return "admin/OwnerRequest/ownerrequest";
-    }
-
-    @GetMapping("/venue-requests")
-    public String venueRequests() {
-        return "admin/venuerquest";
+    @GetMapping("/approvals")
+    public String approvals() {
+        return "admin/approval";
     }
 
     @GetMapping("/disputes")
@@ -48,9 +48,9 @@ public class AdminViewController {
         return "admin/dispute";
     }
 
-    @GetMapping("/rankings")
-    public String rankings() {
-        return "admin/ranking";
+    @GetMapping("/programs")
+    public String programs() {
+        return "admin/program";
     }
 
     @GetMapping("/system")
