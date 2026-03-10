@@ -14,4 +14,9 @@ public interface RefereeJpaRepository extends JpaRepository<RefereeEntity, Long>
     List<RefereeEntity> findByRefereeType(RefereeType refereeType);
     List<RefereeEntity> findByWorksAtVenueId(Long venueId);
     List<RefereeEntity> findByIsActiveTrue();
+    boolean existsByUserId(Long userId);
+
+    @org.springframework.data.jpa.repository.Query(
+        "SELECT r FROM RefereeEntity r WHERE r.isActive = true AND r.testPassed = true AND r.trustScore >= 30.0")
+    List<RefereeEntity> findEligibleReferees();
 }

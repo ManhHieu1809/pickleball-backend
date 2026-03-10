@@ -1,12 +1,7 @@
 package com.pickleball.application.config;
 
-import com.pickleball.application.services.BookingApplicationService;
 import com.pickleball.application.services.VenueApplicationService;
 import com.pickleball.domain.repositories.*;
-import com.pickleball.domain.services.PaymentService;
-import com.pickleball.application.usecases.booking.CreateBookingUseCase;
-import com.pickleball.application.usecases.booking.CreatePrivateBookingUseCase;
-import com.pickleball.application.usecases.booking.JoinBookingUseCase;
 import com.pickleball.application.usecases.venue.CreateCourtUseCase;
 import com.pickleball.application.usecases.venue.CreateVenueUseCase;
 import com.pickleball.application.usecases.venue.GetActiveCourtsUseCase;
@@ -21,23 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServiceConfiguration {
 
-    @Bean
-    public BookingApplicationService bookingApplicationService(
-            CreateBookingUseCase createBookingUseCase,
-            CreatePrivateBookingUseCase createPrivateBookingUseCase,
-            JoinBookingUseCase joinBookingUseCase,
-            CourtRepository courtRepository,
-            BookingRepository bookingRepository,
-            PaymentService paymentService) {
-        return new BookingApplicationService(
-                createBookingUseCase,
-                createPrivateBookingUseCase,
-                joinBookingUseCase,
-                courtRepository,
-                bookingRepository,
-                paymentService
-        );
-    }
+    // BookingApplicationService is auto-created via @Service + @RequiredArgsConstructor
 
     @Bean
     public VenueApplicationService venueApplicationService(

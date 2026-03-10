@@ -18,6 +18,9 @@ public class PlayerMapper {
         entity.setRatingSigma(domainPlayer.getRatingSigma());
         entity.setLoyaltyPoints(domainPlayer.getLoyaltyPoints());
         entity.setLoyaltyTier(domainPlayer.getLoyaltyTier());
+        entity.setLastLatitude(domainPlayer.getLastLatitude());
+        entity.setLastLongitude(domainPlayer.getLastLongitude());
+        entity.setLocationUpdatedAt(domainPlayer.getLocationUpdatedAt());
         return entity;
     }
 
@@ -33,6 +36,9 @@ public class PlayerMapper {
                 .ratingSigma(entity.getRatingSigma())
                 .loyaltyPoints(entity.getLoyaltyPoints())
                 .loyaltyTier(entity.getLoyaltyTier())
+                .lastLatitude(entity.getLastLatitude())
+                .lastLongitude(entity.getLastLongitude())
+                .locationUpdatedAt(entity.getLocationUpdatedAt())
                 .build();
     }
 }

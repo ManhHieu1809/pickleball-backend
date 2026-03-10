@@ -16,6 +16,8 @@ import java.util.List;
 public interface BookingJpaRepository extends JpaRepository<BookingEntity, Long> {
         List<BookingEntity> findByCourtIdAndStartTimeBetween(Long courtId, LocalDateTime start, LocalDateTime end);
 
+        List<BookingEntity> findByCreatedByPlayerIdOrderByStartTimeDesc(Long playerId);
+
         List<BookingEntity> findByStatus(BookingStatus status);
 
         List<BookingEntity> findByBookingTypeAndStatus(BookingType bookingType, BookingStatus status);
@@ -52,4 +54,8 @@ public interface BookingJpaRepository extends JpaRepository<BookingEntity, Long>
                         Pageable pageable);
 
         long countByStatus(BookingStatus status);
+
+        // Tìm casual bookings PENDING đã quá giờ start
+        @Query("SELECT b FROM BookingEntity b WHERE b.bookingType = 'CASUAL' AND b.status = 'PENDING' AND b.startTime < :now")
+        List<BookingEntity> findExpiredPendingCasual(@Param("now") LocalDateTime now);
 }

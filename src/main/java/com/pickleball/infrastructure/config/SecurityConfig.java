@@ -67,6 +67,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/courts/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/staff/**").permitAll()
+                        .requestMatchers("/api/referee/**").permitAll()
+                        .requestMatchers("/api/players/**").permitAll()
                         // All other requests require authentication
                         .anyRequest().authenticated()
                 )

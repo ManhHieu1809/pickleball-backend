@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -26,11 +28,30 @@ public class Player {
     private LoyaltyTier loyaltyTier = LoyaltyTier.BRONZE;
     private User user;
 
+    // GPS location (updated from Android app)
+    private Double lastLatitude;
+    private Double lastLongitude;
+    private LocalDateTime locationUpdatedAt;
+
 
 
     public void updateElo(Integer newElo) {
         if (newElo != null && newElo >= 0) {
             this.currentElo = newElo;
+        }
+    }
+
+    public void updateLocation(Double latitude, Double longitude) {
+        if (latitude != null && longitude != null) {
+            if (latitude < -90 || latitude > 90) {
+                throw new IllegalArgumentException("Latitude must be between -90 and 90");
+            }
+            if (longitude < -180 || longitude > 180) {
+                throw new IllegalArgumentException("Longitude must be between -180 and 180");
+            }
+            this.lastLatitude = latitude;
+            this.lastLongitude = longitude;
+            this.locationUpdatedAt = LocalDateTime.now();
         }
     }
 

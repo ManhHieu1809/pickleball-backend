@@ -727,14 +727,7 @@
                         <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Elo Rating</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${user.currentElo.toLocaleString()}</span>
                     </div>
-                    <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Loyalty Points</span>
-                        <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${(user.loyaltyPoints || 0).toLocaleString()}</span>
-                    </div>
-                    <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Loyalty Tier</span>
-                        <span class="text-sm font-bold text-slate-900 dark:text-white">${user.loyaltyTier || 'BRONZE'}</span>
-                    </div>
+
                 `;
             }
 

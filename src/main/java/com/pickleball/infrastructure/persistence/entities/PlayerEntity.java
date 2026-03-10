@@ -4,6 +4,8 @@ import com.pickleball.domain.enums.LoyaltyTier;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,4 +38,12 @@ public class PlayerEntity {
     @Column(name = "loyalty_tier")
     private LoyaltyTier loyaltyTier;
 
+    @Column(name = "last_latitude")
+    private Double lastLatitude;
+
+    @Column(name = "last_longitude")
+    private Double lastLongitude;
+
+    @Column(name = "location_updated_at")
+    private LocalDateTime locationUpdatedAt;
 }

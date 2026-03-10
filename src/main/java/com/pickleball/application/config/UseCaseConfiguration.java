@@ -2,9 +2,11 @@ package com.pickleball.application.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pickleball.application.usecases.booking.CreateBookingUseCase;
+import com.pickleball.application.usecases.booking.CreateCasualMatchUseCase;
 import com.pickleball.application.usecases.booking.CreatePrivateBookingUseCase;
 import com.pickleball.application.usecases.booking.CreateWalkInBookingUseCase;
 import com.pickleball.application.usecases.booking.JoinBookingUseCase;
+import com.pickleball.application.usecases.referee.*;
 import com.pickleball.application.usecases.timeslot.*;
 import com.pickleball.application.usecases.user.*;
 import com.pickleball.application.usecases.venue.ApproveVenueUseCase;
@@ -21,8 +23,10 @@ import com.pickleball.application.usecases.venue.ToggleVenueStatusUseCase;
 import com.pickleball.application.usecases.venue.UpdateCourtUseCase;
 import com.pickleball.application.usecases.venue.UpdateVenueUseCase;
 import com.pickleball.domain.repositories.*;
+import com.pickleball.domain.services.MatchmakingService;
 import com.pickleball.domain.services.PaymentService;
 import com.pickleball.domain.services.PriceCalculationService;
+import com.pickleball.domain.services.RefereeMatchService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -115,8 +119,38 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    public JoinBookingUseCase joinBookingUseCase(BookingRepository bookingRepository) {
-        return new JoinBookingUseCase(bookingRepository);
+    public MatchmakingService matchmakingService() {
+        return new MatchmakingService();
+    }
+
+    @Bean
+    public CreateCasualMatchUseCase createCasualMatchUseCase(
+            BookingRepository bookingRepository,
+            CourtRepository courtRepository,
+            CourtPricingRepository courtPricingRepository,
+            PlayerRepository playerRepository,
+            VenueRepository venueRepository,
+            PriceCalculationService priceCalculationService,
+            PaymentService paymentService,
+            MatchmakingService matchmakingService) {
+        return new CreateCasualMatchUseCase(
+                bookingRepository,
+                courtRepository,
+                courtPricingRepository,
+                playerRepository,
+                venueRepository,
+                priceCalculationService,
+                paymentService,
+                matchmakingService);
+    }
+
+    @Bean
+    public JoinBookingUseCase joinBookingUseCase(
+            BookingRepository bookingRepository,
+            PlayerRepository playerRepository,
+            PaymentService paymentService,
+            MatchmakingService matchmakingService) {
+        return new JoinBookingUseCase(bookingRepository, playerRepository, paymentService, matchmakingService);
     }
 
     @Bean
@@ -203,5 +237,86 @@ public class UseCaseConfiguration {
                 bookingRepository,
                 courtPricingRepository,
                 priceCalculationService);
+    }
+
+    // ==================== Referee Use Cases ====================
+
+    @Bean
+    public RefereeMatchService refereeMatchService() {
+        return new RefereeMatchService();
+    }
+
+    @Bean
+    public GenerateRefereeTestUseCase generateRefereeTestUseCase(
+            TestQuestionRepository testQuestionRepository) {
+        return new GenerateRefereeTestUseCase(testQuestionRepository);
+    }
+
+    @Bean
+    public SubmitRefereeTestUseCase submitRefereeTestUseCase(
+            TestQuestionRepository testQuestionRepository,
+            TestAttemptRepository testAttemptRepository,
+            RoleRequestRepository roleRequestRepository,
+            RefereeRepository refereeRepository,
+            UserRepository userRepository) {
+        return new SubmitRefereeTestUseCase(
+                testQuestionRepository,
+                testAttemptRepository,
+                roleRequestRepository,
+                refereeRepository,
+                userRepository);
+    }
+
+    @Bean
+    public ApproveRefereeRequestUseCase approveRefereeRequestUseCase(
+            RoleRequestRepository roleRequestRepository,
+            RefereeRepository refereeRepository) {
+        return new ApproveRefereeRequestUseCase(roleRequestRepository, refereeRepository);
+    }
+
+    @Bean
+    public RejectRefereeRequestUseCase rejectRefereeRequestUseCase(
+            RoleRequestRepository roleRequestRepository) {
+        return new RejectRefereeRequestUseCase(roleRequestRepository);
+    }
+
+    @Bean
+    public GetRefereeTestHistoryUseCase getRefereeTestHistoryUseCase(
+            TestAttemptRepository testAttemptRepository) {
+        return new GetRefereeTestHistoryUseCase(testAttemptRepository);
+    }
+
+    @Bean
+    public SubmitMatchResultUseCase submitMatchResultUseCase(
+            RankedMatchRepository rankedMatchRepository) {
+        return new SubmitMatchResultUseCase(rankedMatchRepository);
+    }
+
+    @Bean
+    public SubmitDisputeUseCase submitDisputeUseCase(
+            RankedMatchRepository rankedMatchRepository,
+            MatchDisputeRepository matchDisputeRepository,
+            BookingRepository bookingRepository) {
+        return new SubmitDisputeUseCase(rankedMatchRepository, matchDisputeRepository, bookingRepository);
+    }
+
+    @Bean
+    public SubmitRefereeEvidenceUseCase submitRefereeEvidenceUseCase(
+            MatchDisputeRepository matchDisputeRepository,
+            RankedMatchRepository rankedMatchRepository) {
+        return new SubmitRefereeEvidenceUseCase(matchDisputeRepository, rankedMatchRepository);
+    }
+
+    @Bean
+    public ResolveDisputeUseCase resolveDisputeUseCase(
+            MatchDisputeRepository matchDisputeRepository,
+            RankedMatchRepository rankedMatchRepository,
+            RefereeRepository refereeRepository,
+            RefereeMatchService refereeMatchService) {
+        return new ResolveDisputeUseCase(
+                matchDisputeRepository,
+                rankedMatchRepository,
+                refereeRepository,
+                refereeMatchService);
     }
 }

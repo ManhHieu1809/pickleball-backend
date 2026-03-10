@@ -8,7 +8,10 @@ import com.pickleball.infrastructure.persistence.repositories.PlayerJpaRepositor
 import com.pickleball.infrastructure.persistence.repositories.UserJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class PlayerRepositoryAdapter implements PlayerRepository {
@@ -51,5 +54,24 @@ public class PlayerRepositoryAdapter implements PlayerRepository {
         return userJpaRepository.findByEmail(email)
                 .flatMap(userEntity -> playerJpaRepository.findByUserId(userEntity.getId()))
                 .map(playerMapper::toDomain);
+    }
+
+    @Override
+    public List<Player> findByEloRange(int minElo, int maxElo) {
+        return playerJpaRepository.findByCurrentEloBetween(minElo, maxElo).stream()
+                .map(playerMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Player> findByUserIdIn(List<Long> userIds) {
+        return playerJpaRepository.findByUserIdIn(userIds).stream()
+                .map(playerMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateLocation(Long userId, Double latitude, Double longitude) {
+        playerJpaRepository.updateLocation(userId, latitude, longitude, LocalDateTime.now());
     }
 }

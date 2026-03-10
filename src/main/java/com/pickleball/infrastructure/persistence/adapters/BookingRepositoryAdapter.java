@@ -7,6 +7,7 @@ import com.pickleball.domain.repositories.BookingRepository;
 import com.pickleball.infrastructure.persistence.entities.BookingEntity;
 import com.pickleball.infrastructure.persistence.mappers.BookingMapper;
 import com.pickleball.infrastructure.persistence.repositories.BookingJpaRepository;
+import com.pickleball.infrastructure.persistence.repositories.BookingParticipantJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,10 +20,14 @@ import java.util.stream.Collectors;
 public class BookingRepositoryAdapter implements BookingRepository {
 
     private final BookingJpaRepository bookingJpaRepository;
+    private final BookingParticipantJpaRepository bookingParticipantJpaRepository;
     private final BookingMapper bookingMapper;
 
-    public BookingRepositoryAdapter(BookingJpaRepository bookingJpaRepository, BookingMapper bookingMapper) {
+    public BookingRepositoryAdapter(BookingJpaRepository bookingJpaRepository,
+                                    BookingParticipantJpaRepository bookingParticipantJpaRepository,
+                                    BookingMapper bookingMapper) {
         this.bookingJpaRepository = bookingJpaRepository;
+        this.bookingParticipantJpaRepository = bookingParticipantJpaRepository;
         this.bookingMapper = bookingMapper;
     }
 
@@ -38,6 +43,14 @@ public class BookingRepositoryAdapter implements BookingRepository {
         return bookingJpaRepository.findById(id)
                 .map(bookingMapper::toDomain);
     }
+
+    @Override
+    public List<Booking> findByPlayerId(Long playerId) {
+        return bookingJpaRepository.findByCreatedByPlayerIdOrderByStartTimeDesc(playerId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public List<Booking> findByCourtIdAndStartTimeBetween(Long courtId, LocalDateTime start, LocalDateTime end) {
@@ -74,5 +87,24 @@ public class BookingRepositoryAdapter implements BookingRepository {
         return bookingJpaRepository.findConflictingBookings(courtId, startTime, endTime).stream()
                 .map(bookingMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> findParticipantUserIdsByBookingId(Long bookingId) {
+        return bookingParticipantJpaRepository.findByBookingId(bookingId).stream()
+                .map(p -> p.getUserId())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking> findExpiredPendingCasual(LocalDateTime now) {
+        return bookingJpaRepository.findExpiredPendingCasual(now).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> findRecentOpponentUserIds(Long userId, int lastNMatches) {
+        return bookingParticipantJpaRepository.findRecentOpponentUserIds(userId, lastNMatches);
     }
 }

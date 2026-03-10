@@ -1,15 +1,13 @@
 package com.pickleball.presentation.controllers;
 
-import com.pickleball.application.dtos.AdminUserDTO;
-import com.pickleball.application.dtos.AdminUserStatsDTO;
-import com.pickleball.application.dtos.DashboardStatsDTO;
-import com.pickleball.application.dtos.RoleRequestDTO;
+import com.pickleball.application.dtos.*;
 import com.pickleball.application.dtos.requests.RejectRequestRequest;
+import com.pickleball.application.dtos.requests.ResolveDisputeRequest;
 import com.pickleball.application.dtos.requests.SubmitVenueOwnerRequest;
-import com.pickleball.application.dtos.AdminBookingDTO;
 import com.pickleball.application.services.AdminApplicationService;
 import com.pickleball.application.services.BookingManagementService;
 import com.pickleball.application.services.DashboardService;
+import com.pickleball.application.services.RefereeApplicationService;
 import com.pickleball.application.services.UserManagementService;
 import com.pickleball.presentation.helpers.ResponseHelper;
 import com.pickleball.presentation.responses.ApiResponse;
@@ -32,6 +30,7 @@ public class AdminController {
     private final DashboardService dashboardService;
     private final BookingManagementService bookingManagementService;
     private final com.pickleball.application.services.VenueManagementService venueManagementService;
+    private final RefereeApplicationService refereeApplicationService;
 
     // ==================== Dashboard Endpoints ====================
 
@@ -168,5 +167,50 @@ public class AdminController {
         } catch (IllegalArgumentException e) {
             return ResponseHelper.notFound(e.getMessage());
         }
+    }
+
+    // ==================== Referee Approval Endpoints ====================
+
+    @PostMapping("/referee-requests/{requestId}/approve")
+    public ResponseEntity<ApiResponse<RoleRequestDTO>> approveRefereeRequest(
+            @PathVariable Long requestId,
+            @RequestParam Long adminId) {
+        RoleRequestDTO result = refereeApplicationService.approveRefereeRequest(requestId, adminId);
+        return ResponseHelper.ok(result, "Referee request approved successfully");
+    }
+
+    @PostMapping("/referee-requests/{requestId}/reject")
+    public ResponseEntity<ApiResponse<RoleRequestDTO>> rejectRefereeRequest(
+            @PathVariable Long requestId,
+            @RequestParam Long adminId,
+            @Valid @RequestBody RejectRequestRequest request) {
+        RoleRequestDTO result = refereeApplicationService.rejectRefereeRequest(requestId, adminId, request.getNotes());
+        return ResponseHelper.ok(result, "Referee request rejected");
+    }
+
+    // ==================== Dispute Management Endpoints ====================
+
+    @GetMapping("/disputes")
+    public ResponseEntity<ApiResponse<List<MatchDisputeDTO>>> getAllDisputes() {
+        List<MatchDisputeDTO> disputes = refereeApplicationService.getAllDisputes();
+        return ResponseHelper.ok(disputes);
+    }
+
+    @GetMapping("/disputes/{disputeId}")
+    public ResponseEntity<ApiResponse<MatchDisputeDTO>> getDisputeById(@PathVariable Long disputeId) {
+        try {
+            MatchDisputeDTO dispute = refereeApplicationService.getDisputeById(disputeId);
+            return ResponseHelper.ok(dispute);
+        } catch (IllegalArgumentException e) {
+            return ResponseHelper.notFound(e.getMessage());
+        }
+    }
+
+    @PostMapping("/disputes/{disputeId}/resolve")
+    public ResponseEntity<ApiResponse<MatchDisputeDTO>> resolveDispute(
+            @PathVariable Long disputeId,
+            @Valid @RequestBody ResolveDisputeRequest request) {
+        MatchDisputeDTO dispute = refereeApplicationService.resolveDispute(disputeId, request);
+        return ResponseHelper.ok(dispute, "Dispute resolved successfully");
     }
 }

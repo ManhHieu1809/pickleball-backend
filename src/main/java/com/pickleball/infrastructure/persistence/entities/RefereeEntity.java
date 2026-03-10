@@ -3,7 +3,6 @@ package com.pickleball.infrastructure.persistence.entities;
 import com.pickleball.domain.enums.RefereeType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.checker.units.qual.A;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -49,4 +48,12 @@ public class RefereeEntity {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @Column(name = "trust_score", precision = 5, scale = 2)
+    @Builder.Default
+    private BigDecimal trustScore = new BigDecimal("100.00");
+
+    @Column(name = "total_matches_refereed")
+    @Builder.Default
+    private Integer totalMatchesRefereed = 0;
 }
