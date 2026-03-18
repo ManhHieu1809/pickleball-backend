@@ -55,7 +55,8 @@ public class BookingApplicationService {
         }
 
         if (request.getBookingType() == BookingType.CASUAL) {
-            // Return basic BookingDTO (use createCasualMatch for full response with candidates)
+            // Return basic BookingDTO (use createCasualMatch for full response with
+            // candidates)
             CasualMatchDTO casualMatch = createCasualMatch(request);
             return casualMatch.getBooking();
         }
@@ -82,7 +83,8 @@ public class BookingApplicationService {
                 request.getCourtId(),
                 request.getStartTime(),
                 request.getEndTime(),
-                request.getCreatorUserId());
+                request.getCreatorUserId(),
+                request.getNotes());
 
         BookingDTO bookingDTO = convertToDTO(result.booking());
         PaymentDTO paymentDTO = convertPaymentToDTO(result.paymentResult());
@@ -272,4 +274,3 @@ public class BookingApplicationService {
         return dto;
     }
 }
-

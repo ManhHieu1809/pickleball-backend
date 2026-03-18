@@ -72,7 +72,8 @@ public class CreateCasualMatchUseCase {
         this.matchmakingService = matchmakingService;
     }
 
-    public CasualMatchResult execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime, Long hostUserId) {
+    public CasualMatchResult execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime, Long hostUserId,
+            String notes) {
         // 1. Validate court
         courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court not found"));
@@ -100,6 +101,7 @@ public class CreateCasualMatchUseCase {
                 .endTime(endTime)
                 .bookingType(BookingType.CASUAL)
                 .status(BookingStatus.PENDING)
+                .notes(notes)
                 .createdAt(LocalDateTime.now())
                 .createdByPlayerId(hostUserId)
                 .build();
@@ -177,7 +179,8 @@ public class CreateCasualMatchUseCase {
             return new Money(new BigDecimal("200000"), "VND");
         }
         long hours = Duration.between(startTime, endTime).toHours();
-        if (hours <= 0) hours = 1;
+        if (hours <= 0)
+            hours = 1;
         Money pricePerHour = priceCalculationService.calculateSlotPrice(
                 pricings, startTime.toLocalTime(), startTime.getDayOfWeek());
         BigDecimal totalAmount = pricePerHour.getAmount().multiply(BigDecimal.valueOf(hours));
@@ -195,6 +198,6 @@ public class CreateCasualMatchUseCase {
             Booking booking,
             PaymentResult paymentResult,
             List<Player> candidates,
-            Money depositPerPlayer
-    ) {}
+            Money depositPerPlayer) {
+    }
 }

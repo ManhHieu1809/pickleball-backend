@@ -29,10 +29,6 @@ public class BookingController {
         return ResponseHelper.created(bookingDTO);
     }
 
-    /**
-     * Create Casual Match - returns booking + candidates + deposit info
-     * POST /api/bookings/casual
-     */
     @PostMapping("/casual")
     public ResponseEntity<ApiResponse<CasualMatchDTO>> createCasualMatch(
             @Valid @RequestBody CreateBookingRequest request) {
@@ -41,20 +37,12 @@ public class BookingController {
         return ResponseHelper.created(casualMatch, "Casual match created. Waiting for players to join.");
     }
 
-    /**
-     * Get available casual matches (PENDING) for players to browse
-     * GET /api/bookings/casual/available
-     */
     @GetMapping("/casual/available")
     public ResponseEntity<ApiResponse<List<CasualMatchDTO>>> getAvailableCasualMatches() {
         List<CasualMatchDTO> matches = bookingService.getAvailableCasualMatches();
         return ResponseHelper.ok(matches);
     }
 
-    /**
-     * Get matching candidates for an existing casual match
-     * GET /api/bookings/{bookingId}/candidates
-     */
     @GetMapping("/{bookingId}/candidates")
     public ResponseEntity<ApiResponse<List<PlayerMatchDTO>>> getCandidates(
             @PathVariable Long bookingId) {

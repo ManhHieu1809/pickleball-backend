@@ -25,7 +25,7 @@ public class CreateBookingRequest {
     @NotNull
     private Long creatorUserId;
 
-
+    private String notes;
     private Boolean isPlayer = true;
 
     public boolean isPlayer() {
