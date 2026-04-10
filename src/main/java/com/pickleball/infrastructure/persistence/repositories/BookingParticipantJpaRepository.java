@@ -27,12 +27,12 @@ public interface BookingParticipantJpaRepository extends JpaRepository<BookingPa
             "AND bp2.user_id != :userId " +
             "AND b.booking_type IN ('CASUAL', 'RANKED') " +
             "AND b.status = 'COMPLETED' " +
-            "AND b.id IN (SELECT sub_b.id FROM bookings sub_b " +
+            "AND b.id IN (SELECT temp.id FROM (SELECT sub_b.id FROM bookings sub_b " +
             "   JOIN booking_participants sub_bp ON sub_b.id = sub_bp.booking_id " +
             "   WHERE sub_bp.user_id = :userId " +
             "   AND sub_b.booking_type IN ('CASUAL', 'RANKED') " +
             "   AND sub_b.status = 'COMPLETED' " +
-            "   ORDER BY sub_b.start_time DESC LIMIT :lastNMatches)",
+            "   ORDER BY sub_b.start_time DESC LIMIT :lastNMatches) AS temp)",
             nativeQuery = true)
     List<Long> findRecentOpponentUserIds(@Param("userId") Long userId, @Param("lastNMatches") int lastNMatches);
 }

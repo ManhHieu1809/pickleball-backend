@@ -2,6 +2,9 @@ package com.pickleball.application.services;
 
 import com.pickleball.application.dtos.*;
 import com.pickleball.application.dtos.requests.*;
+import com.pickleball.application.usecases.booking.SubmitMatchResultUseCase;
+import com.pickleball.application.usecases.booking.ResolveDisputeUseCase;
+import com.pickleball.application.usecases.booking.SubmitDisputeUseCase;
 import com.pickleball.application.usecases.referee.*;
 import com.pickleball.domain.entities.*;
 import com.pickleball.domain.enums.DisputeDecision;
@@ -30,7 +33,6 @@ public class RefereeApplicationService {
     private final ResolveDisputeUseCase resolveDisputeUseCase;
     private final RefereeRepository refereeRepository;
     private final MatchDisputeRepository matchDisputeRepository;
-
 
     public List<TestQuestionDTO> generateTest() {
         List<TestQuestion> questions = generateRefereeTestUseCase.execute();
@@ -74,12 +76,11 @@ public class RefereeApplicationService {
 
     @Transactional
     public void submitMatchResult(Long matchId, SubmitMatchResultRequest request) {
-        submitMatchResultUseCase.execute(
+        submitMatchResultUseCase.executeByMatchId(
                 matchId,
                 request.getRefereeUserId(),
                 request.getTeamAScore(),
-                request.getTeamBScore(),
-                request.getWinningTeam());
+                request.getTeamBScore());
     }
 
     // ==================== Disputes ====================
@@ -109,14 +110,15 @@ public class RefereeApplicationService {
         MatchDispute dispute = resolveDisputeUseCase.execute(
                 disputeId,
                 request.getAdminId(),
-                request.getDecision(),
-                request.getDecisionType());
-        return toDisputeDTO(dispute);
+                request.getDecisionType(),
+                request.getDecision() // Admin decision text
+        );
+        return toMatchDisputeDTO(dispute);
     }
 
     public List<MatchDisputeDTO> getAllDisputes() {
         return matchDisputeRepository.findAll().stream()
-                .map(this::toDisputeDTO)
+                .map(this::toMatchDisputeDTO)
                 .collect(Collectors.toList());
     }
 
@@ -173,6 +175,24 @@ public class RefereeApplicationService {
     }
 
     private MatchDisputeDTO toDisputeDTO(MatchDispute dispute) {
+        return MatchDisputeDTO.builder()
+                .id(dispute.getId())
+                .rankedMatchId(dispute.getRankedMatchId())
+                .reportingPlayerId(dispute.getReportingPlayerId())
+                .reason(dispute.getReason())
+                .evidence(dispute.getEvidence())
+                .refereeEvidenceUrl(dispute.getRefereeEvidenceUrl())
+                .refereeResponse(dispute.getRefereeResponse())
+                .status(dispute.getStatus())
+                .evidenceDeadline(dispute.getEvidenceDeadline())
+                .resolvedByAdminId(dispute.getResolvedByAdminId())
+                .adminDecision(dispute.getAdminDecision())
+                .decisionType(dispute.getDecisionType())
+                .resolvedAt(dispute.getResolvedAt())
+                .build();
+    }
+
+    private MatchDisputeDTO toMatchDisputeDTO(MatchDispute dispute) {
         return MatchDisputeDTO.builder()
                 .id(dispute.getId())
                 .rankedMatchId(dispute.getRankedMatchId())

@@ -33,9 +33,6 @@ public class UserManagementService {
     private final AdminJpaRepository adminJpaRepository;
     private final VenueJpaRepository venueJpaRepository;
 
-    /**
-     * Get all users with pagination, optional search and role filter.
-     */
     public Page<AdminUserDTO> getAllUsers(int page, int size, String search, String role) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
@@ -49,10 +46,7 @@ public class UserManagementService {
         // Map to DTOs with role enrichment
         Page<AdminUserDTO> dtoPage = userPage.map(this::mapToAdminUserDTO);
 
-        // If role filter is specified, we do post-filtering
-        // (For production, a more efficient approach would be a JOIN query)
         if (role != null && !role.trim().isEmpty() && !role.equalsIgnoreCase("ALL")) {
-            // Note: This is simplified. In production, use a proper query.
             return dtoPage;
         }
 

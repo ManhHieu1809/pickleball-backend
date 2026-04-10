@@ -4,6 +4,8 @@ import com.pickleball.domain.enums.MatchStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,8 +25,26 @@ public class RankedMatch {
     private LocalDateTime submittedAt;
     private LocalDateTime confirmedAt;
 
+    @Builder.Default
+    private Set<Long> confirmedPlayerIds = new HashSet<>();
+
+    /**
+     * Assign a referee to this ranked match.
+     * Called when a referee joins the booking.
+     */
+    public void assignReferee(Long refereeId) {
+        if (this.refereeId != null) {
+            throw new IllegalStateException("Referee already assigned to this match");
+        }
+        this.refereeId = refereeId;
+    }
+
+    public boolean hasReferee() {
+        return this.refereeId != null;
+    }
+
     public void submitResult(Long refereeId, int teamAScore, int teamBScore, String winningTeam) {
-        if (!this.refereeId.equals(refereeId)) {
+        if (this.refereeId == null || !this.refereeId.equals(refereeId)) {
             throw new IllegalStateException("Only the assigned referee can submit results");
         }
         if (this.status != MatchStatus.PENDING) {
@@ -35,14 +55,20 @@ public class RankedMatch {
         this.winningTeam = winningTeam;
         this.status = MatchStatus.SUBMITTED;
         this.submittedAt = LocalDateTime.now();
+        this.confirmedPlayerIds.clear(); // Clear previous confirmations if resubmitted (though state flow prevents this usually)
     }
 
-    public void confirm() {
+    public void confirm(Long playerId) {
         if (this.status != MatchStatus.SUBMITTED) {
             throw new IllegalStateException("Match can only be confirmed when status is SUBMITTED");
         }
-        this.status = MatchStatus.CONFIRMED;
-        this.confirmedAt = LocalDateTime.now();
+        this.confirmedPlayerIds.add(playerId);
+
+        // If all 4 players have confirmed, we finalize the match
+        if (this.confirmedPlayerIds.size() >= 4) {
+            this.status = MatchStatus.CONFIRMED;
+            this.confirmedAt = LocalDateTime.now();
+        }
     }
 
     public void dispute() {

@@ -1,5 +1,5 @@
 package com.pickleball.domain.enums;
 
 public enum MatchStatus {
-    PENDING, SUBMITTED, CONFIRMED, IN_DISPUTE, RESOLVED
+    PENDING, SUBMITTED, CONFIRMED, IN_DISPUTE, RESOLVED, CANCELLED
 }

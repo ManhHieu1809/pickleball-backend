@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,7 +27,7 @@ public class RankedMatchEntity {
     @JoinColumn(name = "booking_id", insertable = false, updatable = false)
     private BookingEntity booking;
 
-    @Column(name = "referee_id", nullable = false)
+    @Column(name = "referee_id")
     private Long refereeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +52,7 @@ public class RankedMatchEntity {
     private Integer teamBScore;
 
     @Column(name = "winning_team")
-    private String winningTeam; // 'A' or 'B'
+    private String winningTeam;
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
@@ -58,4 +60,12 @@ public class RankedMatchEntity {
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
 
- }
+    @ElementCollection
+    @CollectionTable(
+        name = "match_confirmations",
+        joinColumns = @JoinColumn(name = "ranked_match_id")
+    )
+    @Column(name = "player_id")
+    @Builder.Default
+    private Set<Long> confirmedPlayerIds = new HashSet<>();
+}

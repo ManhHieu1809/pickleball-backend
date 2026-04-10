@@ -18,6 +18,7 @@ public class RankedMatchMapper {
                 .winningTeam(entity.getWinningTeam())
                 .submittedAt(entity.getSubmittedAt())
                 .confirmedAt(entity.getConfirmedAt())
+                .confirmedPlayerIds(entity.getConfirmedPlayerIds())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class RankedMatchMapper {
                 .winningTeam(domain.getWinningTeam())
                 .submittedAt(domain.getSubmittedAt())
                 .confirmedAt(domain.getConfirmedAt())
+                .confirmedPlayerIds(domain.getConfirmedPlayerIds())
                 .build();
     }
 }

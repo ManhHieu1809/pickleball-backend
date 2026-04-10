@@ -1,11 +1,19 @@
 package com.pickleball.application.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pickleball.application.services.SettlementService;
 import com.pickleball.application.usecases.booking.CreateBookingUseCase;
 import com.pickleball.application.usecases.booking.CreateCasualMatchUseCase;
 import com.pickleball.application.usecases.booking.CreatePrivateBookingUseCase;
+import com.pickleball.application.usecases.booking.CreateRankedMatchUseCase;
 import com.pickleball.application.usecases.booking.CreateWalkInBookingUseCase;
+import com.pickleball.application.usecases.booking.CheckInUseCase;
 import com.pickleball.application.usecases.booking.JoinBookingUseCase;
+import com.pickleball.application.usecases.booking.ConfirmMatchResultUseCase;
+import com.pickleball.application.usecases.booking.ResolveDisputeUseCase;
+import com.pickleball.application.usecases.booking.SubmitDisputeUseCase;
+import com.pickleball.application.usecases.booking.SubmitMatchResultUseCase;
+import com.pickleball.application.usecases.booking.UpdateEloUseCase;
 import com.pickleball.application.usecases.referee.*;
 import com.pickleball.application.usecases.timeslot.*;
 import com.pickleball.application.usecases.user.*;
@@ -27,6 +35,8 @@ import com.pickleball.domain.services.MatchmakingService;
 import com.pickleball.domain.services.PaymentService;
 import com.pickleball.domain.services.PriceCalculationService;
 import com.pickleball.domain.services.RefereeMatchService;
+import com.pickleball.domain.services.TeamBalancingService;
+import com.pickleball.domain.services.EloCalculationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -145,12 +155,78 @@ public class UseCaseConfiguration {
     }
 
     @Bean
+    public TeamBalancingService teamBalancingService(PlayerRepository playerRepository) {
+        return new TeamBalancingService(playerRepository);
+    }
+
+    @Bean
+    public EloCalculationService eloCalculationService() {
+        return new EloCalculationService();
+    }
+
+    @Bean
+    public UpdateEloUseCase updateEloUseCase(
+            RankedMatchRepository rankedMatchRepository,
+            BookingRepository bookingRepository,
+            PlayerRepository playerRepository,
+            EloHistoryRepository eloHistoryRepository,
+            SkillRatingHistoryRepository skillRatingHistoryRepository,
+            EloCalculationService eloCalculationService) {
+        return new UpdateEloUseCase(
+                rankedMatchRepository,
+                bookingRepository,
+                playerRepository,
+                eloHistoryRepository,
+                skillRatingHistoryRepository,
+                eloCalculationService);
+    }
+
+    @Bean
     public JoinBookingUseCase joinBookingUseCase(
             BookingRepository bookingRepository,
             PlayerRepository playerRepository,
+            RefereeRepository refereeRepository,
+            RankedMatchRepository rankedMatchRepository,
+            PaymentService paymentService,
+            MatchmakingService matchmakingService,
+            TeamBalancingService teamBalancingService) {
+        return new JoinBookingUseCase(bookingRepository, playerRepository, refereeRepository,
+                rankedMatchRepository, paymentService, matchmakingService, teamBalancingService);
+    }
+
+    @Bean
+    public CheckInUseCase checkInUseCase(
+            BookingRepository bookingRepository,
+            CheckInRepository checkInRepository,
+            CourtRepository courtRepository,
+            VenueRepository venueRepository,
+            MatchmakingService matchmakingService) {
+        return new CheckInUseCase(bookingRepository, checkInRepository, courtRepository, venueRepository, matchmakingService);
+    }
+
+    @Bean
+    public CreateRankedMatchUseCase createRankedMatchUseCase(
+            BookingRepository bookingRepository,
+            CourtRepository courtRepository,
+            CourtPricingRepository courtPricingRepository,
+            PlayerRepository playerRepository,
+            VenueRepository venueRepository,
+            RefereeRepository refereeRepository,
+            RankedMatchRepository rankedMatchRepository,
+            PriceCalculationService priceCalculationService,
             PaymentService paymentService,
             MatchmakingService matchmakingService) {
-        return new JoinBookingUseCase(bookingRepository, playerRepository, paymentService, matchmakingService);
+        return new CreateRankedMatchUseCase(
+                bookingRepository,
+                courtRepository,
+                courtPricingRepository,
+                playerRepository,
+                venueRepository,
+                refereeRepository,
+                rankedMatchRepository,
+                priceCalculationService,
+                paymentService,
+                matchmakingService);
     }
 
     @Bean
@@ -287,17 +363,53 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    public SubmitMatchResultUseCase submitMatchResultUseCase(
-            RankedMatchRepository rankedMatchRepository) {
+    public SubmitMatchResultUseCase submitMatchResultUseCase(RankedMatchRepository rankedMatchRepository) {
         return new SubmitMatchResultUseCase(rankedMatchRepository);
+    }
+
+    @Bean
+    public SettlementService settlementService(
+            BookingRepository bookingRepository,
+            WalletRepository walletRepository,
+            TransactionRepository transactionRepository,
+            VenueRepository venueRepository,
+            CourtRepository courtRepository) {
+        return new SettlementService(bookingRepository, walletRepository, transactionRepository, venueRepository, courtRepository);
+    }
+
+    @Bean
+    public ConfirmMatchResultUseCase confirmMatchResultUseCase(
+            RankedMatchRepository rankedMatchRepository,
+            BookingRepository bookingRepository,
+            UpdateEloUseCase updateEloUseCase,
+            SettlementService settlementService) {
+        return new ConfirmMatchResultUseCase(rankedMatchRepository, bookingRepository, updateEloUseCase, settlementService);
     }
 
     @Bean
     public SubmitDisputeUseCase submitDisputeUseCase(
             RankedMatchRepository rankedMatchRepository,
+            MatchDisputeRepository matchDisputeRepository) {
+        return new SubmitDisputeUseCase(rankedMatchRepository, matchDisputeRepository);
+    }
+
+    @Bean
+    public ResolveDisputeUseCase resolveDisputeUseCase(
             MatchDisputeRepository matchDisputeRepository,
-            BookingRepository bookingRepository) {
-        return new SubmitDisputeUseCase(rankedMatchRepository, matchDisputeRepository, bookingRepository);
+            RankedMatchRepository rankedMatchRepository,
+            BookingRepository bookingRepository,
+            RefereeRepository refereeRepository,
+            UpdateEloUseCase updateEloUseCase,
+            SettlementService settlementService,
+            PaymentService paymentService) {
+        return new ResolveDisputeUseCase(
+                matchDisputeRepository, 
+                rankedMatchRepository, 
+                bookingRepository,
+                refereeRepository, 
+                updateEloUseCase, 
+                settlementService,
+                paymentService);
     }
 
     @Bean
@@ -305,18 +417,5 @@ public class UseCaseConfiguration {
             MatchDisputeRepository matchDisputeRepository,
             RankedMatchRepository rankedMatchRepository) {
         return new SubmitRefereeEvidenceUseCase(matchDisputeRepository, rankedMatchRepository);
-    }
-
-    @Bean
-    public ResolveDisputeUseCase resolveDisputeUseCase(
-            MatchDisputeRepository matchDisputeRepository,
-            RankedMatchRepository rankedMatchRepository,
-            RefereeRepository refereeRepository,
-            RefereeMatchService refereeMatchService) {
-        return new ResolveDisputeUseCase(
-                matchDisputeRepository,
-                rankedMatchRepository,
-                refereeRepository,
-                refereeMatchService);
     }
 }

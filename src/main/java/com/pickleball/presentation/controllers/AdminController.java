@@ -184,11 +184,11 @@ public class AdminController {
             @PathVariable Long requestId,
             @RequestParam Long adminId,
             @Valid @RequestBody RejectRequestRequest request) {
-        RoleRequestDTO result = refereeApplicationService.rejectRefereeRequest(requestId, adminId, request.getNotes());
-        return ResponseHelper.ok(result, "Referee request rejected");
+        RoleRequestDTO roleRequest = refereeApplicationService.rejectRefereeRequest(requestId, adminId, request.getNotes());
+        return ResponseHelper.ok(roleRequest);
     }
 
-    // ==================== Dispute Management Endpoints ====================
+    // ==================== Dispute Management ====================
 
     @GetMapping("/disputes")
     public ResponseEntity<ApiResponse<List<MatchDisputeDTO>>> getAllDisputes() {
@@ -196,21 +196,11 @@ public class AdminController {
         return ResponseHelper.ok(disputes);
     }
 
-    @GetMapping("/disputes/{disputeId}")
-    public ResponseEntity<ApiResponse<MatchDisputeDTO>> getDisputeById(@PathVariable Long disputeId) {
-        try {
-            MatchDisputeDTO dispute = refereeApplicationService.getDisputeById(disputeId);
-            return ResponseHelper.ok(dispute);
-        } catch (IllegalArgumentException e) {
-            return ResponseHelper.notFound(e.getMessage());
-        }
-    }
-
     @PostMapping("/disputes/{disputeId}/resolve")
     public ResponseEntity<ApiResponse<MatchDisputeDTO>> resolveDispute(
             @PathVariable Long disputeId,
             @Valid @RequestBody ResolveDisputeRequest request) {
         MatchDisputeDTO dispute = refereeApplicationService.resolveDispute(disputeId, request);
-        return ResponseHelper.ok(dispute, "Dispute resolved successfully");
+        return ResponseHelper.ok(dispute);
     }
 }

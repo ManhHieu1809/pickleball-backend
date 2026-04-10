@@ -37,24 +37,36 @@ public class Referee {
         this.isActive = false;
     }
 
+    public boolean isEligibleForMatch() {
+        return this.isActive && this.trustScore.compareTo(new BigDecimal("30.00")) >= 0;
+    }
+
     public void incrementMatchCount() {
         this.totalMatchesRefereed++;
     }
 
-    public void applyPenalty(BigDecimal penaltyAmount) {
-        this.trustScore = this.trustScore.subtract(penaltyAmount);
+    public void incrementTrustScore() {
+        // Increment by 1.00
+        this.trustScore = this.trustScore.add(BigDecimal.ONE);
+        // Cap at 100.00? Assuming max trust is not strictly limited but let's keep it reasonable or just add.
+        // Usually trust score is capped at 100. Let's assume 100 max.
+        if (this.trustScore.compareTo(new BigDecimal("100.00")) > 0) {
+            this.trustScore = new BigDecimal("100.00");
+        }
+    }
+
+    public void decrementTrustScore(BigDecimal penalty) {
+        this.trustScore = this.trustScore.subtract(penalty);
         if (this.trustScore.compareTo(BigDecimal.ZERO) < 0) {
             this.trustScore = BigDecimal.ZERO;
         }
         // Auto-ban if trust score drops below threshold
         if (this.trustScore.compareTo(new BigDecimal("30.00")) < 0) {
-            this.deactivate();
+            this.isActive = false;
         }
     }
 
-    public boolean isEligibleForMatch() {
-        return Boolean.TRUE.equals(testPassed)
-                && Boolean.TRUE.equals(isActive)
-                && trustScore.compareTo(new BigDecimal("30.00")) >= 0;
+    public void applyPenalty(BigDecimal penaltyAmount) {
+        decrementTrustScore(penaltyAmount);
     }
 }

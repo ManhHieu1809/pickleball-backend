@@ -3,7 +3,9 @@ package com.pickleball.infrastructure.persistence.mappers;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.valueobjects.Money;
 import com.pickleball.infrastructure.persistence.entities.BookingEntity;
+import com.pickleball.infrastructure.persistence.entities.BookingParticipantEntity;
 import org.springframework.stereotype.Component;
+import java.util.stream.Collectors;
 
 import java.math.BigDecimal;
 
@@ -41,6 +43,26 @@ public class BookingMapper {
             entity.setTotalCost(domainBooking.getTotalCost().getAmount());
         }
 
+        if (domainBooking.getParticipants() != null) {
+            java.util.List<BookingParticipantEntity> participantEntities = new java.util.ArrayList<>();
+            for (com.pickleball.domain.entities.BookingParticipant bp : domainBooking.getParticipants()) {
+                BookingParticipantEntity bpe = new BookingParticipantEntity();
+                bpe.setId(bp.getId());
+                bpe.setBookingId(bp.getBookingId());
+                bpe.setBooking(entity);
+                bpe.setUserId(bp.getUserId());
+                bpe.setRole(bp.getRole());
+                bpe.setTeam(bp.getTeam());
+                bpe.setJoinStatus(bp.getJoinStatus());
+                if (bp.getDepositAmount() != null) bpe.setDepositAmount(bp.getDepositAmount().getAmount());
+                if (bp.getActualPaymentAmount() != null) bpe.setActualPaymentAmount(bp.getActualPaymentAmount().getAmount());
+                if (bp.getRefundAmount() != null) bpe.setRefundAmount(bp.getRefundAmount().getAmount());
+                bpe.setIsMatchHost(bp.isMatchHost());
+                participantEntities.add(bpe);
+            }
+            entity.setParticipants(participantEntities);
+        }
+
         return entity;
     }
 
@@ -65,6 +87,25 @@ public class BookingMapper {
                 .createdAt(entity.getCreatedAt())
                 .notes(entity.getNotes())
                 .build();
+
+        if (entity.getParticipants() != null) {
+            java.util.List<com.pickleball.domain.entities.BookingParticipant> participants = new java.util.ArrayList<>();
+            for (BookingParticipantEntity bpe : entity.getParticipants()) {
+                com.pickleball.domain.entities.BookingParticipant bp = new com.pickleball.domain.entities.BookingParticipant();
+                bp.setId(bpe.getId());
+                bp.setBookingId(bpe.getBookingId());
+                bp.setUserId(bpe.getUserId());
+                bp.setRole(bpe.getRole());
+                bp.setTeam(bpe.getTeam());
+                bp.setJoinStatus(bpe.getJoinStatus());
+                if (bpe.getDepositAmount() != null) bp.setDepositAmount(new com.pickleball.domain.valueobjects.Money(bpe.getDepositAmount(), "VND"));
+                if (bpe.getActualPaymentAmount() != null) bp.setActualPaymentAmount(new com.pickleball.domain.valueobjects.Money(bpe.getActualPaymentAmount(), "VND"));
+                if (bpe.getRefundAmount() != null) bp.setRefundAmount(new com.pickleball.domain.valueobjects.Money(bpe.getRefundAmount(), "VND"));
+                bp.setMatchHost(bpe.getIsMatchHost() != null ? bpe.getIsMatchHost() : false);
+                participants.add(bp);
+            }
+            domainBooking.setParticipants(participants);
+        }
 
         return domainBooking;
     }

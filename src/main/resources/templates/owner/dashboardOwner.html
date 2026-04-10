@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Court Central - Venue Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#e0e3e5",
+              "on-secondary-fixed": "#111c2d",
+              "tertiary-fixed": "#cde5ff",
+              "on-tertiary-fixed": "#001d32",
+              "on-surface": "#191c1e",
+              "surface-container-lowest": "#ffffff",
+              "surface-container": "#eceef0",
+              "tertiary-fixed-dim": "#93ccff",
+              "on-primary": "#ffffff",
+              "surface": "#f7f9fb",
+              "secondary-fixed": "#d8e3fb",
+              "secondary-container": "#d5e0f8",
+              "on-secondary-fixed-variant": "#3c475a",
+              "outline": "#8c7164",
+              "primary-fixed-dim": "#ffb690",
+              "surface-container-high": "#e6e8ea",
+              "secondary-fixed-dim": "#bcc7de",
+              "on-surface-variant": "#584237",
+              "surface-tint": "#9d4300",
+              "surface-bright": "#f7f9fb",
+              "on-secondary-container": "#586377",
+              "tertiary": "#006398",
+              "surface-dim": "#d8dadc",
+              "surface-variant": "#e0e3e5",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#eff1f3",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#783200",
+              "on-primary-container": "#582200",
+              "error": "#ba1a1a",
+              "tertiary-container": "#00a2f4",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#e0c0b1",
+              "background": "#f7f9fb",
+              "primary-fixed": "#ffdbca",
+              "primary-container": "#f97316",
+              "on-error-container": "#93000a",
+              "on-tertiary-fixed-variant": "#004b74",
+              "primary": "#9d4300",
+              "on-tertiary-container": "#003554",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#f2f4f6",
+              "on-primary-fixed": "#341100",
+              "inverse-surface": "#2d3133",
+              "secondary": "#545f73",
+              "on-background": "#191c1e",
+              "inverse-primary": "#ffb690"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body { font-family: 'Inter', sans-serif; }
+      .glass-nav {
+        background: rgba(247, 249, 251, 0.8);
+        backdrop-filter: blur(24px);
+      }
+      .kinetic-gradient {
+        background: linear-gradient(135deg, #9d4300 0%, #f97316 100%);
+      }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+            <!-- Island 1: Management -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                    <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                    <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
+                    <i data-lucide="settings" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
+            <!-- Header -->
+            <header class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-12">
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="shield-check" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Owner Panel
+                    </div>
+                </div>
+                <!-- Right Header Elements -->
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
+                    </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="flex flex-col items-end hidden sm:flex">
+                            <span class="text-sm font-bold text-slate-900">John Owner</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    </div>
+                </div>
+            </header>
+<div class="p-8 max-w-7xl mx-auto space-y-12">
+<!-- SECTION 1: TODAY'S OVERVIEW -->
+<section>
+<div class="flex justify-between items-end mb-6">
+<div>
+<h2 class="text-2xl font-black tracking-tight text-on-surface">Tổng quan hôm nay</h2>
+<p class="text-on-surface-variant font-medium">Cập nhật lúc 14:30, 24 Tháng 5, 2024</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface font-semibold rounded-lg text-sm hover:bg-surface-container-highest transition-colors">Tải báo cáo</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-primary">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary/10 text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</span>
+<span class="text-xs font-bold text-tertiary uppercase tracking-wider">+12% vs yesterday</span>
+</div>
+<h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Booking hôm nay</h3>
+<p class="text-4xl font-black tracking-tighter mt-1">42</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-tertiary/10 text-tertiary rounded-lg">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</span>
+</div>
+<h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Doanh thu</h3>
+<p class="text-3xl font-black tracking-tighter mt-1">12.500.000đ</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-orange-100 text-orange-600 rounded-lg">
+<span class="material-symbols-outlined" data-icon="sports_tennis">sports_tennis</span>
+</span>
+</div>
+<h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Sân đang sử dụng</h3>
+<div class="flex items-baseline gap-1 mt-1">
+<p class="text-4xl font-black tracking-tighter">8</p>
+<p class="text-on-surface-variant font-bold">/10</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-green-100 text-green-600 rounded-lg">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</span>
+</div>
+<h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Sân trống hiện tại</h3>
+<p class="text-4xl font-black tracking-tighter mt-1 text-green-600">2</p>
+</div>
+</div>
+</section>
+<!-- SECTION 2: LIVE COURT STATUS -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-black tracking-tight text-on-surface">Trạng thái sân trực tiếp</h2>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-green-500"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Trống</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Đang chơi</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Sắp có khách</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+<!-- COURT A1: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A1</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Anh Tuấn</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">15:30</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+<!-- COURT A2: TRỐNG -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-green-500"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A2</h4>
+<span class="text-[10px] bg-green-500/10 text-green-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">TRỐNG</span>
+</div>
+<div class="mb-10 text-center py-4">
+<span class="material-symbols-outlined text-green-500/20 text-5xl" data-icon="check_circle">check_circle</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 kinetic-gradient text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">Đặt nhanh</button>
+<button class="py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">Khóa sân</button>
+</div>
+</div>
+</div>
+<!-- COURT A3: SẮP CÓ KHÁCH -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-yellow-400"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A3</h4>
+<span class="text-[10px] bg-yellow-400/20 text-yellow-700 px-2 py-1 rounded font-bold uppercase tracking-tighter">Sắp có khách</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Tiếp theo</p>
+<p class="font-bold text-on-surface">Chị Lan</p>
+<div class="mt-3 flex items-center gap-2 text-yellow-600">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-lg font-black tracking-tighter">18:00</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chuẩn bị</button>
+</div>
+</div>
+<!-- COURT A4: ĐANG KHÓA -->
+<div class="bg-surface-container-low rounded-xl shadow-sm overflow-hidden relative opacity-75">
+<div class="absolute left-0 top-0 w-1 h-full bg-slate-400"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg text-slate-500">Sân A4</h4>
+<span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">ĐANG KHÓA</span>
+</div>
+<div class="mb-8">
+<p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Lý do</p>
+<p class="font-bold text-slate-600">Bảo trì hệ thống</p>
+</div>
+<button class="w-full py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-50 transition-colors">Mở khóa</button>
+</div>
+</div>
+<!-- COURT A5: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A5</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Anh Hoàng (Member)</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">42:15</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+<!-- Extra Courts to complete grid (Mental model of 10) -->
+<!-- COURT A6: TRỐNG -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-green-500"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A6</h4>
+<span class="text-[10px] bg-green-500/10 text-green-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">TRỐNG</span>
+</div>
+<div class="mb-10 text-center py-4">
+<span class="material-symbols-outlined text-green-500/20 text-5xl" data-icon="check_circle">check_circle</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 kinetic-gradient text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">Đặt nhanh</button>
+<button class="py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">Khóa sân</button>
+</div>
+</div>
+</div>
+<!-- COURT A7: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A7</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Nhóm Anh Hùng</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">05:45</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+<!-- COURT A8: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A8</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Chị Ngọc</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">30:00</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+<!-- COURT A9: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A9</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Tân Bình Team</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">12:20</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+<!-- COURT A10: ĐANG CHƠI -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
+<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-black text-lg">Sân A10</h4>
+<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
+</div>
+<div class="mb-6">
+<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
+<p class="font-bold text-on-surface">Anh Quân</p>
+<div class="mt-3 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<span class="text-xl font-black tracking-tighter">55:10</span>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION: QUICK ACTIONS & CHART BENTO GRID -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
+<!-- BENTO CARD: CHART -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-10">
+<div>
+<h3 class="text-xl font-black tracking-tight">Doanh thu 7 ngày gần nhất</h3>
+<p class="text-sm text-on-surface-variant font-medium">Hiệu suất kinh doanh tuần qua</p>
+</div>
+<div class="bg-surface-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-on-surface">Thứ 2 - Chủ Nhật</div>
+</div>
+<div class="flex items-end justify-between h-48 gap-4 px-2">
+<!-- Bar Chart (CSS based) -->
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 60%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 40%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T2</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 45%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 60%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T3</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 80%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 70%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T4</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 55%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 35%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T5</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 95%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 85%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T6</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 100%">
+<div class="absolute bottom-0 w-full kinetic-gradient rounded-t-lg" style="height: 100%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-orange-600">T7</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 90%">
+<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 90%"></div>
+</div>
+<span class="text-[10px] mt-2 font-bold text-on-surface-variant">CN</span>
+</div>
+</div>
+</div>
+<!-- BENTO CARD: QUICK ACTIONS -->
+<div class="bg-surface-container p-8 rounded-2xl">
+<h3 class="text-xl font-black tracking-tight mb-6">Thao tác nhanh</h3>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
+<span class="material-symbols-outlined text-primary" data-icon="edit_note">edit_note</span>
+<span class="text-xs font-bold uppercase tracking-tighter">📝 Tạo Walk-in</span>
+</button>
+<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
+<span class="material-symbols-outlined text-error" data-icon="lock">lock</span>
+<span class="text-xs font-bold uppercase tracking-tighter">🔒 Khóa sân nhanh</span>
+</button>
+<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
+<span class="material-symbols-outlined text-tertiary" data-icon="calendar_month">calendar_month</span>
+<span class="text-xs font-bold uppercase tracking-tighter">👁️ Xem lịch</span>
+</button>
+<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
+<span class="material-symbols-outlined text-green-600" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-xs font-bold uppercase tracking-tighter">💰 Doanh thu</span>
+</button>
+</div>
+<div class="mt-8 p-4 bg-primary/5 rounded-xl border border-primary/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+<p class="text-xs font-bold uppercase text-primary">Mẹo tối ưu</p>
+</div>
+<p class="text-xs text-on-primary-container leading-relaxed">Sân A2 thường trống vào khung giờ 16:00 - 18:00. Hãy tạo chương trình khuyến mãi Giờ Vàng!</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+    </div>
+    <script>lucide.createIcons();</script>
+</body></html>

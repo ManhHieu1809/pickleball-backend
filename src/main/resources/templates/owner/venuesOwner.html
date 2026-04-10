@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#341100",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-surface-variant": "#584237",
+                        "on-background": "#191c1e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#004b74",
+                        "background": "#f7f9fb",
+                        "outline": "#8c7164",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "outline-variant": "#e0c0b1",
+                        "primary-container": "#f97316",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#545f73",
+                        "on-secondary-container": "#586377",
+                        "tertiary-fixed-dim": "#93ccff",
+                        "surface": "#f7f9fb",
+                        "inverse-primary": "#ffb690",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-tertiary-fixed": "#001d32",
+                        "on-primary-fixed-variant": "#783200",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-container": "#d5e0f8",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#ffb690",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-surface": "#191c1e",
+                        "primary": "#9d4300",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary-container": "#582200",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-container": "#00a2f4",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-fixed": "#cde5ff",
+                        "on-tertiary-container": "#003554",
+                        "surface-tint": "#9d4300",
+                        "tertiary": "#006398",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "primary-fixed": "#ffdbca"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(24px); }
+        .architectural-gradient { background: linear-gradient(135deg, #9d4300 0%, #f97316 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+            <!-- Island 1: Management -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                    <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                    <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
+                    <i data-lucide="settings" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
+            <!-- Header -->
+            <header class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-12">
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="shield-check" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Owner Panel
+                    </div>
+                </div>
+                <!-- Right Header Elements -->
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
+                    </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="flex flex-col items-end hidden sm:flex">
+                            <span class="text-sm font-bold text-slate-900">John Owner</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    </div>
+                </div>
+            </header>
+<div class="p-8 space-y-12 max-w-[1400px]">
+<!-- Header Section -->
+<header class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Quản lý Cơ sở</h2>
+<p class="text-on-surface-variant font-medium">Danh sách và cấu hình các điểm vận hành câu lạc bộ.</p>
+</div>
+<button id="openAddVenueBtn1" class="architectural-gradient text-on-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">add</span>
+                Thêm cơ sở
+            </button>
+</header>
+<!-- Section 1: Venue List (Bento Grid Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Venue Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+<div class="h-48 relative overflow-hidden">
+<img alt="Pickleball Court" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Modern indoor pickleball court with blue surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVDDf5ZPIypSMbrT5wSWkw6AK7-sav6vwqzlbqckdU_4GZI5OAz1SWUHQ06PGOfu_V-JWnuCyNvUhCCry78cXS-3VeIWHtGaecfvUcxt4qNqfQdirKxT7pmHQaAOwkMu6DhaEXGrc2sHKvAt8gARfJFnXNKMPVz1FMhnM2y_9xvkr2PYGno4-hK3p9tVdtUF-TPGnJ-vJiaPCGsZq9p4dGEXlId-vQQzscwdWUj6-HiQ3ni7snQx9mVGlOs1mGFn4MX2R3GYgqgp0"/>
+<div class="absolute top-4 left-4 bg-tertiary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Approved</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-lg font-bold text-on-surface">Kinetic Center Quận 1</h3>
+<p class="text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                123 Lê Lợi, Phường Bến Thành
+                            </p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-4 border-t border-outline-variant/20">
+<div class="flex flex-col">
+<span class="text-xs font-black text-on-surface-variant uppercase tracking-tighter">Số sân</span>
+<span class="text-xl font-bold text-primary">6 Sân</span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-xs font-black text-on-surface-variant uppercase tracking-tighter">Tỷ lệ trống</span>
+<span class="text-xl font-bold text-on-surface">24%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Venue Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+<div class="h-48 relative overflow-hidden">
+<img alt="Outdoor Court" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Sunny outdoor pickleball court with green surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Hy3nyA_h65FTDlA9mQCLtt_3gXcBmiVv-wneJKrMGHHTubzEakSxrW1cRkdqVxbyD6UzNc2cRC4Th3h5zzkeoXWkZbhlvhe-brho9npNCY-IC19yOnVgudYxlB5w8zNEN3o9QxHxFroM4w-qcUSd5zw-nEmZnOmcbNxyV51Ldaua4Ahr36SEgu5ymdGYaykgAxGrlv9qKMuaeeSkHBkH2hSL3SvXo5AqYZoPwIiwN8RL-N16_A6IHDKrnpVvGZXzOB5k8yGINfw"/>
+<div class="absolute top-4 left-4 bg-orange-100 text-orange-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Pending</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-lg font-bold text-on-surface">Kinetic Thảo Điền</h3>
+<p class="text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                45 Xuân Thủy, Quận 2
+                            </p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-4 border-t border-outline-variant/20">
+<div class="flex flex-col">
+<span class="text-xs font-black text-on-surface-variant uppercase tracking-tighter">Số sân</span>
+<span class="text-xl font-bold text-primary">12 Sân</span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-xs font-black text-on-surface-variant uppercase tracking-tighter">Tỷ lệ trống</span>
+<span class="text-xl font-bold text-on-surface">--</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State / Add Card -->
+<div id="openAddVenueBtn2" class="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-8 text-on-surface-variant hover:border-primary hover:text-primary transition-all cursor-pointer bg-surface-container-low/30">
+<span class="material-symbols-outlined text-4xl mb-2">add_circle</span>
+<p class="font-bold">Thêm cơ sở mới</p>
+</div>
+</section>
+<!-- Section 2: Form Thêm/Sửa Venue -->
+<section class="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">edit_note</span>
+</div>
+<h3 class="text-2xl font-bold text-on-surface">Thông tin chi tiết Cơ sở</h3>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Form Fields -->
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Tên cơ sở</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value="Kinetic Center Quận 1"/>
+</div>
+<div>
+<label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Địa chỉ</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value="123 Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM"/>
+</div>
+<div>
+<label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Mô tả</label>
+<textarea class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" rows="4">Hệ thống sân Pickleball tiêu chuẩn quốc tế, trang thiết bị hiện đại, không gian thoáng đãng giữa lòng thành phố.</textarea>
+</div>
+<!-- Map Integration Placeholder -->
+<div class="rounded-xl overflow-hidden h-48 relative border-2 border-outline-variant/10">
+<img class="w-full h-full object-cover grayscale opacity-50" data-alt="Stylized map layout" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG_vZKaGpStGSFhTwxKPqX-HpYDPnsfme1p_XAFFksF71d0Eo7yMCcSrngXVdhe0bENaCzHvLstCw7GfDxHWrwUDsE4swAUXSR3T0dAXlJNCwWyhT7yfFDIp4NT4siwHIYFsrvrrAGtn5W95kJthYI-BHkiqGrH9ZdEzCOyPI0h-OUW744EXfpNDLO7wiq_NsA0s1iBpFsmY9s85be_ub_G8X1jVQq3AYKCY_3fDNUCnrSv98BUelsVw7fhHDbA-iE-OE1CHZPSvc"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white/90 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">pin_drop</span>
+<span class="text-sm font-bold">Chọn vị trí trên bản đồ</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Media & Amenities -->
+<div class="space-y-8">
+<!-- Image Upload -->
+<div>
+<label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Hình ảnh (3-10 ảnh)</label>
+<div class="grid grid-cols-4 gap-2">
+<div class="aspect-square bg-surface-container-high rounded-lg flex flex-col items-center justify-center text-on-surface-variant border-2 border-dashed border-outline-variant hover:border-primary hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Court image preview 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9BX7B-CgEV3e1Hc3EBOXBxsJ0wR_TUOsKpCK2gpVhZyWRDh0tiZxysG2mtMkAdcJbKQN0b5EXvzSVUfP3S4Z7tDlTsOHf61tuVjmDDt8Z3E1U718nipYrhRB3VevNQtbpbecSDJDFqbu3UefaCRLgwpOqIbeh9mMIKezt3EA1_f63rcPR3I0dpOV0__cATuVFj1AHxHUlg3qq7eoE_w_4U5sE8nD22TfqgKcBLobb0ZVymveSnFTEOzuBDUQVk3B1IhMUyPa3-kE"/>
+<button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5"><span class="material-symbols-outlined text-xs">close</span></button>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Court image preview 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCarWofHY4LPe7J8ZITXJHu6euwfCVzuRthgA-mBLBZRD6f2RG2Q6BZHGXlFjVAx66uV3zjHlIPSGtPe2UZ4d6wuklhvFfCV6bMU7Ty2X93l0Bqpu3LEyXAgsC0pMzuGN9yKUe4xa-BiZ5j1gDJ2hprh4bnLXTCebivtQbbmfmnA_G-V98i63fVfq4bfY488VK8vYQ5cLrReDlSJetvw1xrWdwMC3Zn7ct1s4c3AbX8WuCPevy_PRHqM3TMA7D469IK0VpQQ9RdPms"/>
+<button class="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5"><span class="material-symbols-outlined text-xs">close</span></button>
+</div>
+</div>
+</div>
+<!-- Amenities -->
+<div>
+<label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Tiện ích cơ sở</label>
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
+<span class="material-symbols-outlined text-sm">wifi</span> Wifi
+                            </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
+<span class="material-symbols-outlined text-sm">local_parking</span> Parking
+                            </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-bold text-sm hover:bg-primary/10 hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm">restaurant</span> Canteen
+                            </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
+<span class="material-symbols-outlined text-sm">shower</span> Showers
+                            </div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-bold text-sm hover:bg-primary/10 hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm">local_bar</span> Drinks
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-end gap-4 border-t border-outline-variant/20 pt-8">
+<button class="px-6 py-3 font-bold text-on-surface-variant hover:text-on-surface transition-colors">Hủy thay đổi</button>
+<button class="architectural-gradient px-8 py-3 rounded-xl text-white font-bold shadow-lg shadow-primary/20">Lưu thông tin</button>
+</div>
+</section>
+<!-- Section 3: Courts & Pricing -->
+<section class="space-y-8">
+<div class="flex items-end justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">sports_tennis</span>
+</div>
+<h3 class="text-2xl font-bold text-on-surface">Danh sách Sân &amp; Giá</h3>
+</div>
+<!-- Smart Tip -->
+<div class="bg-primary-fixed text-on-primary-fixed-variant px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold shadow-sm animate-pulse">
+<span class="material-symbols-outlined text-lg">lightbulb</span>
+                    Gợi ý: Khung 17:00-22:00 là giờ cao điểm, nên đặt giá cao hơn 20%.
+                </div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+<!-- Court Toggle List -->
+<div class="lg:col-span-1 space-y-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-primary">
+<div>
+<p class="font-black text-on-surface">Sân 1</p>
+<span class="text-xs text-tertiary font-bold">Hoạt động</span>
+</div>
+<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-primary">
+<div>
+<p class="font-black text-on-surface">Sân 2</p>
+<span class="text-xs text-tertiary font-bold">Hoạt động</span>
+</div>
+<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-outline-variant">
+<div>
+<p class="font-black text-on-surface">Sân 3</p>
+<span class="text-xs text-on-surface-variant font-bold">Tạm dừng</span>
+</div>
+<div class="w-10 h-5 bg-surface-container-high rounded-full relative cursor-pointer">
+<div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
+</div>
+</div>
+<button class="w-full py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-bold hover:border-primary hover:text-primary transition-all">
+                        + Thêm sân mới
+                    </button>
+</div>
+<!-- Price Matrix Table -->
+<div class="lg:col-span-3 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container">
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Khung giờ</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Sáng (5:00-11:00)</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Trưa (11:00-14:00)</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Chiều (14:00-17:00)</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest bg-primary/5">Cao điểm (17:00-22:00)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr>
+<td class="p-6 font-bold text-on-surface">Thứ 2 - 6</td>
+<td class="p-6">
+<div class="flex items-center gap-1">
+<input class="w-16 bg-surface-container-low border-none rounded text-sm font-bold p-1 focus:ring-1 focus:ring-primary" type="text" value="150"/>
+<span class="text-xs text-on-surface-variant">.000đ</span>
+</div>
+</td>
+<td class="p-6 text-sm font-bold text-on-surface">120.000đ</td>
+<td class="p-6 text-sm font-bold text-on-surface">150.000đ</td>
+<td class="p-6 bg-primary/5">
+<div class="flex items-center gap-1">
+<input class="w-16 bg-white border border-primary/30 rounded text-sm font-bold p-1 text-primary focus:ring-1 focus:ring-primary" type="text" value="220"/>
+<span class="text-xs text-primary">.000đ</span>
+</div>
+</td>
+</tr>
+<tr>
+<td class="p-6 font-bold text-on-surface">Cuối tuần (T7-CN)</td>
+<td class="p-6 text-sm font-bold text-on-surface">200.000đ</td>
+<td class="p-6 text-sm font-bold text-on-surface">180.000đ</td>
+<td class="p-6 text-sm font-bold text-on-surface">200.000đ</td>
+<td class="p-6 bg-primary/5 font-bold text-primary">280.000đ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+    </main>
+
+<!-- Overlay Form Modal (Add New Venue) -->
+<div id="addVenueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden overflow-y-auto">
+    <div class="min-h-screen py-10 px-4 md:px-8 flex flex-col items-center justify-center relative">
+        <div class="w-full max-w-6xl bg-surface rounded-2xl p-8 relative shadow-2xl">
+            <button id="closeAddVenueBtn1" type="button" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 z-10 transition-colors">
+                <span class="material-symbols-outlined text-3xl">close</span>
+            </button>
+            
+            <!-- Page Header -->
+            <div class="mb-10 text-center">
+            <h2 class="text-4xl font-black text-on-surface tracking-tight font-headline">Thêm cơ sở mới</h2>
+            <p class="text-on-surface-variant mt-2 text-lg">Thiết lập thông tin cho địa điểm thi đấu Pickleball tiếp theo của bạn.</p>
+            </div>
+            <form class="space-y-12">
+            <!-- Section 1: Thông tin cơ bản & Bản đồ (Asymmetric Layout) -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <div class="lg:col-span-3 space-y-8">
+            <div class="bg-surface-container-lowest p-8 rounded-xl space-y-6 shadow-sm">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+            <span class="w-8 h-[2px] bg-primary-container"></span>
+                                            Thông tin cơ bản
+                                        </h3>
+            <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Tên cơ sở</label>
+            <input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Nhập tên trung tâm Pickleball..." type="text"/>
+            </div>
+            <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Địa chỉ (Address)</label>
+            <div class="relative">
+            <input class="w-full bg-surface-container-high border-none rounded-lg pl-12 pr-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Số nhà, tên đường, quận/huyện..." type="text"/>
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="location_on">location_on</span>
+            </div>
+            </div>
+            <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Mô tả (Description)</label>
+            <textarea class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Giới thiệu ngắn gọn về cơ sở vật chất, không gian..." rows="4"></textarea>
+            </div>
+            </div>
+            </div>
+            <!-- Map Section -->
+            <div class="lg:col-span-2">
+            <div class="bg-surface-container-lowest h-full rounded-xl overflow-hidden flex flex-col shadow-sm">
+            <div class="p-6">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-1">Vị trí địa lý</h3>
+            <p class="text-xs text-on-surface-variant">Xác định vị trí chính xác để người chơi dễ dàng tìm thấy.</p>
+            </div>
+            <div class="flex-1 min-h-[300px] relative bg-slate-200">
+            <img alt="Map View" class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_6jN1mldwpY179S4BTMqvrLryFKwUGvWxb0RSJHdP8cvg0GCXKBVU9Ibo5Jk8XJezClhrzNZ1YA9DA6vJGC-eV_xNm0jQgJDmygVaerbhThOhVWobfxmehxqjq4HwG2d44BI2h6BOzoXYZ2UWqr5bsZRY7V0edHUa6U15yICOfvMoLda-teq1EeLGCOJjYh7yJMQcbaMk6fKP9-SZpnGDi_ZAX4k6Kp61WoQmovPtlRJuIrk6loh9khmDnkVaccHZjl3MQig7mEs"/>
+            <div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+            <button class="bg-white text-on-surface px-6 py-3 rounded-lg shadow-xl font-bold text-sm flex items-center gap-2 hover:bg-slate-50 transition-colors active:scale-95" type="button">
+            <span class="material-symbols-outlined text-primary" data-icon="near_me">near_me</span>
+                                                    Chọn vị trí trên bản đồ
+                                                </button>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <!-- Section 2: Upload Images (Horizontal Ledger Style) -->
+            <div class="space-y-6">
+            <div class="flex justify-between items-end">
+            <div>
+            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+            <span class="w-8 h-[2px] bg-primary-container"></span>
+                                            Hình ảnh cơ sở
+                                        </h3>
+            <p class="text-xs text-on-surface-variant mt-1">Tải lên từ 3-10 ảnh chất lượng cao để thu hút người chơi.</p>
+            </div>
+            <span class="text-xs font-black text-primary bg-primary-fixed px-3 py-1 rounded-full">0 / 10 ẢNH</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <label class="aspect-square border-2 border-dashed border-outline-variant/30 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-primary-fixed/20 cursor-pointer transition-all hover:border-primary">
+            <input class="hidden" multiple="" type="file"/>
+            <span class="material-symbols-outlined text-3xl text-primary" data-icon="add_a_photo">add_a_photo</span>
+            <span class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Thêm ảnh</span>
+            </label>
+            <!-- Image Placeholders -->
+            <div class="aspect-square bg-surface-container-high rounded-xl"></div>
+            <div class="aspect-square bg-surface-container-high rounded-xl"></div>
+            <div class="aspect-square bg-surface-container-high rounded-xl"></div>
+            </div>
+            </div>
+            <!-- Section 3: Amenities & Court Setup (Editorial Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Amenities -->
+            <div class="bg-surface-container-low p-8 rounded-xl border-l-4 border-primary">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">Tiện ích (Amenities)</h3>
+            <div class="grid grid-cols-2 gap-4">
+            <!-- Amenity Chip -->
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="wifi">wifi</span>
+            <span class="text-sm font-semibold">Wifi</span>
+            </div>
+            </label>
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="local_parking">local_parking</span>
+            <span class="text-sm font-semibold">Parking</span>
+            </div>
+            </label>
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="restaurant">restaurant</span>
+            <span class="text-sm font-semibold">Canteen</span>
+            </div>
+            </label>
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="shower">shower</span>
+            <span class="text-sm font-semibold">Showers</span>
+            </div>
+            </label>
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="local_drink">local_drink</span>
+            <span class="text-sm font-semibold">Drinks</span>
+            </div>
+            </label>
+            <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="shopping_bag">shopping_bag</span>
+            <span class="text-sm font-semibold">Pro Shop</span>
+            </div>
+            </label>
+            </div>
+            </div>
+            <!-- Court Setup -->
+            <div class="bg-surface-container-low p-8 rounded-xl">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">Thiết lập sân ban đầu</h3>
+            <div class="space-y-8">
+            <div>
+            <div class="flex justify-between items-center mb-4">
+            <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant">Số lượng sân (1-20)</label>
+            <span class="text-2xl font-black text-primary font-headline" id="court-count">08</span>
+            </div>
+            <input class="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-orange-600" max="20" min="1" type="range" value="8"/>
+            <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400">
+            <span>01 SÂN</span>
+            <span>20 SÂN</span>
+            </div>
+            </div>
+            <div class="space-y-4">
+            <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant">Trạng thái hoạt động mặc định</label>
+            <div class="flex gap-4">
+            <label class="flex-1 cursor-pointer group">
+            <input checked="" class="hidden peer" name="status" type="radio"/>
+            <div class="flex flex-col items-center justify-center py-4 rounded-lg bg-surface-container-lowest border-2 border-transparent peer-checked:border-tertiary peer-checked:bg-tertiary-fixed/20 transition-all">
+            <span class="material-symbols-outlined text-tertiary mb-1" data-icon="check_circle">check_circle</span>
+            <span class="text-xs font-bold uppercase">Sẵn sàng</span>
+            </div>
+            </label>
+            <label class="flex-1 cursor-pointer group">
+            <input class="hidden peer" name="status" type="radio"/>
+            <div class="flex flex-col items-center justify-center py-4 rounded-lg bg-surface-container-lowest border-2 border-transparent peer-checked:border-error peer-checked:bg-error-container/20 transition-all">
+            <span class="material-symbols-outlined text-error mb-1" data-icon="pause_circle">pause_circle</span>
+            <span class="text-xs font-bold uppercase">Bảo trì</span>
+            </div>
+            </label>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <!-- Form Actions (Sticky Bottom) -->
+            <div class="sticky bottom-0 bg-surface-container-lowest/90 backdrop-blur-md p-6 rounded-xl shadow-2xl flex items-center justify-between border-t-2 border-primary/10 mt-8">
+            <button id="closeAddVenueBtn2" class="px-8 py-3 text-sm font-bold uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+                                    Hủy bỏ
+                                </button>
+            <button class="bg-gradient-to-r from-primary to-primary-container px-10 py-4 rounded-lg text-on-primary font-black uppercase tracking-widest text-sm shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all" type="button" onclick="document.getElementById('addVenueModal').classList.add('hidden');">
+                                    Xác nhận thêm cơ sở
+                                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn1 = document.getElementById("openAddVenueBtn1");
+    const btn2 = document.getElementById("openAddVenueBtn2");
+    const modal = document.getElementById("addVenueModal");
+    const close1 = document.getElementById("closeAddVenueBtn1");
+    const close2 = document.getElementById("closeAddVenueBtn2");
+
+    const showModal = () => { if (modal) modal.classList.remove("hidden"); };
+    const hideModal = () => { if (modal) modal.classList.add("hidden"); };
+
+    if (btn1) btn1.addEventListener("click", showModal);
+    if (btn2) btn2.addEventListener("click", showModal);
+    
+    if (close1) close1.addEventListener("click", hideModal);
+    if (close2) close2.addEventListener("click", hideModal);
+});
+</script>
+    </div> <!-- closing flex h-screen -->
+    <script>lucide.createIcons();</script>
+</body></html>

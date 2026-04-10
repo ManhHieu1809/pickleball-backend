@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Architectural Court | Booking Calendar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#3c475a",
+              "primary": "#9d4300",
+              "on-surface-variant": "#584237",
+              "primary-container": "#f97316",
+              "surface-bright": "#f7f9fb",
+              "on-primary-fixed-variant": "#783200",
+              "on-tertiary-fixed": "#001d32",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#8c7164",
+              "tertiary-container": "#00a2f4",
+              "on-error": "#ffffff",
+              "surface-container-highest": "#e0e3e5",
+              "surface-variant": "#e0e3e5",
+              "on-primary-fixed": "#341100",
+              "on-surface": "#191c1e",
+              "on-tertiary-fixed-variant": "#004b74",
+              "on-secondary": "#ffffff",
+              "inverse-surface": "#2d3133",
+              "surface": "#f7f9fb",
+              "on-background": "#191c1e",
+              "background": "#f7f9fb",
+              "tertiary-fixed": "#cde5ff",
+              "outline-variant": "#e0c0b1",
+              "on-primary": "#ffffff",
+              "secondary-fixed-dim": "#bcc7de",
+              "primary-fixed": "#ffdbca",
+              "secondary-fixed": "#d8e3fb",
+              "surface-container": "#eceef0",
+              "surface-container-high": "#e6e8ea",
+              "surface-dim": "#d8dadc",
+              "tertiary": "#006398",
+              "secondary-container": "#d5e0f8",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb690",
+              "on-tertiary-container": "#003554",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#93ccff",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-fixed": "#111c2d",
+              "error": "#ba1a1a",
+              "inverse-on-surface": "#eff1f3",
+              "on-secondary-container": "#586377",
+              "surface-tint": "#9d4300",
+              "on-error-container": "#93000a",
+              "on-primary-container": "#582200",
+              "inverse-primary": "#ffb690",
+              "secondary": "#545f73"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .diagonal-stripe {
+        background: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(0, 0, 0, 0.03) 10px,
+          rgba(0, 0, 0, 0.03) 20px
+        );
+      }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased overflow-hidden">
+    <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
+            <!-- Island 1: Management -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                    <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                    <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 2: Core Entities -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                    <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                    <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+
+            <!-- Island 3: System & Finance -->
+            <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
+                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                    <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+                <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
+                    <i data-lucide="settings" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="flex flex-1 flex-col overflow-y-auto w-full p-4 lg:p-6 gap-6 relative bg-slate-50 dark:bg-slate-900/50">
+            <!-- Header -->
+            <header class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-12">
+                    <div class="text-2xl font-extrabold flex items-center gap-2 text-slate-900">
+                        <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white p-1.5 rounded-lg shadow-lg shadow-orange-200">
+                            <i data-lucide="shield-check" class="w-5 h-5 font-bold"></i>
+                        </div>
+                        Owner Panel
+                    </div>
+                </div>
+                <!-- Right Header Elements -->
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
+                    </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="flex flex-col items-end hidden sm:flex">
+                            <span class="text-sm font-bold text-slate-900">John Owner</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    </div>
+                </div>
+            </header>
+<div class="p-8 max-w-7xl mx-auto space-y-12">
+<!-- Filter Bar -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-surface-container-low p-4 rounded-xl">
+<div class="flex flex-wrap gap-4 items-center">
+<div class="relative group">
+<select class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none">
+<option>Sân A1</option>
+<option>Sân A2</option>
+<option>Sân B1</option>
+<option>Sân B2</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-slate-400" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="relative group">
+<select class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none">
+<option>Tất cả Booking Type</option>
+<option>Private</option>
+<option>Casual</option>
+<option>Ranked</option>
+<option>Walk-in</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-slate-400" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1 rounded-lg shadow-sm">
+<button class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<span class="text-sm font-bold px-2">May 15 - May 21, 2024</span>
+<button class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                    Tạo Walk-in
+                </button>
+<button id="openBlockCourtModalBtn" class="bg-secondary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg shadow-secondary/20 hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="lock">lock</span>
+                    Khóa sân tạm thời
+                </button>
+</div>
+</div>
+<!-- Calendar Container -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden relative border border-slate-100">
+<!-- Header (Days) -->
+<div class="grid grid-cols-[80px_repeat(7,1fr)] border-b border-slate-100 bg-slate-50/50">
+<div class="p-4"></div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Mon</p>
+<p class="text-xl font-black">15</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100 bg-white">
+<p class="text-xs font-bold text-orange-600 uppercase tracking-widest">Tue</p>
+<p class="text-xl font-black text-orange-600">16</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Wed</p>
+<p class="text-xl font-black">17</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Thu</p>
+<p class="text-xl font-black">18</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Fri</p>
+<p class="text-xl font-black">19</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest text-blue-500">Sat</p>
+<p class="text-xl font-black text-blue-500">20</p>
+</div>
+<div class="p-4 text-center border-l border-slate-100">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest text-red-500">Sun</p>
+<p class="text-xl font-black text-red-500">21</p>
+</div>
+</div>
+<!-- Body (Time slots) -->
+<div class="grid grid-cols-[80px_repeat(7,1fr)] max-h-[800px] overflow-y-auto relative hide-scrollbar">
+<!-- Time Column -->
+<div class="col-start-1">
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">06:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">07:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">08:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">09:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">10:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">11:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">12:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">13:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">14:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">15:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">16:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">17:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">18:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">19:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">20:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">21:00</div>
+<div class="h-20 flex items-start justify-center pt-2 border-b border-slate-50 text-[10px] font-bold text-slate-400">22:00</div>
+</div>
+<!-- Grid Columns -->
+<!-- Monday -->
+<div class="border-l border-slate-50 relative h-full">
+<div class="h-20 border-b border-slate-50"></div>
+<!-- Blocked Slot -->
+<div class="h-40 border-b border-slate-50 diagonal-stripe flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300" data-icon="lock">lock</span>
+</div>
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-20 border-b border-slate-50"></div>
+<!-- Booking Card Blue -->
+<div class="h-40 p-1 border-b border-slate-50">
+<div class="w-full h-full bg-tertiary/10 border-l-4 border-tertiary rounded p-2 flex flex-col justify-between">
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-tighter">Casual • 14:00-16:00</span>
+<span class="text-xs font-bold truncate">Trần Hoàng M.</span>
+</div>
+</div>
+</div>
+<!-- Tuesday (Active Day) -->
+<div class="border-l border-slate-50 relative h-full bg-slate-50/20">
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-20 border-b border-slate-50"></div>
+<!-- Booking Card Green -->
+<div class="h-40 p-1 border-b border-slate-50">
+<div class="w-full h-full bg-emerald-50 border-l-4 border-emerald-500 rounded p-2 flex flex-col justify-between shadow-sm">
+<span class="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter">Private • 08:00-10:00</span>
+<span class="text-xs font-bold truncate">Phạm Ngọc Lan</span>
+</div>
+</div>
+<!-- Click & Drag Cue -->
+<div class="h-20 border-b border-slate-100 border-dashed bg-white group cursor-crosshair relative">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center">
+<span class="text-[10px] text-primary font-bold">CLICK &amp; DRAG</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="drag_pan">drag_pan</span>
+</div>
+</div>
+<div class="h-20 border-b border-slate-50"></div>
+<!-- Booking Card Orange (Active/Details Shown) -->
+<div class="h-40 p-1 border-b border-slate-50 relative z-20">
+<div class="w-full h-full bg-orange-50 border-l-4 border-orange-500 rounded p-2 flex flex-col justify-between shadow-md">
+<span class="text-[10px] font-bold text-orange-600 uppercase tracking-tighter">Ranked Match • 12:00-14:00</span>
+<span class="text-xs font-black truncate">Nguyễn Văn A</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+<span class="text-[9px] font-medium text-orange-700">Server Status</span>
+</div>
+</div>
+<!-- Booking Details Popup -->
+<div class="absolute top-1/2 left-[105%] -translate-y-1/2 w-64 bg-white shadow-2xl rounded-xl p-4 z-40 border border-slate-100 ring-1 ring-black/5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-base font-black leading-tight">Nguyễn Văn A</h3>
+<p class="text-xs text-slate-500">0901 234 567</p>
+</div>
+<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">Confirmed</span>
+</div>
+<div class="space-y-3 mb-5">
+<div class="flex justify-between text-xs">
+<span class="text-slate-400">Thời gian</span>
+<span class="font-bold">12:00 - 14:00</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-slate-400">Loại sân</span>
+<span class="font-bold">Pickleball Pro A1</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-slate-400">Ghi chú</span>
+<span class="font-bold italic">Cần mượn 2 vợt</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="col-span-2 bg-primary text-white py-2 rounded-lg text-xs font-bold hover:brightness-110">Check-in</button>
+<button class="bg-slate-100 text-slate-600 py-2 rounded-lg text-xs font-bold hover:bg-slate-200">Chỉnh sửa</button>
+<button class="bg-red-50 text-red-600 py-2 rounded-lg text-xs font-bold hover:bg-red-100">Hủy lịch</button>
+</div>
+<!-- Arrow pointer for popup -->
+<div class="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rotate-45 border-l border-b border-slate-100"></div>
+</div>
+</div>
+</div>
+<!-- Wed to Sun Columns -->
+<div class="border-l border-slate-50 relative h-full">
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-20 border-b border-slate-50"></div>
+<div class="h-40 border-b border-slate-50 diagonal-stripe flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300" data-icon="lock">lock</span>
+</div>
+</div>
+<div class="border-l border-slate-50 relative h-full"></div>
+<div class="border-l border-slate-50 relative h-full"></div>
+<div class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
+<div class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
+</div>
+</div>
+        </div>
+    </main>
+<!-- Block Court Modal Overlay -->
+<div id="blockCourtModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
+<div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+<div class="p-6">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-black tracking-tight">Khóa sân tạm thời</h2>
+<button id="closeIconBtn" class="text-slate-400 hover:text-slate-600 p-1"><span class="material-symbols-outlined" data-icon="close">close</span></button>
+</div>
+<form class="space-y-5">
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Lý do khóa sân</label>
+<div class="grid grid-cols-2 gap-2">
+<label class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+<input checked="" class="text-primary focus:ring-primary border-slate-300" name="reason" type="radio"/>
+<span class="text-sm font-medium">Bảo trì</span>
+</label>
+<label class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+<input class="text-primary focus:ring-primary border-slate-300" name="reason" type="radio"/>
+<span class="text-sm font-medium">Giải đấu</span>
+</label>
+<label class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+<input class="text-primary focus:ring-primary border-slate-300" name="reason" type="radio"/>
+<span class="text-sm font-medium">Coaching</span>
+</label>
+<label class="flex items-center gap-3 p-3 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+<input class="text-primary focus:ring-primary border-slate-300" name="reason" type="radio"/>
+<span class="text-sm font-medium">Khác</span>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Từ giờ</label>
+<input class="w-full bg-slate-50 border-none rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-primary outline-none" type="time" value="14:00"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Đến giờ</label>
+<input class="w-full bg-slate-50 border-none rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-primary outline-none" type="time" value="16:00"/>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+<div>
+<p class="text-sm font-bold">Lặp lại cài đặt</p>
+<p class="text-[11px] text-slate-500">Tự động khóa vào các ngày tiếp theo</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-white border border-slate-200 text-[10px] font-bold rounded-lg hover:border-primary hover:text-primary transition-colors" type="button">Hàng ngày</button>
+<button class="px-3 py-1 bg-white border border-slate-200 text-[10px] font-bold rounded-lg hover:border-primary hover:text-primary transition-colors" type="button">Hàng tuần</button>
+</div>
+</div>
+<div class="pt-4 flex gap-3">
+<button id="cancelModalBtn" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm" type="button">Hủy</button>
+<button class="flex-1 bg-primary text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20" type="submit">Xác nhận Khóa</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // block court modal toggles (keep existing script logic)
+        const blockCourtModal = document.getElementById("blockCourtModal");
+        const openBlockCourtModalBtn = document.getElementById("openBlockCourtModalBtn");
+        const cancelModalBtn = document.getElementById("cancelModalBtn");
+        const closeIconBtn = document.getElementById("closeIconBtn");
+
+        if (openBlockCourtModalBtn && blockCourtModal) {
+            openBlockCourtModalBtn.addEventListener("click", function() {
+                blockCourtModal.classList.remove("hidden");
+            });
+        }
+
+        function closeModal() {
+            if (blockCourtModal) {
+                blockCourtModal.classList.add("hidden");
+            }
+        }
+
+        if (cancelModalBtn) {
+            cancelModalBtn.addEventListener("click", closeModal);
+        }
+
+        if (closeIconBtn) {
+            closeIconBtn.addEventListener("click", closeModal);
+        }
+    });
+    </script>
+    </div>
+    <script>lucide.createIcons();</script>
+</body></html>
