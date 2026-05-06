@@ -736,7 +736,6 @@
                 </div>
             </div>
             <div id="appr-content-referee" class="hidden flex-col gap-4 animate-zoom-in mt-4">
-                <div id="appr-content-referee" class="hidden flex-col gap-4 animate-zoom-in mt-4">
                     <!-- Header & Stats -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
@@ -818,7 +817,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
     </div>
 
@@ -1110,8 +1108,8 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox" id="notify" />
-                            <label class="text-xs text-slate-600 dark:text-slate-400 select-none" for="notify">Notify
+                                type="checkbox" id="notify-venue" />
+                            <label class="text-xs text-slate-600 dark:text-slate-400 select-none" for="notify-venue">Notify
                                 Owner</label>
                         </div>
                         <div class="flex gap-3">
@@ -1124,8 +1122,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>    </div>
     <script>
         function switchView(viewType) {
             const gridView = document.getElementById('venue-grid');
@@ -1148,10 +1145,37 @@
                 btnGrid.classList.add('text-slate-500', 'dark:text-slate-400', 'hover:bg-white/50', 'dark:hover:bg-white/5');
             }
         }
-        const modal = document.getElementById('review-modal');
-        function openModal() { openDetailModal(); }
-        function closeModal() { closeDetailModal(); }
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        // 1. Logic cho Review Modal (Popup lớn xem chi tiết Venue có nhiều Tab)
+const reviewModal = document.getElementById('review-modal');
+
+function openModal() { 
+    reviewModal.classList.remove('hidden'); 
+    reviewModal.classList.add('flex');
+}
+function closeModal() { 
+    reviewModal.classList.add('hidden'); 
+    reviewModal.classList.remove('flex');
+}
+reviewModal.addEventListener('click', (e) => { 
+    if (e.target === reviewModal) closeModal(); 
+});
+
+
+// 2. Logic cho Detail Modal (Popup duyệt Owner / Referee)
+function openDetailModal() {
+    const dModal = document.getElementById('detail-modal');
+    if (dModal) {
+        dModal.classList.remove('hidden');
+        dModal.classList.add('flex');
+    }
+}
+function closeDetailModal() {
+    const dModal = document.getElementById('detail-modal');
+    if (dModal) {
+        dModal.classList.add('hidden');
+        dModal.classList.remove('flex');
+    }
+}
 
         function switchTab(tabName) {
             const tabs = ['overview', 'courts', 'location', 'history'];
@@ -1261,118 +1285,28 @@
                 <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-6">
                     <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Rejection Reason</label>
                     <textarea
-                        class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-400 resize-none transition-all"
-                        rows="3" placeholder="Enter reason if rejecting request..."></textarea>
+                        class="w-full rounded-xl border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-sm focus:border-primary focus:ring-primary shadow-sm"
+                        placeholder="Reason (optional)..." rows="3"></textarea>
 
                     <div class="flex items-center justify-between mt-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked
-                                class="rounded border-slate-300 text-primary focus:ring-primary">
-                            <span class="text-sm font-medium text-slate-600 dark:text-slate-400">Notify via Email</span>
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4"
+                                type="checkbox" id="notify-request" />
+                            <label class="text-xs text-slate-600 dark:text-slate-400 select-none" for="notify-request">Notify
+                                Owner</label>
+                        </div>
                         <div class="flex gap-3">
-                            <button onclick="openRejectConfirm()"
-                                class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors">Reject</button>
-                            <button onclick="openApproveConfirm()"
-                                class="px-6 py-2 bg-primary text-slate-900 font-bold rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Approve
-                                Request</button>
+                            <button onclick="closeModal()"
+                                class="px-5 py-2 rounded-xl text-red-600 font-medium text-sm hover:bg-red-50 transition-colors">Reject</button>
+                            <button onclick="closeModal()"
+                                class="px-5 py-2 rounded-xl bg-primary text-slate-900 font-bold text-sm shadow-md hover:bg-[#00d672] transition-colors">Approve
+                                Venue</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="approve-confirm-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden modal-fade">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]" onclick="closeApproveConfirm()"></div>
-        <div
-            class="relative w-full max-w-xs transform overflow-hidden rounded-xl bg-white dark:bg-surface-dark p-6 text-center shadow-2xl modal-scale border border-slate-100 dark:border-slate-700">
-            <div
-                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-50 dark:bg-green-900/20 ring-4 ring-green-50/50 dark:ring-green-900/10">
-                <span class="material-symbols-outlined text-[24px] text-primary">check_circle</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">Xác nhận phê duyệt?</h3>
-            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Hành động này sẽ cấp
-                quyền Chủ sân cho tài khoản này.</p>
-            <div class="mt-6 grid grid-cols-2 gap-2">
-                <button onclick="closeApproveConfirm()"
-                    class="flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Hủy</button>
-                <button onclick="confirmApproveAction()"
-                    class="flex items-center justify-center rounded-lg bg-primary px-3 py-2 text-xs font-bold text-slate-900 hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all">Xác
-                    nhận</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="reject-confirm-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden modal-fade">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]" onclick="closeRejectConfirm()"></div>
-        <div
-            class="relative w-full max-w-xs transform overflow-hidden rounded-xl bg-white dark:bg-surface-dark p-6 text-center shadow-2xl modal-scale border border-slate-100 dark:border-slate-700">
-            <div
-                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 ring-4 ring-red-50/50 dark:ring-red-900/10">
-                <span class="material-symbols-outlined text-[24px] text-red-500">warning</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">Xác nhận từ chối?</h3>
-            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Yêu cầu sẽ bị hủy bỏ và
-                lý do sẽ được gửi đi.</p>
-            <div class="mt-6 grid grid-cols-2 gap-2">
-                <button onclick="closeRejectConfirm()"
-                    class="flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">Hủy</button>
-                <button onclick="confirmRejectAction()"
-                    class="flex items-center justify-center rounded-lg bg-red-500 px-3 py-2 text-xs font-bold text-white hover:bg-red-600 shadow-lg shadow-red-500/25 transition-all">Xác
-                    nhận</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- Modal Logic ---
-        function openDetailModal() { document.getElementById('detail-modal').classList.remove('hidden'); }
-        function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-
-        function openApproveConfirm() { document.getElementById('approve-confirm-modal').classList.remove('hidden'); }
-        function closeApproveConfirm() { document.getElementById('approve-confirm-modal').classList.add('hidden'); }
-
-        function openRejectConfirm() { document.getElementById('reject-confirm-modal').classList.remove('hidden'); }
-        function closeRejectConfirm() { document.getElementById('reject-confirm-modal').classList.add('hidden'); }
-
-        // --- Actions ---
-        function confirmApproveAction() {
-            closeApproveConfirm();
-            closeDetailModal();
-            showToast('toast-success');
-        }
-        function confirmRejectAction() {
-            closeRejectConfirm();
-            closeDetailModal();
-            showToast('toast-reject');
-        }
-
-        // --- Toast Logic ---
-        function showToast(id) {
-            const toast = document.getElementById(id);
-            toast.classList.remove('hidden');
-            setTimeout(() => { hideToast(id); }, 3000);
-        }
-        function hideToast(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // --- ESC Key ---
-        document.addEventListener('keydown', function (event) {
-            if (event.key === "Escape") {
-                if (!document.getElementById('approve-confirm-modal').classList.contains('hidden')) closeApproveConfirm();
-                else if (!document.getElementById('reject-confirm-modal').classList.contains('hidden')) closeRejectConfirm();
-                else closeDetailModal();
-            }
-        });
-    </script>
-
-
-
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
-    </script>
-
     <script>
         function switchApprovalTab(tabName) {
             const tabs = ['venue', 'owner', 'referee'];
@@ -1409,7 +1343,7 @@
         const adminUser = AdminAuth.getUser();
         const adminId = adminUser ? adminUser.id : null;
 
-        // ─── Init ────────────────────────────────────────────────────────────
+
         AdminAuth.checkAuth().then(ok => {
             if (!ok) return;
             AdminAuth.populateUserInfo();
@@ -1417,7 +1351,6 @@
             loadOwnerRequests();
         });
 
-        // ─── Load pending venues ──────────────────────────────────────────────
         async function loadPendingVenues() {
             try {
                 const res = await AdminAuth.authFetch('/api/venues/pending');
@@ -1516,7 +1449,7 @@
                 return;
             }
             tbody.innerHTML = venues.map(v => `
-                <tr class="hover:bg-slate-50 transition-colors group">
+                <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-3">
                             <div class="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
@@ -1531,7 +1464,7 @@
                     <td class="px-4 py-3 text-sm text-slate-600">Owner #${v.ownerId || '—'}</td>
                     <td class="px-4 py-3 text-sm text-slate-600">${formatDate(v.createdAt)}</td>
                     <td class="px-4 py-3">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
                         </span>
                     </td>
@@ -1559,7 +1492,7 @@
                             </div>
                             <div>
                                 <span class="block text-sm font-bold text-slate-900">User #${r.userId}</span>
-                                <span class="block text-xs text-slate-500">Request #${r.id}</span>
+                                <span class="block text-xs font-medium text-slate-500">Request #${r.id}</span>
                             </div>
                         </div>
                     </td>
@@ -1571,7 +1504,7 @@
                     </td>
                     <td class="px-6 py-4"><span class="text-sm text-slate-600">${formatDate(r.submittedAt)}</span></td>
                     <td class="px-6 py-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
                         </span>
                     </td>
@@ -1599,7 +1532,7 @@
                             </div>
                             <div>
                                 <span class="block text-sm font-bold text-slate-900">User #${r.userId}</span>
-                                <span class="block text-xs text-slate-500">Request #${r.id}</span>
+                                <span class="block text-xs font-medium text-slate-500">Request #${r.id}</span>
                             </div>
                         </div>
                     </td>
@@ -1611,7 +1544,7 @@
                     </td>
                     <td class="px-6 py-4"><span class="text-sm text-slate-600">${formatDate(r.submittedAt)}</span></td>
                     <td class="px-6 py-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
                         </span>
                     </td>
@@ -1634,17 +1567,157 @@
             openDetailModal();
         }
 
-        // ─── Open role request review modal ───────────────────────────────────────────
+        // ─── Open role request review modal ──────────────────────────────────────────────────────
         function openRoleRequestReview(requestId, type) {
             currentRequestId = requestId;
             currentRequestType = type;
             currentVenueId = null;
+
+            const modalTitle = document.querySelector('#detail-modal h3');
+            const modalBody = document.querySelector('#detail-modal .flex-1');
+
+            if (!modalBody) return;
+
+            if (type === 'OWNER') {
+                const req = pendingOwnerRequests.find(r => r.id === requestId);
+                if (!req) return;
+
+                modalTitle.textContent = `Owner Request Details #R-${req.id}`;
+
+                // Parse legal info if applicable
+                let legalHtml = `<p class="text-sm font-bold text-slate-900 dark:text-white">Không có thông tin pháp lý</p>`;
+                if (req.legalInfo) {
+                    try {
+                        const parsed = typeof req.legalInfo === 'string' ? JSON.parse(req.legalInfo) : req.legalInfo;
+                        legalHtml = `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">Mã số thuế / Tax ID</label>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white font-mono">${parsed.taxCode || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">Tài khoản ngân hàng</label>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white font-mono">${parsed.bankAccountNumber || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">Ngân hàng thụ hưởng</label>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white">${parsed.bankName || 'N/A'}</p>
+                                </div>
+                            </div>
+                        `;
+                    } catch(e) {
+                         legalHtml = `<p class="text-sm font-bold text-slate-900 dark:text-white">${escHtml(String(req.legalInfo))}</p>`;
+                    }
+                }
+
+                modalBody.innerHTML = `
+                    <div class="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                            <i data-lucide="building-2" class="w-4 h-4"></i> Business Information
+                        </h4>
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-slate-500 mb-1">User ID yêu cầu</label>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">#${req.userId}</p>
+                        </div>
+                        ${legalHtml}
+                    </div>
+                `;
+            } else if (type === 'REFEREE') {
+                const req = pendingRefereeRequests.find(r => r.id === requestId);
+                if (!req) return;
+
+                modalTitle.textContent = `Referee Request Details #R-${req.id}`;
+
+                const isPlatform = req.requestType === 'PLATFORM_REFEREE';
+
+                modalBody.innerHTML = `
+                    <div class="bg-slate-50 dark:bg-slate-800/30 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-6">
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                                <i data-lucide="user" class="w-4 h-4"></i> Candidate Information
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">User ID</label>
+                                    <p class="text-lg font-bold text-slate-900 dark:text-white">#${req.userId}</p>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <label class="block text-xs font-medium text-slate-500 mb-1">Loại Trọng Tài</label>
+                                    <span class="inline-flex mt-1 px-2.5 py-1 rounded-md text-xs font-bold text-white bg-gradient-to-r ${isPlatform ? 'from-purple-600 to-indigo-600' : 'from-emerald-500 to-teal-600'} shadow-sm">
+                                        ${isPlatform ? 'Platform Referee' : 'Venue Referee'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                                <i data-lucide="clipboard-check" class="w-4 h-4"></i> Certification Results
+                            </h4>
+                            <div class="bg-white dark:bg-slate-900 p-4 rounded-lg border flex items-center justify-between shadow-sm border-slate-200 dark:border-slate-700">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-600">Referee Knowledge Test Score</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Yêu cầu tối thiểu 90% (9/10 câu)</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-3xl font-black ${req.testScore && req.testScore >= 90 ? 'text-green-600' : 'text-red-500'}">
+                                        ${req.testScore !== null ? req.testScore : 'N/A'}%
+                                    </span>
+                                    <p class="text-xs font-bold ${req.testScore && req.testScore >= 90 ? 'text-green-500' : 'text-red-400'} mt-1">
+                                        ${req.testScore && req.testScore >= 90 ? '✔ PASSED' : '✖ FAILED'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                           <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4"></i> Request Timeline
+                           </h4>
+                           <div class="text-sm text-slate-600 dark:text-slate-400 space-y-2">
+                               <p><strong class="text-slate-900 dark:text-white">Submitted On:</strong> ${formatDate(req.submittedAt)}</p>
+                           </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const actionAreaHtml = `
+                <!-- Action Area -->
+                <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-6">
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Rejection Reason / Notes</label>
+                    <textarea id="rejection-reason-input"
+                        class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-400 resize-none transition-all"
+                        rows="3" placeholder="Enter reason if rejecting request..."></textarea>
+
+                    <div class="flex items-center justify-between mt-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked
+                                class="rounded border-slate-300 text-primary focus:ring-primary">
+                            <span class="text-sm font-medium text-slate-600 dark:text-slate-400">Notify User</span>
+                        </label>
+                        <div class="flex gap-3">
+                            <button onclick="confirmRejectAction()"
+                                class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors">Reject</button>
+                            <button onclick="confirmApproveAction()"
+                                class="px-6 py-2 bg-primary text-slate-900 font-bold rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Approve Request</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modalBody.innerHTML += actionAreaHtml;
+
+            // Re-initialize lucide icons for dynamically added content
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+
             openDetailModal();
         }
 
         // ─── Approve action ────────────────────────────────────────────────────
         async function confirmApproveAction() {
-            closeApproveConfirm();
             try {
                 if (currentVenueId) {
                     await AdminAuth.authFetch(`/api/venues/${currentVenueId}/approve`, { method: 'POST' });
@@ -1674,8 +1747,10 @@
 
         // ─── Reject action ─────────────────────────────────────────────────────
         async function confirmRejectAction() {
-            closeRejectConfirm();
             try {
+                const notesInput = document.getElementById('rejection-reason-input');
+                const notes = notesInput && notesInput.value.trim() !== '' ? notesInput.value.trim() : 'T ch‘i bŸi Admin';
+
                 if (currentVenueId) {
                     await AdminAuth.authFetch(`/api/venues/${currentVenueId}/reject`, { method: 'POST' });
                     pendingVenues = pendingVenues.filter(v => v.id !== currentVenueId);
@@ -1685,7 +1760,7 @@
                 } else if (currentRequestId && currentRequestType === 'OWNER') {
                     await AdminAuth.authFetch(`/api/admin/role-requests/${currentRequestId}/reject?adminId=${adminId}`, {
                         method: 'POST',
-                        body: JSON.stringify({ notes: 'Từ chối bởi Admin' })
+                        body: JSON.stringify({ notes: notes })
                     });
                     pendingOwnerRequests = pendingOwnerRequests.filter(r => r.id !== currentRequestId);
                     renderOwnerTable(pendingOwnerRequests);
@@ -1693,7 +1768,7 @@
                 } else if (currentRequestId && currentRequestType === 'REFEREE') {
                     await AdminAuth.authFetch(`/api/admin/referee-requests/${currentRequestId}/reject?adminId=${adminId}`, {
                         method: 'POST',
-                        body: JSON.stringify({ notes: 'Từ chối bởi Admin' })
+                        body: JSON.stringify({ notes: notes })
                     });
                     pendingRefereeRequests = pendingRefereeRequests.filter(r => r.id !== currentRequestId);
                     renderRefereeTable(pendingRefereeRequests);
@@ -1704,7 +1779,7 @@
                 lucide.createIcons();
             } catch (e) {
                 console.error('Reject failed', e);
-                alert('Từ chối thất bại: ' + e.message);
+                alert('T ch‘i tht bi: ' + e.message);
             }
         }
 
@@ -1716,6 +1791,23 @@
         function escHtml(str) {
             if (!str) return '';
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // ─── Toast Notifications ─────────────────────────────────────────────
+        function showToast(id) {
+            const toast = document.getElementById(id);
+            if (!toast) return;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                hideToast(id);
+            }, 3000);
+        }
+
+        function hideToast(id) {
+            const toast = document.getElementById(id);
+            if (toast) {
+                toast.classList.add('hidden');
+            }
         }
     </script>
 
@@ -1748,3 +1840,5 @@
 </body>
 
 </html>
+
+

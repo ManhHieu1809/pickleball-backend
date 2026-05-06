@@ -21,17 +21,13 @@ public class RankedMatch {
     private MatchStatus status = MatchStatus.PENDING;
     private Integer teamAScore;
     private Integer teamBScore;
-    private String winningTeam; // 'A' or 'B'
+    private String winningTeam;
     private LocalDateTime submittedAt;
     private LocalDateTime confirmedAt;
 
     @Builder.Default
     private Set<Long> confirmedPlayerIds = new HashSet<>();
 
-    /**
-     * Assign a referee to this ranked match.
-     * Called when a referee joins the booking.
-     */
     public void assignReferee(Long refereeId) {
         if (this.refereeId != null) {
             throw new IllegalStateException("Referee already assigned to this match");
@@ -55,7 +51,7 @@ public class RankedMatch {
         this.winningTeam = winningTeam;
         this.status = MatchStatus.SUBMITTED;
         this.submittedAt = LocalDateTime.now();
-        this.confirmedPlayerIds.clear(); // Clear previous confirmations if resubmitted (though state flow prevents this usually)
+        this.confirmedPlayerIds.clear();
     }
 
     public void confirm(Long playerId) {
@@ -64,7 +60,6 @@ public class RankedMatch {
         }
         this.confirmedPlayerIds.add(playerId);
 
-        // If all 4 players have confirmed, we finalize the match
         if (this.confirmedPlayerIds.size() >= 4) {
             this.status = MatchStatus.CONFIRMED;
             this.confirmedAt = LocalDateTime.now();

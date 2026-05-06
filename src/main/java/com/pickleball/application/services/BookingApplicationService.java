@@ -24,6 +24,7 @@ import com.pickleball.application.usecases.booking.CreateRankedMatchUseCase;
 import com.pickleball.application.usecases.booking.CreateRankedMatchUseCase.RankedMatchResult;
 import com.pickleball.application.usecases.booking.JoinBookingUseCase;
 import com.pickleball.application.usecases.booking.JoinBookingUseCase.JoinResult;
+import com.pickleball.application.usecases.booking.AcceptMatchUseCase;
 import com.pickleball.application.usecases.booking.SubmitMatchResultUseCase;
 import com.pickleball.application.usecases.booking.SubmitDisputeUseCase;
 import com.pickleball.application.usecases.booking.UpdateEloUseCase;
@@ -60,6 +61,7 @@ public class BookingApplicationService {
     private final CreateCasualMatchUseCase createCasualMatchUseCase;
     private final CreateRankedMatchUseCase createRankedMatchUseCase;
     private final JoinBookingUseCase joinBookingUseCase;
+    private final AcceptMatchUseCase acceptMatchUseCase;
     private final CheckInUseCase checkInUseCase;
     private final SubmitMatchResultUseCase submitMatchResultUseCase;
     private final ConfirmMatchResultUseCase confirmMatchResultUseCase;
@@ -81,8 +83,6 @@ public class BookingApplicationService {
         }
 
         if (request.getBookingType() == BookingType.CASUAL) {
-            // Return basic BookingDTO (use createCasualMatch for full response with
-            // candidates)
             CasualMatchDTO casualMatch = createCasualMatch(request);
             return casualMatch.getBooking();
         }
@@ -92,8 +92,6 @@ public class BookingApplicationService {
             return rankedMatch.getBooking();
         }
 
-        // For other booking types (RANKED, WALK_IN) - use existing logic
-        // TODO: Implement specific use cases for each type
         Booking booking = createBookingUseCase.execute(
                 request.getCourtId(),
                 request.getStartTime(),
@@ -106,9 +104,6 @@ public class BookingApplicationService {
         return convertToDTO(savedBooking);
     }
 
-    /**
-     * Create Casual Match with candidates (WORKFLOW §II.2)
-     */
     public CasualMatchDTO createCasualMatch(CreateBookingRequest request) {
         CasualMatchResult result = createCasualMatchUseCase.execute(
                 request.getCourtId(),
@@ -143,9 +138,6 @@ public class BookingApplicationService {
                 .build();
     }
 
-    /**
-     * Get candidates for an existing casual match
-     */
     public List<PlayerMatchDTO> getCasualMatchCandidates(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
@@ -157,7 +149,6 @@ public class BookingApplicationService {
             throw new IllegalArgumentException("Casual match is no longer accepting players");
         }
 
-        // Return actual participants instead of randomly suggested candidates
         return booking.getParticipants().stream()
                 .filter(p -> p.getJoinStatus() == JoinStatus.PAID || p.getJoinStatus() == JoinStatus.PENDING)
                 .map(p -> playerRepository.findByUserId(p.getUserId())
@@ -167,11 +158,6 @@ public class BookingApplicationService {
                 .collect(Collectors.toList());
     }
 
-    // ==================== Ranked Match Methods ====================
-
-    /**
-     * Create Ranked Match with candidates (WORKFLOW §II.3)
-     */
     public RankedMatchDTO createRankedMatch(CreateBookingRequest request) {
         RankedMatchResult result = createRankedMatchUseCase.execute(
                 request.getCourtId(),
@@ -191,9 +177,6 @@ public class BookingApplicationService {
         List<PlayerMatchDTO> playerCandidateDTOs = result.playerCandidates().stream()
                 .map(this::convertPlayerToMatchDTO)
                 .collect(Collectors.toList());
-
-        // --- DEVELOPMENT / TEST MODE: GENERATE BOTS IF ALONE ---
-        // If there are less than 3 candidates, simulate them!
         int botsNeeded = 3 - playerCandidateDTOs.size();
         for (int i = 0; i < botsNeeded; i++) {
             PlayerMatchDTO bot = PlayerMatchDTO.builder()
@@ -204,13 +187,11 @@ public class BookingApplicationService {
                 .build();
             playerCandidateDTOs.add(bot);
         }
-        // --------------------------------------------------------
 
         List<RefereeMatchDTO> refereeCandidateDTOs = result.refereeCandidates().stream()
                 .map(this::convertRefereeToMatchDTO)
                 .collect(Collectors.toList());
 
-        // --- DEVELOPMENT / TEST MODE: GENERATE REFEREE BOT IF ALONE ---
         if (refereeCandidateDTOs.isEmpty()) {
             RefereeMatchDTO botRef = RefereeMatchDTO.builder()
                 .userId(8888L) // Fake ID
@@ -221,8 +202,6 @@ public class BookingApplicationService {
                 .build();
             refereeCandidateDTOs.add(botRef);
         }
-        // ---------------------------------------------------------------
-
         return RankedMatchDTO.builder()
                 .booking(bookingDTO)
                 .payment(paymentDTO)
@@ -242,9 +221,6 @@ public class BookingApplicationService {
                 .build();
     }
 
-    /**
-     * Get available ranked matches that are PENDING (for players to browse & join)
-     */
     public List<RankedMatchDTO> getAvailableRankedMatches() {
         List<Booking> pendingRanked = bookingRepository.findByBookingTypeAndStatus(
                 BookingType.RANKED, BookingStatus.PENDING);
@@ -279,9 +255,6 @@ public class BookingApplicationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get player & referee candidates for an existing ranked match
-     */
     public RankedMatchDTO getRankedMatchCandidates(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
@@ -298,7 +271,6 @@ public class BookingApplicationService {
 
         List<Player> playerCandidates = createRankedMatchUseCase.findPlayerCandidates(hostPlayer, bookingId);
 
-        // Get eligible referees directly from repository
         List<Referee> allEligible = refereeRepository.findEligibleReferees();
         List<Referee> eligibleReferees = createRankedMatchUseCase.findRefereeCandidates(
                 allEligible, hostPlayer.getUserId());
@@ -307,8 +279,6 @@ public class BookingApplicationService {
                 .map(this::convertPlayerToMatchDTO)
                 .collect(Collectors.toList());
 
-        // --- DEVELOPMENT / TEST MODE: GENERATE BOTS IF ALONE ---
-        // If there are less than 3 candidates, simulate them!
         int botsNeeded = 3 - playerDTOs.size();
         for (int i = 0; i < botsNeeded; i++) {
             PlayerMatchDTO bot = PlayerMatchDTO.builder()
@@ -319,13 +289,11 @@ public class BookingApplicationService {
                 .build();
             playerDTOs.add(bot);
         }
-        // --------------------------------------------------------
 
         List<RefereeMatchDTO> refereeDTOs = eligibleReferees.stream()
                 .map(this::convertRefereeToMatchDTO)
                 .collect(Collectors.toList());
 
-        // --- DEVELOPMENT / TEST MODE: GENERATE REFEREE BOT IF ALONE ---
         if (refereeDTOs.isEmpty()) {
             RefereeMatchDTO botRef = RefereeMatchDTO.builder()
                 .userId(8888L) // Fake ID
@@ -336,7 +304,6 @@ public class BookingApplicationService {
                 .build();
             refereeDTOs.add(botRef);
         }
-        // ---------------------------------------------------------------
 
         return RankedMatchDTO.builder()
                 .booking(convertToDTO(booking))
@@ -345,9 +312,6 @@ public class BookingApplicationService {
                 .build();
     }
 
-    /**
-     * Get available casual matches that are PENDING (for players to browse & join)
-     */
     public List<CasualMatchDTO> getAvailableCasualMatches() {
         List<Booking> pendingCasual = bookingRepository.findByBookingTypeAndStatus(
                 BookingType.CASUAL, BookingStatus.PENDING);
@@ -373,9 +337,6 @@ public class BookingApplicationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Create Private Booking with Payment (WORKFLOW §II.1)
-     */
     private BookingDTO createPrivateBooking(CreateBookingRequest request) {
         BookingWithPayment result = createPrivateBookingUseCase.execute(
                 request.getCourtId(),
@@ -394,6 +355,16 @@ public class BookingApplicationService {
 
         BookingDTO dto = convertToDTO(result.booking());
         dto.setPayment(convertPaymentToDTO(result.paymentResult()));
+        return dto;
+    }
+
+    public BookingDTO acceptMatch(Long bookingId, Long userId) {
+        PaymentResult paymentResult = acceptMatchUseCase.execute(bookingId, userId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+        
+        BookingDTO dto = convertToDTO(booking);
+        dto.setPayment(convertPaymentToDTO(paymentResult));
         return dto;
     }
 
@@ -441,6 +412,23 @@ public class BookingApplicationService {
                 .collect(Collectors.toList());
     }
 
+    public List<BookingDTO> getOwnerBookings(Long ownerId) {
+        List<Booking> bookings = bookingRepository.findByOwnerId(ownerId);
+        return convertBookingsToDTOs(bookings);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookingDTO> getVenueBookings(Long venueId) {
+        List<Booking> bookings = bookingRepository.findByVenueId(venueId);
+        return convertBookingsToDTOs(bookings);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookingDTO> getStaffBookings(Long staffId) {
+        List<Booking> bookings = bookingRepository.findByStaffId(staffId);
+        return convertBookingsToDTOs(bookings);
+    }
+
     public void submitMatchResult(Long bookingId, SubmitResultRequest request) {
         submitMatchResultUseCase.execute(bookingId, request.getRefereeUserId(),
                 request.getTeamAScore(), request.getTeamBScore());
@@ -448,26 +436,8 @@ public class BookingApplicationService {
 
     public void confirmMatchResult(Long bookingId, ConfirmResultRequest request) {
         confirmMatchResultUseCase.execute(bookingId, request.getPlayerUserId(), request.getAccepted());
-        
-        // Check if all players have confirmed and update Elo if so
-        // Note: Ideally confirmMatchResultUseCase should return if match was CONFIRMED
-        // Or we re-fetch match status here or inside UpdateEloUseCase (UpdateEloUseCase validates status)
-        
-        // For simplicity and decoupling, we can try to update Elo. 
-        // If match is not CONFIRMED, UpdateEloUseCase will throw exception or should simply return.
-        // Let's modify UpdateEloUseCase to be idempotent and safe to call.
-        // Or better: check match status here before calling.
-        
-        try {
-            updateEloUseCase.execute(bookingId);
-        } catch (IllegalStateException e) {
-            // Match not confirmed yet or already updated, ignore
-        } catch (Exception e) {
-            // Log error but don't fail the confirmation request
-            e.printStackTrace();
-        }
     }
-    
+
     public void triggerEloUpdate(Long bookingId) {
          updateEloUseCase.execute(bookingId);
     }
@@ -489,10 +459,9 @@ public class BookingApplicationService {
     }
 
     private PlayerMatchDTO convertPlayerToMatchDTO(Player player) {
-        // We might want to fetch UserEntity for full name. For now, use "Player {id}" if full name is null
         return PlayerMatchDTO.builder()
                 .userId(player.getUserId())
-                .fullName("Player " + player.getUserId()) // Simulated placeholder as player entity might lack name
+                .fullName("Player " + player.getUserId())
                 .currentElo(player.getCurrentElo())
                 .loyaltyTier(player.getLoyaltyTier() != null ? player.getLoyaltyTier().name() : null)
                 .build();
@@ -501,7 +470,7 @@ public class BookingApplicationService {
     private RefereeMatchDTO convertRefereeToMatchDTO(Referee referee) {
         return RefereeMatchDTO.builder()
                 .userId(referee.getUserId())
-                .fullName("Referee " + referee.getUserId()) // Simulated placeholder
+                .fullName("Referee " + referee.getUserId())
                 .trustScore(referee.getTrustScore())
                 .totalMatchesRefereed(referee.getTotalMatchesRefereed())
                 .isEligible(referee.isEligibleForMatch())
@@ -520,6 +489,12 @@ public class BookingApplicationService {
                 .paymentUrl(paymentResult.paymentUrl())
                 .message(paymentResult.message())
                 .build();
+    }
+
+    private List<BookingDTO> convertBookingsToDTOs(List<Booking> bookings) {
+        return bookings.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     private BookingDTO convertToDTO(Booking booking) {

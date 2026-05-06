@@ -9,6 +9,7 @@ import com.pickleball.application.services.BookingManagementService;
 import com.pickleball.application.services.DashboardService;
 import com.pickleball.application.services.RefereeApplicationService;
 import com.pickleball.application.services.UserManagementService;
+import com.pickleball.application.services.FinanceManagementService;
 import com.pickleball.presentation.helpers.ResponseHelper;
 import com.pickleball.presentation.responses.ApiResponse;
 import com.pickleball.presentation.responses.PaginatedResponse;
@@ -31,16 +32,13 @@ public class AdminController {
     private final BookingManagementService bookingManagementService;
     private final com.pickleball.application.services.VenueManagementService venueManagementService;
     private final RefereeApplicationService refereeApplicationService;
-
-    // ==================== Dashboard Endpoints ====================
+    private final FinanceManagementService financeManagementService;
 
     @GetMapping("/dashboard/stats")
     public ResponseEntity<ApiResponse<DashboardStatsDTO>> getDashboardStats() {
         DashboardStatsDTO stats = dashboardService.getDashboardStats();
         return ResponseHelper.ok(stats);
     }
-
-    // ==================== Role Request Endpoints ====================
 
     @PostMapping("/role-requests/venue-owner")
     public ResponseEntity<ApiResponse<RoleRequestDTO>> submitVenueOwnerRequest(
@@ -72,8 +70,6 @@ public class AdminController {
         return ResponseHelper.ok(roleRequest, "Request rejected successfully");
     }
 
-    // ==================== User Management Endpoints ====================
-
     @GetMapping("/users")
     public ResponseEntity<ApiResponse<PaginatedResponse<AdminUserDTO>>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -99,8 +95,6 @@ public class AdminController {
             return ResponseHelper.notFound(e.getMessage());
         }
     }
-
-    // ==================== Booking Management Endpoints ====================
 
     @GetMapping("/bookings")
     public ResponseEntity<ApiResponse<PaginatedResponse<AdminBookingDTO>>> getAllBookings(
@@ -139,8 +133,6 @@ public class AdminController {
         }
     }
 
-    // ==================== Venue Management Endpoints ====================
-
     @GetMapping("/venues")
     public ResponseEntity<ApiResponse<PaginatedResponse<com.pickleball.application.dtos.AdminVenueDTO>>> getAllVenues(
             @RequestParam(defaultValue = "0") int page,
@@ -168,8 +160,11 @@ public class AdminController {
             return ResponseHelper.notFound(e.getMessage());
         }
     }
-
-    // ==================== Referee Approval Endpoints ====================
+    @GetMapping("/referee-requests/pending")
+    public ResponseEntity<ApiResponse<List<RoleRequestDTO>>> getPendingRefereeRequests() {
+        List<RoleRequestDTO> requests = refereeApplicationService.getPendingRefereeRequests();
+        return ResponseHelper.ok(requests);
+    }
 
     @PostMapping("/referee-requests/{requestId}/approve")
     public ResponseEntity<ApiResponse<RoleRequestDTO>> approveRefereeRequest(
@@ -188,8 +183,6 @@ public class AdminController {
         return ResponseHelper.ok(roleRequest);
     }
 
-    // ==================== Dispute Management ====================
-
     @GetMapping("/disputes")
     public ResponseEntity<ApiResponse<List<MatchDisputeDTO>>> getAllDisputes() {
         List<MatchDisputeDTO> disputes = refereeApplicationService.getAllDisputes();
@@ -199,8 +192,34 @@ public class AdminController {
     @PostMapping("/disputes/{disputeId}/resolve")
     public ResponseEntity<ApiResponse<MatchDisputeDTO>> resolveDispute(
             @PathVariable Long disputeId,
+            @RequestParam Long adminId,
             @Valid @RequestBody ResolveDisputeRequest request) {
-        MatchDisputeDTO dispute = refereeApplicationService.resolveDispute(disputeId, request);
-        return ResponseHelper.ok(dispute);
+        request.setAdminId(adminId);
+        MatchDisputeDTO roleRequest = refereeApplicationService.resolveDispute(disputeId, request);
+        return ResponseHelper.ok(roleRequest);
+    }
+
+    @GetMapping("/finance/stats")
+    public ResponseEntity<ApiResponse<AdminFinanceStatsDTO>> getFinanceStats() {
+        AdminFinanceStatsDTO stats = financeManagementService.getFinanceStats();
+        return ResponseHelper.ok(stats);
+    }
+
+    @GetMapping("/finance/chart")
+    public ResponseEntity<ApiResponse<com.pickleball.application.dtos.FinanceChartDTO>> getFinanceChart(
+            @RequestParam(defaultValue = "WEEK") String period) {
+        com.pickleball.application.dtos.FinanceChartDTO chart = financeManagementService.getFinanceChart(period);
+        return ResponseHelper.ok(chart);
+    }
+
+    @GetMapping("/finance/transactions")
+    public ResponseEntity<ApiResponse<PaginatedResponse<AdminTransactionDTO>>> getAllTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String status) {
+        PaginatedResponse<AdminTransactionDTO> transactions = financeManagementService.getAllTransactions(page, size, search, type, status);
+        return ResponseHelper.ok(transactions);
     }
 }

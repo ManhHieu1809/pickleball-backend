@@ -16,5 +16,5 @@ public class SubmitRefereeEvidenceRequest {
     @NotBlank(message = "Evidence URL is required")
     private String evidenceUrl;
 
-    private String response; // Optional explanation from referee
+    private String response;
 }

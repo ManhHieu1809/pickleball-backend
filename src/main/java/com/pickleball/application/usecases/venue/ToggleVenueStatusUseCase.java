@@ -16,7 +16,6 @@ public class ToggleVenueStatusUseCase {
             throw new IllegalArgumentException("Chỉ chủ sân hoặc admin mới có quyền thay đổi trạng thái venue");
         }
 
-        // Toggle status
         if (activate) {
             if (isAdmin) {
                 venue.activateByAdmin();

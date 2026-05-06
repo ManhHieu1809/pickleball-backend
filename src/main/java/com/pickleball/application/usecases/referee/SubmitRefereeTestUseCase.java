@@ -19,10 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Submit answers for a referee AI test.
- * If score >= 9/10, automatically creates a PENDING referee registration request.
- */
 public class SubmitRefereeTestUseCase {
 
     private final TestQuestionRepository testQuestionRepository;
@@ -46,29 +42,24 @@ public class SubmitRefereeTestUseCase {
 
     @Transactional(rollbackFor = Exception.class)
     public TestAttempt execute(Long userId, Map<Long, String> answers) {
-        // Validate user exists
         userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        // Check if already a referee
         if (refereeRepository.existsByUserId(userId)) {
             throw new IllegalStateException("User is already a referee");
         }
 
-        // Check if there's already a pending referee request
         Optional<RoleRequest> existingRequest = roleRequestRepository
                 .findByUserIdAndRequestTypeAndStatus(userId, RequestType.PLATFORM_REFEREE, RequestStatus.PENDING);
         if (existingRequest.isPresent()) {
             throw new IllegalStateException("You already have a pending referee request. Please wait for admin approval.");
         }
 
-        // Get all questions that were answered
         List<Long> questionIds = answers.keySet().stream().collect(Collectors.toList());
         if (questionIds.size() != TestAttempt.TOTAL_QUESTIONS) {
             throw new IllegalArgumentException("Must answer exactly " + TestAttempt.TOTAL_QUESTIONS + " questions");
         }
 
-        // Fetch questions and grade
         List<TestQuestion> questions = testQuestionRepository.findActiveQuestions().stream()
                 .filter(q -> questionIds.contains(q.getId()))
                 .collect(Collectors.toList());
@@ -85,7 +76,6 @@ public class SubmitRefereeTestUseCase {
             }
         }
 
-        // Build answers JSON string
         StringBuilder answersJson = new StringBuilder("{");
         boolean first = true;
         for (Map.Entry<Long, String> entry : answers.entrySet()) {
@@ -95,7 +85,6 @@ public class SubmitRefereeTestUseCase {
         }
         answersJson.append("}");
 
-        // Save test attempt
         TestAttempt attempt = TestAttempt.builder()
                 .userId(userId)
                 .totalQuestions(TestAttempt.TOTAL_QUESTIONS)
@@ -105,7 +94,6 @@ public class SubmitRefereeTestUseCase {
 
         TestAttempt savedAttempt = testAttemptRepository.save(attempt);
 
-        // If passed, create registration request automatically
         if (savedAttempt.hasPassed()) {
             RoleRequest roleRequest = RoleRequest.builder()
                     .userId(userId)

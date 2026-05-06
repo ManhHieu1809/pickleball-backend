@@ -6,17 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Domain Service - Matchmaking Algorithm
- *
- * Tìm players phù hợp cho Casual/Ranked matchmaking.
- * Filters:
- * 1. Elo range (±200 configurable)
- * 2. Exclude already-joined players
- * 3. Exclude host
- * 4. Anti-repetition (deprioritize recent opponents)
- * 5. GPS-based geographic filter (Haversine formula)
- */
 public class MatchmakingService {
 
     private static final int DEFAULT_ELO_RANGE = 200;
@@ -26,9 +15,6 @@ public class MatchmakingService {
     private static final double DEFAULT_RADIUS_KM = 15.0;
     private static final double EARTH_RADIUS_KM = 6371.0;
 
-    /**
-     * Full matchmaking: Elo + anti-repetition + GPS filter
-     */
     public List<Player> findMatchingPlayers(
             List<Player> candidates,
             Long hostUserId,
@@ -43,14 +29,12 @@ public class MatchmakingService {
         return candidates.stream()
                 .filter(p -> !p.getUserId().equals(hostUserId))
                 .filter(p -> !excludeUserIds.contains(p.getUserId()))
-                // GPS filter: only include players within radius (skip if no venue or player location)
                 .filter(p -> {
                     if (venueLat == null || venueLng == null) return true;
                     if (p.getLastLatitude() == null || p.getLastLongitude() == null) return true;
                     double distance = haversine(venueLat, venueLng, p.getLastLatitude(), p.getLastLongitude());
                     return distance <= radius;
                 })
-                // Sort: non-recent opponents first, then by Elo proximity
                 .sorted((a, b) -> {
                     boolean aRecent = recentOpponentIds.contains(a.getUserId());
                     boolean bRecent = recentOpponentIds.contains(b.getUserId());
@@ -65,9 +49,6 @@ public class MatchmakingService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Matchmaking with anti-repetition, no GPS
-     */
     public List<Player> findMatchingPlayers(
             List<Player> candidates,
             Long hostUserId,
@@ -79,9 +60,6 @@ public class MatchmakingService {
                 hostElo, null, null, null, maxResults);
     }
 
-    /**
-     * Basic matchmaking: Elo only (backward compatible)
-     */
     public List<Player> findMatchingPlayers(
             List<Player> candidates,
             Long hostUserId,
@@ -92,9 +70,6 @@ public class MatchmakingService {
                 hostElo, null, null, null, maxResults);
     }
 
-    /**
-     * Haversine formula - calculate distance (km) between 2 GPS coordinates
-     */
     public double haversine(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);

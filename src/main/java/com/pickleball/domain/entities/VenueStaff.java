@@ -10,10 +10,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Venue Staff - Nhân viên lễ tân của sân
- * Có thể tạo Walk-in booking cho khách đến trực tiếp
- */
 @Getter
 @Setter
 @Builder
@@ -31,7 +27,6 @@ public class VenueStaff {
     @Builder.Default
     private Set<String> permissions = new HashSet<>();
 
-    // Permission constants
     public static final String PERM_CREATE_BOOKING = "CAN_CREATE_BOOKING";
     public static final String PERM_CHECK_IN = "CAN_CHECK_IN";
     public static final String PERM_VIEW_REVENUE = "CAN_VIEW_REVENUE";

@@ -63,7 +63,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         log.error("Data integrity violation - Full details:", ex);
 
-        // Log root cause để debug
         Throwable rootCause = ex.getRootCause();
         if (rootCause != null) {
             log.error("Root cause: {}", rootCause.getMessage());
@@ -80,7 +79,6 @@ public class GlobalExceptionHandler {
             } else if (detailMessage.contains("Duplicate entry")) {
                 message = "Duplicate entry - Record already exists";
             } else if (detailMessage.contains("foreign key constraint")) {
-                // Extract constraint name
                 message = "Foreign key constraint violation";
                 if (rootCause != null) {
                     message = message + ": " + rootCause.getMessage();
@@ -100,7 +98,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException ex) {
         log.error("Lỗi thời gian chạy: ", ex);
-        // Trả về message cụ thể thay vì message chung chung
         String errorMessage = ex.getMessage() != null ? ex.getMessage() : "Đã xảy ra lỗi không mong muốn";
         return ResponseHelper.internalError(errorMessage);
     }
@@ -108,7 +105,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
         log.error("Lỗi không mong muốn: ", ex);
-        // Trả về message cụ thể thay vì message chung chung
         String errorMessage = ex.getMessage() != null ? ex.getMessage() : "Đã xảy ra lỗi không mong muốn";
         return ResponseHelper.internalError(errorMessage);
     }

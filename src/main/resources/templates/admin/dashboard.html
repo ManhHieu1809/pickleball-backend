@@ -658,6 +658,7 @@
                 populateStats(data);
                 populateAlertBanners(data);
                 populateBookingTypesChart(data);
+                populateRevenueChart(data);
                 populateRecentBookings(data.recentBookings || []);
                 populatePendingActions(data.pendingActions || []);
             } catch (err) {
@@ -763,6 +764,8 @@
             const colors = [];
             let total = 0;
 
+            const legendHtml = [];
+
             for (const [key, info] of Object.entries(typeMap)) {
                 const count = dist[key] || 0;
                 labels.push(info.label);
@@ -785,25 +788,55 @@
 
             // Update legend
             const legendContainer = document.getElementById('donutLegend');
-            const colorClasses = ['orange', 'blue', 'purple', 'emerald'];
-            legendContainer.innerHTML = labels.map((label, i) => {
-                const pct = total > 0 ? ((series[i] / total) * 100).toFixed(0) : 0;
-                return `
+            const colorClasses = ['bg-orange-500', 'bg-blue-500', 'bg-purple-500', 'bg-emerald-500'];
+            let index = 0;
+            for (const [key, info] of Object.entries(typeMap)) {
+                const count = dist[key] || 0;
+                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                legendHtml.push(`
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full shadow-sm" style="background:${colors[i]}"></span>
-                        <div class="flex flex-col leading-none">
-                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">${label}</span>
-                            <span class="text-[10px] text-slate-400">${pct}% (${series[i]})</span>
+                        <span class="w-3 h-3 rounded-full ${colorClasses[index]} shrink-0"></span>
+                        <div class="flex-1 flex justify-between items-center text-sm">
+                            <span class="font-medium text-slate-700 dark:text-slate-300">${info.label}</span>
+                            <span class="font-bold text-slate-900 dark:text-white">${percent}%</span>
                         </div>
                     </div>
-                `;
-            }).join('');
+                `);
+                index++;
+            }
+            legendContainer.innerHTML = legendHtml.join('');
         }
 
-        // ==================== Recent Bookings Table ====================
-        function populateRecentBookings(bookings) {
+        // ==================== Revenue Chart ====================
+        function populateRevenueChart(data) {
+            if (!revenueChart || !data.revenueLast7Days || data.revenueLast7Days.length !== 7) return;
+
+            // X-axis labels for the last 7 days
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const today = new Date();
+            const categories = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                categories.push(days[d.getDay()]);
+            }
+
+            revenueChart.updateOptions({
+                xaxis: {
+                    categories: categories
+                }
+            });
+
+            revenueChart.updateSeries([{
+                name: 'Revenue',
+                data: data.revenueLast7Days
+            }]);
+        }
+
+        // ==================== Recent Bookings ====================
+        function populateRecentBookings(recentList) {
             const tbody = document.getElementById('recentBookingsBody');
-            if (!bookings || bookings.length === 0) {
+            if (!recentList || recentList.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="px-3 py-6 text-center text-slate-400">No recent bookings</td></tr>`;
                 return;
             }
@@ -822,7 +855,7 @@
                 'CANCELLED': 'bg-red-500',
             };
 
-            tbody.innerHTML = bookings.map(b => {
+            tbody.innerHTML = recentList.map(b => {
                 const typeClass = typeColors[b.bookingType] || typeColors['CASUAL'];
                 const statusClass = statusColors[b.status] || 'bg-slate-400';
                 const amount = b.totalCost ? formatCurrency(b.totalCost) : '-';
@@ -917,3 +950,4 @@
 </body>
 
 </html>
+

@@ -32,12 +32,9 @@ public class AuthApplicationService {
     private final PlayerJpaRepository playerJpaRepository;
     private final VenueOwnerJpaRepository venueOwnerJpaRepository;
 
-    /**
-     * Register a new user
-     */
     @Transactional
     public AuthenticationResponse register(CreateUserRequest request) {
-        // Build user from request
+
         User user = User.builder()
                 .email(request.getEmail().toLowerCase().trim())
                 .passwordHash(request.getPassword()) // Will be encoded in use case
@@ -46,14 +43,11 @@ public class AuthApplicationService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Execute registration
         User savedUser = registerUserUseCase.execute(user);
 
-        // Generate tokens
         String accessToken = jwtService.generateToken(savedUser.getId(), savedUser.getEmail());
         String refreshToken = jwtService.generateRefreshToken(savedUser.getId(), savedUser.getEmail());
 
-        // Build response
         return AuthenticationResponse.of(
                 accessToken,
                 refreshToken,
@@ -62,18 +56,12 @@ public class AuthApplicationService {
         );
     }
 
-    /**
-     * Login user with email and password
-     */
     public AuthenticationResponse login(LoginRequest request) {
-        // Execute login
         User user = loginUserUseCase.execute(request.getEmail(), request.getPassword());
 
-        // Generate tokens
         String accessToken = jwtService.generateToken(user.getId(), user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());
 
-        // Build response
         return AuthenticationResponse.of(
                 accessToken,
                 refreshToken,
@@ -82,32 +70,23 @@ public class AuthApplicationService {
         );
     }
 
-    /**
-     * Refresh access token using refresh token
-     */
     public AuthenticationResponse refreshToken(String refreshToken) {
-        // Extract email from refresh token
         String email = jwtService.extractUsername(refreshToken);
 
-        // Validate refresh token
         if (email == null || jwtService.isTokenExpired(refreshToken)) {
             throw new IllegalArgumentException("Refresh token không hợp lệ hoặc đã hết hạn");
         }
 
-        // Find user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại"));
 
-        // Validate token belongs to this user
         if (!jwtService.isTokenValid(refreshToken, user.getEmail())) {
             throw new IllegalArgumentException("Refresh token không hợp lệ");
         }
 
-        // Generate new tokens
         String newAccessToken = jwtService.generateToken(user.getId(), user.getEmail());
         String newRefreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());
 
-        // Build response
         return AuthenticationResponse.of(
                 newAccessToken,
                 newRefreshToken,
@@ -116,9 +95,6 @@ public class AuthApplicationService {
         );
     }
 
-    /**
-     * Get current user from token
-     */
     public UserDTO getCurrentUser(String token) {
         Long userId = jwtService.extractUserId(token);
         User user = userRepository.findById(userId)
@@ -126,9 +102,6 @@ public class AuthApplicationService {
         return convertToDTO(user);
     }
 
-    /**
-     * Convert User domain entity to UserDTO
-     */
     private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());

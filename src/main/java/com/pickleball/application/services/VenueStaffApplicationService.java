@@ -47,13 +47,10 @@ public class VenueStaffApplicationService {
         if (!venue.getOwnerId().equals(ownerId)) {
             throw new IllegalArgumentException("Chỉ chủ sân mới có quyền tạo nhân viên");
         }
-
-        // Check username uniqueness
         if (venueStaffRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username đã tồn tại");
         }
 
-        // Create staff with default permissions
         Set<String> permissions = request.getPermissions() != null
             ? request.getPermissions()
             : getDefaultPermissions();
@@ -72,9 +69,6 @@ public class VenueStaffApplicationService {
         return convertToDTO(savedStaff, venue.getName());
     }
 
-    /**
-     * Staff login - returns JWT token
-     */
     public StaffLoginResponse login(StaffLoginRequest request) {
         VenueStaff staff = venueStaffRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Username hoặc mật khẩu không đúng"));
@@ -87,7 +81,6 @@ public class VenueStaffApplicationService {
             throw new IllegalArgumentException("Username hoặc mật khẩu không đúng");
         }
 
-        // Generate JWT token for staff
         String token = jwtService.generateStaffToken(staff.getId(), staff.getUsername(), staff.getVenueId());
 
         Venue venue = venueRepository.findById(staff.getVenueId()).orElse(null);
@@ -114,6 +107,20 @@ public class VenueStaffApplicationService {
         return convertBookingToDTO(result.booking(), result);
     }
 
+
+    @Transactional(readOnly = true)
+    public List<VenueStaffDTO> getStaffByOwner(Long ownerId) {
+        List<Venue> venues = venueRepository.findByOwnerId(ownerId);
+        List<VenueStaffDTO> result = new java.util.ArrayList<>();
+        
+        for(Venue venue : venues) {
+            List<VenueStaff> staffInVenue = venueStaffRepository.findByVenueId(venue.getId());
+            for(VenueStaff staff : staffInVenue) {
+                result.add(convertToDTO(staff, venue.getName()));
+            }
+        }
+        return result;
+    }
 
     @Transactional(readOnly = true)
     public List<VenueStaffDTO> getStaffByVenue(Long venueId, Long ownerId) {
@@ -202,7 +209,6 @@ public class VenueStaffApplicationService {
         dto.setId(booking.getId());
         dto.setCourtId(booking.getCourtId());
 
-        // Load court and venue info
         courtRepository.findById(booking.getCourtId()).ifPresent(court -> {
             dto.setCourtName(court.getCourtName());
             dto.setVenueId(court.getVenueId());
@@ -218,13 +224,11 @@ public class VenueStaffApplicationService {
         dto.setStatus(booking.getStatus());
         dto.setCreatedByStaffId(booking.getCreatedByStaffId());
 
-        // Customer info from WalkInBookingResult
         dto.setCustomerName(result.customerName());
         dto.setCustomerPhone(result.customerPhone());
         dto.setPaymentMethod(result.paymentMethod());
         dto.setNotes(booking.getNotes());
 
-        // Cost breakdown
         if (booking.getVenueFee() != null) {
             dto.setVenueFee(booking.getVenueFee().getAmount());
         }
@@ -249,7 +253,6 @@ public class VenueStaffApplicationService {
         return dto;
     }
 
-    // Response record for staff login
     public record StaffLoginResponse(
             String accessToken,
             VenueStaffDTO staff

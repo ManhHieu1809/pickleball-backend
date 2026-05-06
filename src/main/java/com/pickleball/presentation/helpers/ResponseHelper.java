@@ -11,7 +11,6 @@ import java.util.List;
 
 public class ResponseHelper {
 
-    // Success responses
     public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
         return ResponseEntity.ok(ApiResponse.success(data));
     }
@@ -30,7 +29,6 @@ public class ResponseHelper {
                 .body(ApiResponse.success(data, message));
     }
 
-    // Paginated responses
     public static <T> ResponseEntity<ApiResponse<PaginatedResponse<T>>> ok(Page<T> page) {
         PaginatedResponse<T> paginatedData = PaginatedResponse.of(
                 page.getContent(),
@@ -47,7 +45,6 @@ public class ResponseHelper {
         return ResponseEntity.ok(ApiResponse.success(paginatedData));
     }
 
-    // Error responses
     public static <T> ResponseEntity<ApiResponse<T>> badRequest(String message) {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error(message, "BAD_REQUEST"));

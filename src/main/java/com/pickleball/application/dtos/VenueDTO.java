@@ -19,6 +19,6 @@ public class VenueDTO {
     private Long approvedByAdminId;
     private LocalDateTime approvedAt;
     private LocalDateTime createdAt;
-    private Long deactivatedByAdminId; // Who locked it
+    private Long deactivatedByAdminId;
 
 }

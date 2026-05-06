@@ -28,7 +28,6 @@ public class Player {
     private LoyaltyTier loyaltyTier = LoyaltyTier.BRONZE;
     private User user;
 
-    // GPS location (updated from Android app)
     private Double lastLatitude;
     private Double lastLongitude;
     private LocalDateTime locationUpdatedAt;

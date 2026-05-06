@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
-/**
- * DTO for time slot (virtual, không lưu DB)
- */
 @Data
 @Builder
 @NoArgsConstructor

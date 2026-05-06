@@ -109,7 +109,6 @@ public class BookingManagementService {
                 venueId = booking.getCourt().getVenue().getId();
             }
         } else {
-            // Fallback load
             try {
                 CourtEntity court = courtJpaRepository.findById(booking.getCourtId()).orElse(null);
                 if (court != null) {
@@ -139,7 +138,6 @@ public class BookingManagementService {
 
         if (creatorName.equals("Unknown") && booking.getBookingType() == BookingType.WALK_IN
                 && booking.getNotes() != null) {
-            // Parse Walk-in notes e.g "[WALK-IN] Khách: Nguyen Van A | SĐT: ..."
             String notes = booking.getNotes();
             try {
                 if (notes.contains("Khách: ")) {
@@ -171,7 +169,7 @@ public class BookingManagementService {
                 .refereeFee(booking.getRefereeFee())
                 .platformFee(booking.getPlatformFee())
                 .paymentStatus(booking.getStatus() == BookingStatus.CONFIRMED ? "PAID" : "PENDING")
-                .paymentMethod("ONLINE") // Dummy, later map from real payments
+                .paymentMethod("ONLINE")
                 .build();
     }
 }

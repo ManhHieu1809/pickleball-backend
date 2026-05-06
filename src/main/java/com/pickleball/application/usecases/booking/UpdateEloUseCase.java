@@ -25,7 +25,6 @@ public class UpdateEloUseCase {
 
     @Transactional
     public void execute(Long bookingId) {
-        // 1. Get Ranked Match and validate status
         RankedMatch match = rankedMatchRepository.findByBookingId(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Ranked match not found for booking: " + bookingId));
 
@@ -33,14 +32,11 @@ public class UpdateEloUseCase {
             throw new IllegalStateException("Elo can only be updated for CONFIRMED or RESOLVED matches. Current status: " + match.getStatus());
         }
 
-        // Check if Elo already updated (prevent double update)
-        // A simple check is to see if any EloHistory exists for this match
         List<EloHistory> existingHistory = eloHistoryRepository.findByRankedMatchId(match.getId());
         if (!existingHistory.isEmpty()) {
             throw new IllegalStateException("Elo has already been updated for this match");
         }
 
-        // 2. Get Booking and Participants
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found: " + bookingId));
 
@@ -48,7 +44,6 @@ public class UpdateEloUseCase {
                 .filter(p -> p.getRole() == ParticipantRole.PLAYER)
                 .collect(Collectors.toList());
 
-        // 3. Separate into Teams and fetch Players
         List<Player> teamAPlayers = new ArrayList<>();
         List<Player> teamBPlayers = new ArrayList<>();
 
@@ -67,11 +62,9 @@ public class UpdateEloUseCase {
             throw new IllegalStateException("Teams are not properly assigned in booking");
         }
 
-        // 4. Calculate Elo Changes
         Map<Long, EloCalculationService.EloChangeResult> eloChanges = eloCalculationService.calculateEloChanges(
                 teamAPlayers, teamBPlayers, match.getWinningTeam());
 
-        // 5. Update Players and Save History
         List<Player> allPlayers = new ArrayList<>();
         allPlayers.addAll(teamAPlayers);
         allPlayers.addAll(teamBPlayers);
@@ -79,7 +72,6 @@ public class UpdateEloUseCase {
         for (Player player : allPlayers) {
             EloCalculationService.EloChangeResult result = eloChanges.get(player.getUserId());
             if (result != null) {
-                // Save Elo History
                 EloHistory eloHistory = EloHistory.builder()
                         .userId(player.getUserId())
                         .rankedMatchId(match.getId())
@@ -90,19 +82,17 @@ public class UpdateEloUseCase {
                         .build();
                 eloHistoryRepository.save(eloHistory);
 
-                // Update Player
                 player.updateElo(result.getEloAfter());
                 playerRepository.save(player);
 
-                // Save Skill Rating History (Snapshot - no change logic implemented yet)
                 SkillRatingHistory skillHistory = SkillRatingHistory.builder()
                         .playerId(player.getUserId())
                         .matchId(match.getId())
                         .seasonId(match.getSeasonId())
                         .muBefore(player.getRatingMu())
                         .sigmaBefore(player.getRatingSigma())
-                        .muAfter(player.getRatingMu()) // No change for now
-                        .sigmaAfter(player.getRatingSigma()) // No change for now
+                        .muAfter(player.getRatingMu())
+                        .sigmaAfter(player.getRatingSigma())
                         .build();
                 skillRatingHistoryRepository.save(skillHistory);
             }

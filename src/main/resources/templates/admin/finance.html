@@ -10,8 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -276,45 +278,45 @@
 <div class="col-span-1 bg-surface-container-lowest p-8 rounded-2xl shadow-sm space-y-6">
 <div class="flex justify-between items-start">
 <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">monetization_on</span>
+<span class="material-symbols-rounded">monetization_on</span>
 </div>
 <span class="flex items-center gap-1 text-[10px] font-bold bg-secondary/10 text-secondary px-2 py-1 rounded-full">
-<span class="material-symbols-outlined text-xs">trending_up</span> 12.5%
+<span class="material-symbols-rounded text-xs">trending_up</span> 12.5%
                         </span>
 </div>
 <div>
 <p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Tổng giá trị (GMV)</p>
-<h3 class="text-3xl font-black text-primary tabular-nums tracking-tighter">1.284.000.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
+<h3 id="stat-gmv" class="text-3xl font-black text-primary tabular-nums tracking-tighter">1.284.000.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
 </div>
 </div>
 <!-- Revenue -->
 <div class="col-span-1 bg-surface-container-lowest p-8 rounded-2xl shadow-sm space-y-6">
 <div class="flex justify-between items-start">
 <div class="w-12 h-12 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined">payments</span>
+<span class="material-symbols-rounded">payments</span>
 </div>
 <span class="flex items-center gap-1 text-[10px] font-bold bg-secondary/10 text-secondary px-2 py-1 rounded-full">
-<span class="material-symbols-outlined text-xs">trending_up</span> 8.2%
+<span class="material-symbols-rounded text-xs">trending_up</span> 8.2%
                         </span>
 </div>
 <div>
 <p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Doanh thu ròng</p>
-<h3 class="text-3xl font-black text-primary tabular-nums tracking-tighter">452.300.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
+<h3 id="stat-revenue" class="text-3xl font-black text-primary tabular-nums tracking-tighter">452.300.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
 </div>
 </div>
 <!-- Payouts -->
 <div class="col-span-1 bg-surface-container-lowest p-8 rounded-2xl shadow-sm space-y-6">
 <div class="flex justify-between items-start">
 <div class="w-12 h-12 rounded-xl bg-tertiary-fixed-dim/20 flex items-center justify-center text-on-tertiary-container">
-<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="material-symbols-rounded">account_balance_wallet</span>
 </div>
 <span class="flex items-center gap-1 text-[10px] font-bold bg-error/10 text-error px-2 py-1 rounded-full">
-<span class="material-symbols-outlined text-xs">trending_down</span> 2.4%
+<span class="material-symbols-rounded text-xs">trending_down</span> 2.4%
                         </span>
 </div>
 <div>
 <p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Đã quyết toán</p>
-<h3 class="text-3xl font-black text-primary tabular-nums tracking-tighter">320.000.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
+<h3 id="stat-refunds" class="text-3xl font-black text-primary tabular-nums tracking-tighter">320.000.000 <span class="text-lg font-medium text-on-surface-variant">₫</span></h3>
 </div>
 </div>
 <!-- Current Balance -->
@@ -323,7 +325,7 @@
 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
 <div class="flex justify-between items-start relative z-10">
 <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white">
-<span class="material-symbols-outlined">account_balance</span>
+<span class="material-symbols-rounded">account_balance</span>
 </div>
 <button class="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl transition-colors">
                             CHI TIẾT
@@ -345,32 +347,15 @@
 <p class="text-sm text-on-surface-variant">Thống kê doanh thu theo tháng trong năm 2024</p>
 </div>
 <div class="flex bg-surface-container p-1 rounded-xl">
-<button class="px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary">TUẦN</button>
-<button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant">THÁNG</button>
-<button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant">NĂM</button>
+<button onclick="loadFinanceChart('WEEK')" id="btn-chart-week" class="px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary transition-all">TUẦN</button>
+<button onclick="loadFinanceChart('MONTH')" id="btn-chart-month" class="px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-primary transition-all">THÁNG</button>
+<button onclick="loadFinanceChart('YEAR')" id="btn-chart-year" class="px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-primary transition-all">NĂM</button>
 </div>
 </div>
 <!-- Line Chart Visual Simulation -->
-<div class="h-[300px] w-full flex items-end gap-2 relative border-b border-l border-surface-container-highest pb-2 pl-2">
-<!-- Simulated Y-Axis Labels -->
-<div class="absolute -left-8 top-0 h-full flex flex-col justify-between text-[10px] font-bold text-on-surface-variant py-2">
-<span>150M</span><span>100M</span><span>50M</span><span>0</span>
+<div id="financeChart" class="h-[300px] w-full mt-4"></div>
 </div>
-<!-- Bar/Point Simulation -->
-<div class="flex-1 h-2/5 bg-primary-fixed/30 rounded-t-lg relative group">
-<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-primary text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">42M</div>
-</div>
-<div class="flex-1 h-3/5 bg-primary-fixed/30 rounded-t-lg"></div>
-<div class="flex-1 h-4/5 bg-primary rounded-t-lg"></div>
-<div class="flex-1 h-2/5 bg-primary-fixed/30 rounded-t-lg"></div>
-<div class="flex-1 h-1/2 bg-primary-fixed/30 rounded-t-lg"></div>
-<div class="flex-1 h-3/4 bg-primary-fixed/30 rounded-t-lg"></div>
-<div class="flex-1 h-full bg-primary-fixed/30 rounded-t-lg"></div>
-</div>
-<div class="flex justify-between mt-4 px-2 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-<span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
-</div>
-</div>
+
 <!-- Donut Chart & Category Breakdown -->
 <div class="col-span-1 bg-surface-container-lowest p-10 rounded-2xl shadow-sm flex flex-col">
 <h2 class="text-xl font-bold text-primary mb-2">Phân bổ doanh thu</h2>
@@ -406,7 +391,6 @@
 <span class="text-sm font-medium">Khác (Dụng cụ, nước)</span>
 </div>
 <span class="text-sm font-bold">28.4M ₫</span>
-</div>
 </div>
 </div>
 </section>
@@ -471,10 +455,10 @@
 <h2 class="text-xl font-bold text-primary">Lịch sử giao dịch gần đây</h2>
 <div class="flex items-center gap-2">
 <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="material-symbols-rounded text-sm">filter_list</span>
 </button>
 <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-sm">download</span>
+<span class="material-symbols-rounded text-sm">download</span>
 </button>
 </div>
 </div>
@@ -488,12 +472,12 @@
 <th class="pb-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest px-4 text-right">Số tiền</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-surface-container-highest/50">
+<tbody id="transaction-tbody" class="divide-y divide-surface-container-highest/50">
 <tr class="hover:bg-surface-container-low/50 transition-colors">
 <td class="py-5 px-4">
 <div class="flex items-center gap-3">
 <div class="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">person</span>
+<span class="material-symbols-rounded text-sm">person</span>
 </div>
 <span class="text-sm font-bold text-primary">Nguyễn Văn A</span>
 </div>
@@ -512,7 +496,7 @@
 <td class="py-5 px-4">
 <div class="flex items-center gap-3">
 <div class="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">person</span>
+<span class="material-symbols-rounded text-sm">person</span>
 </div>
 <span class="text-sm font-bold text-primary">Trần Thị B</span>
 </div>
@@ -531,7 +515,7 @@
 <td class="py-5 px-4">
 <div class="flex items-center gap-3">
 <div class="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">business</span>
+<span class="material-symbols-rounded text-sm">business</span>
 </div>
 <span class="text-sm font-bold text-primary">Baseline Q10</span>
 </div>
@@ -550,7 +534,7 @@
 <td class="py-5 px-4">
 <div class="flex items-center gap-3">
 <div class="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">person</span>
+<span class="material-symbols-rounded text-sm">person</span>
 </div>
 <span class="text-sm font-bold text-primary">Lê Hoàng Nam</span>
 </div>
@@ -576,14 +560,211 @@
 
         </main>
     </div>
+    <script src="/js/admin-auth.js"></script>
     <script>
         lucide.createIcons();
+
+        AdminAuth.checkAuth().then(ok => {
+            if (!ok) return;
+            AdminAuth.populateUserInfo();
+            document.querySelectorAll('[data-logout]').forEach(btn => btn.addEventListener('click', () => AdminAuth.logout()));
+
+            // Xử lý load dữ liệu
+            loadFinanceStats();
+            loadTransactions();
+            loadFinanceChart('WEEK'); // default load week
+        });
+
+        let financeChartInstance = null;
+
+        async function loadFinanceChart(period) {
+            // Update active state of buttons
+            const btns = ['week', 'month', 'year'];
+            btns.forEach(p => {
+                const btn = document.getElementById('btn-chart-' + p);
+                if (!btn) return;
+                if (p.toUpperCase() === period) {
+                    btn.className = "px-4 py-1.5 text-xs font-bold bg-white shadow-sm rounded-lg text-primary transition-all";
+                } else {
+                    btn.className = "px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-primary transition-all";
+                }
+            });
+
+            try {
+                const res = await AdminAuth.authFetch('/api/admin/finance/chart?period=' + period);
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data) {
+                        const chartData = json.data;
+                        renderChartUI(chartData.labels, chartData.data);
+                    }
+                }
+            } catch (err) {
+                console.error("Lỗi tải biểu đồ doanh thu", err);
+            }
+        }
+
+        function renderChartUI(categories, revenueArray) {
+            if (!revenueArray || revenueArray.length === 0) return;
+
+
+            const options = {
+                series: [{
+                    name: "Doanh Thu",
+                    data: revenueArray
+                }],
+                chart: {
+                    type: "area",
+                    height: 300,
+                    fontFamily: "Inter, sans-serif",
+                    toolbar: { show: false },
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800
+                    }
+                },
+                colors: ["#9d4300"], // Màu Primary
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.4,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: {
+                    curve: "smooth",
+                    width: 3
+                },
+                xaxis: {
+                    categories: categories,
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: { style: { colors: "#586377", fontSize: "10px", fontWeight: "bold" } }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: "#586377", fontSize: "10px", fontWeight: "bold" },
+                        formatter: function (value) {
+                            if (value >= 1000000) {
+                                return (value / 1000000).toFixed(0) + "M";
+                            } else if(value >= 1000) {
+                                return (value / 1000).toFixed(0) + "k";
+                            }
+                            return value;
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: "#eceef0",
+                    strokeDashArray: 4,
+                    xaxis: { lines: { show: true } },
+                    yaxis: { lines: { show: true } }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + " ₫";
+                        }
+                    }
+                }
+            };
+
+            const chartEl = document.querySelector("#financeChart");
+            if (chartEl) {
+                chartEl.innerHTML = "";
+                financeChartInstance = new ApexCharts(chartEl, options);
+                financeChartInstance.render();
+            }
+        }
+
+        async function loadFinanceStats() {
+            try {
+                const res = await AdminAuth.authFetch('/api/admin/finance/stats');
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data) {
+                        const stats = json.data;
+                        document.getElementById('stat-gmv').innerHTML =
+                            formatCurrency(stats.totalGMV) + ' <span class="text-lg font-medium text-on-surface-variant">₫</span>';
+
+                        document.getElementById('stat-revenue').innerHTML =
+                            formatCurrency(stats.totalRevenue) + ' <span class="text-lg font-medium text-on-surface-variant">₫</span>';
+
+                        document.getElementById('stat-refunds').innerHTML =
+                            formatCurrency(stats.totalRefunds) + ' <span class="text-lg font-medium text-on-surface-variant">₫</span>';
+                    }
+                }
+            } catch (err) {
+                console.error("Lỗi tải thống kê tài chính", err);
+            }
+        }
+
+        async function loadTransactions() {
+            try {
+                const res = await AdminAuth.authFetch('/api/admin/finance/transactions?page=0&size=10');
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data && json.data.content) {
+                        renderTransactions(json.data.content);
+                    }
+                }
+            } catch (err) {
+                console.error("Lỗi tải danh sách giao dịch", err);
+            }
+        }
+
+        function renderTransactions(transactions) {
+            const tbody = document.getElementById('transaction-tbody');
+            if (!transactions || transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="py-5 px-4 text-center text-on-surface-variant">Không có giao dịch nào</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = transactions.map(t => {
+                const isDeposit = t.type === 'DEPOSIT';
+                const isIncome = t.amount > 0 && t.type !== 'REFUND';
+                const colorClass = isIncome ? 'text-primary' : (t.amount < 0 || t.type === 'REFUND' ? 'text-error' : 'text-secondary');
+                const symbol = t.amount > 0 ? '+' : (t.amount < 0 ? '' : '');
+
+                return `
+                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                    <td class="py-5 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary">
+                                <span class="material-symbols-rounded text-sm">person</span>
+                            </div>
+                            <span class="text-sm font-bold text-primary">${escapeHtml(t.userName)}</span>
+                        </div>
+                    </td>
+                    <td class="py-5 px-4">
+                        <span class="text-xs font-medium text-on-surface-variant">${t.description || t.type}</span>
+                    </td>
+                    <td class="py-5 px-4 text-xs text-on-surface-variant">
+                        ${t.createdAt}
+                    </td>
+                    <td class="py-5 px-4 text-right text-sm font-black ${colorClass}">
+                        ${symbol}${formatCurrency(Math.abs(t.amount))} ₫
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function formatCurrency(amount) {
+            if (amount == null) return "0";
+            return new Intl.NumberFormat('vi-VN').format(amount);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
     </script>
-    <script src="/js/admin-auth.js"></script>
-    <script>AdminAuth.checkAuth().then(ok => {
-        if (!ok) return;
-        AdminAuth.populateUserInfo();
-        document.querySelectorAll('[data-logout]').forEach(btn => btn.addEventListener('click', () => AdminAuth.logout()));
-    });</script>
 </body>
 </html>

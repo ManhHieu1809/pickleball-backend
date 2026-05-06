@@ -17,7 +17,7 @@ public class TestAttempt {
     private Integer totalQuestions = 10;
     @Builder.Default
     private Boolean passed = false;
-    private String answers; // JSON string: {"1":"A","2":"B",...}
+    private String answers;
     private LocalDateTime attemptedAt;
 
     public static final int PASSING_SCORE = 9;

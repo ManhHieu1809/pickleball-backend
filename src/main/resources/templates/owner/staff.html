@@ -6,6 +6,7 @@
 <title>Quản lý Nhân viên - The Kinetic Ledger</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="/js/owner-auth.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -88,27 +89,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -139,13 +140,10 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
@@ -176,129 +174,13 @@
 <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant text-center">Hành động</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/10">
-<!-- Staff Row 1 -->
-<tr class="hover:bg-surface-bright transition-colors group">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 font-bold border border-orange-200">
-<span>AN</span>
-</div>
-<div>
-<div class="font-bold text-on-surface">Nguyễn Văn An</div>
-<div class="text-xs text-on-surface-variant">an.nguyen@kinetic.com</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface-variant">annguyen_staff</td>
-<td class="px-6 py-5">
-<span class="px-3 py-1 rounded-full text-xs font-bold bg-secondary-container text-on-secondary-container tracking-wide">Quản lý</span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-2 text-tertiary font-semibold text-sm">
-<span class="w-2 h-2 rounded-full bg-tertiary"></span>
-                                            Active
-                                        </div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-center gap-2">
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Sửa">
-<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Đổi mật khẩu">
-<span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Cập nhật quyền">
-<span class="material-symbols-outlined text-xl" data-icon="security">security</span>
-</button>
-<button class="p-2 rounded-md hover:bg-error-container text-error transition-colors" title="Vô hiệu hóa">
-<span class="material-symbols-outlined text-xl" data-icon="person_off">person_off</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Staff Row 2 -->
-<tr class="hover:bg-surface-bright transition-colors group">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200">
-<span>TM</span>
-</div>
-<div>
-<div class="font-bold text-on-surface">Trần Thị Minh</div>
-<div class="text-xs text-on-surface-variant">minh.tran@kinetic.com</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface-variant">minhtran_reception</td>
-<td class="px-6 py-5">
-<span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant tracking-wide">Lễ tân</span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-2 text-tertiary font-semibold text-sm">
-<span class="w-2 h-2 rounded-full bg-tertiary"></span>
-                                            Active
-                                        </div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-center gap-2">
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Sửa">
-<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Đổi mật khẩu">
-<span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Cập nhật quyền">
-<span class="material-symbols-outlined text-xl" data-icon="security">security</span>
-</button>
-<button class="p-2 rounded-md hover:bg-error-container text-error transition-colors" title="Vô hiệu hóa">
-<span class="material-symbols-outlined text-xl" data-icon="person_off">person_off</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Staff Row 3 (Inactive) -->
-<tr class="hover:bg-surface-bright transition-colors group opacity-75">
-<td class="px-6 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
-<span>HP</span>
-</div>
-<div>
-<div class="font-bold text-on-surface">Hoàng Phi</div>
-<div class="text-xs text-on-surface-variant">phi.hoang@kinetic.com</div>
-</div>
-</div>
-</td>
-<td class="px-6 py-5 font-mono text-sm text-on-surface-variant">phihoang_dev</td>
-<td class="px-6 py-5">
-<span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-container-highest text-on-surface-variant tracking-wide">Kỹ thuật</span>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center gap-2 text-error font-semibold text-sm">
-<span class="w-2 h-2 rounded-full bg-error"></span>
-                                            Inactive
-                                        </div>
-</td>
-<td class="px-6 py-5">
-<div class="flex items-center justify-center gap-2">
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Sửa">
-<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Đổi mật khẩu">
-<span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
-</button>
-<button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Khôi phục">
-<span class="material-symbols-outlined text-xl" data-icon="restore">restore</span>
-</button>
-</div>
-</td>
-</tr>
+<tbody id="staffTableBody" class="divide-y divide-outline-variant/10">
+    <!-- Staff rows will be injected here via JS -->
 </tbody>
 </table>
 </div>
 <div class="bg-surface-container-low px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between">
-<span class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Hiển thị 3 trên 12 nhân viên</span>
+<span id="staffCountText" class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Hiển thị 0 nhân viên</span>
 <div class="flex gap-2">
 <button class="p-2 rounded bg-surface-container-lowest border border-outline-variant/20 hover:bg-white transition-colors">
 <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
@@ -344,31 +226,21 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="space-y-1">
 <label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Họ và tên</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="Nguyễn Văn A" type="text"/>
+<input id="staffFullName" class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="Nguyễn Văn A" type="text"/>
 </div>
 <div class="space-y-1">
 <label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Tên đăng nhập</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="admin_staff" type="text"/>
+<input id="staffUsername" class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="admin_staff" type="text"/>
 </div>
 <div class="space-y-1">
 <label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Mật khẩu</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="••••••••" type="password"/>
+<input id="staffPassword" class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="••••••••" type="password"/>
 </div>
 <div class="space-y-1">
-<label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Vai trò</label>
-<select class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all">
-<option>Lễ tân</option>
-<option>Quản lý</option>
-<option>Kỹ thuật</option>
+<label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Cơ sở làm việc</label>
+<select id="staffVenueId" class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all">
+<option value="">Đang tải...</option>
 </select>
-</div>
-<div class="space-y-1">
-<label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Số điện thoại</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="090 123 4567" type="tel"/>
-</div>
-<div class="space-y-1">
-<label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant ml-1">Email</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg p-3 focus:bg-surface-container-lowest focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="example@court.vn" type="email"/>
 </div>
 </div>
 <!-- Permissions Section -->
@@ -382,7 +254,7 @@
 <div class="flex items-center justify-between p-3 bg-surface-container rounded-lg group hover:bg-surface-container-high transition-colors">
 <span class="text-sm font-medium">Đặt sân mới</span>
 <label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
+<input type="checkbox" value="CAN_CREATE_BOOKING" class="sr-only peer perm-checkbox" checked/>
 <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
 </label>
 </div>
@@ -390,7 +262,7 @@
 <div class="flex items-center justify-between p-3 bg-surface-container rounded-lg group hover:bg-surface-container-high transition-colors">
 <span class="text-sm font-medium">Check-in khách</span>
 <label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
+<input type="checkbox" value="CAN_CHECK_IN" class="sr-only peer perm-checkbox" checked/>
 <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
 </label>
 </div>
@@ -398,7 +270,7 @@
 <div class="flex items-center justify-between p-3 bg-surface-container rounded-lg group hover:bg-surface-container-high transition-colors">
 <span class="text-sm font-medium">Xem doanh thu</span>
 <label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" type="checkbox"/>
+<input type="checkbox" value="CAN_VIEW_REVENUE" class="sr-only peer perm-checkbox"/>
 <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
 </label>
 </div>
@@ -406,7 +278,7 @@
 <div class="flex items-center justify-between p-3 bg-surface-container rounded-lg group hover:bg-surface-container-high transition-colors">
 <span class="text-sm font-medium">Hủy lịch đặt</span>
 <label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" type="checkbox"/>
+<input type="checkbox" value="CAN_CANCEL_BOOKING" class="sr-only peer perm-checkbox"/>
 <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
 </label>
 </div>
@@ -415,7 +287,7 @@
 <!-- Form Actions -->
 <div class="flex justify-end gap-4 pt-8 border-t border-surface-container-high">
 <button id="closeAddStaffBtn2" class="px-8 py-3 rounded-lg text-secondary font-bold hover:bg-surface-container-high transition-colors scale-95 active:scale-90" type="button">Hủy</button>
-<button class="bg-kinetic-gradient px-10 py-3 rounded-lg text-white font-bold shadow-lg scale-95 active:scale-90 transition-transform" type="button" onclick="document.getElementById('addStaffModal').classList.add('hidden');">Lưu nhân viên</button>
+<button id="saveStaffBtn" class="bg-kinetic-gradient px-10 py-3 rounded-lg text-white font-bold shadow-lg scale-95 active:scale-90 transition-transform" type="button">Lưu nhân viên</button>
 </div>
 </form>
 </div>
@@ -424,6 +296,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    OwnerAuth.checkAccessAndRenderMenu();
     const btn = document.getElementById("openAddStaffBtn");
     const modal = document.getElementById("addStaffModal");
     const close1 = document.getElementById("closeAddStaffBtn1");
@@ -435,7 +308,192 @@ document.addEventListener("DOMContentLoaded", () => {
     const hideModal = () => { if (modal) modal.classList.add("hidden"); };
     if (close1) close1.addEventListener("click", hideModal);
     if (close2) close2.addEventListener("click", hideModal);
+
+    document.getElementById("saveStaffBtn")?.addEventListener("click", handleAddStaff);
+
+    loadStaff();
+    loadVenuesForSelect();
 });
+
+async function loadVenuesForSelect() {
+    try {
+        const ownerId = OwnerAuth.getOwnerId();
+        const res = await OwnerAuth.authFetch(`/api/venues/owner/${ownerId}`);
+        if (res.ok) {
+            const json = await res.json();
+            const venues = json.data || [];
+            const select = document.getElementById('staffVenueId');
+            select.innerHTML = '<option value="">-- Chọn cơ sở --</option>' +
+                venues.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+        }
+    } catch (e) {
+        console.error('Failed to load venues for select', e);
+    }
+}
+
+async function handleAddStaff() {
+    const btn = document.getElementById('saveStaffBtn');
+    btn.disabled = true;
+    btn.textContent = "Đang xử lý...";
+
+    try {
+        const ownerId = OwnerAuth.getOwnerId();
+        const fullName = document.getElementById('staffFullName').value.trim();
+        const username = document.getElementById('staffUsername').value.trim();
+        const password = document.getElementById('staffPassword').value;
+        const venueId = document.getElementById('staffVenueId').value;
+
+        const permCheckboxes = document.querySelectorAll('.perm-checkbox:checked');
+        const permissions = Array.from(permCheckboxes).map(cb => cb.value);
+
+        if (!fullName || !username || !password || !venueId) {
+            throw new Error('Vui lòng điền đầy đủ tất cả thông tin!');
+        }
+
+        const payload = {
+            venueId: parseInt(venueId),
+            username: username,
+            password: password,
+            fullName: fullName,
+            permissions: permissions
+        };
+
+        const res = await OwnerAuth.authFetch(`/api/staff?ownerId=${ownerId}`, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+        if (res.ok && json.success !== false) {
+            alert('Thêm nhân viên thành công!');
+            document.getElementById('addStaffModal').classList.add('hidden');
+
+            // clear form
+            document.getElementById('staffFullName').value = '';
+            document.getElementById('staffUsername').value = '';
+            document.getElementById('staffPassword').value = '';
+            document.getElementById('staffVenueId').value = '';
+
+            loadStaff();
+        } else {
+            throw new Error(json.message || 'Lỗi từ máy chủ khi tạo nhân viên');
+        }
+    } catch (e) {
+        alert(e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Lưu nhân viên";
+    }
+}
+
+async function loadStaff() {
+    try {
+        const ownerId = OwnerAuth.getOwnerId();
+        if (!ownerId) {
+            alert("No owner logged in");
+            return;
+        }
+
+        const res = await OwnerAuth.authFetch(`/api/staff/owner/${ownerId}`);
+        if (!res.ok) throw new Error("Failed to load staff");
+        const json = await res.json();
+        const staffList = json.data;
+
+        renderStaff(staffList);
+    } catch (e) {
+        console.error(e);
+        document.getElementById('staffTableBody').innerHTML = `<tr><td colspan="5" class="px-6 py-5 text-center text-error">Failed to load staff: ${e.message}</td></tr>`;
+    }
+}
+
+function renderStaff(staffList) {
+    const tbody = document.getElementById('staffTableBody');
+    document.getElementById('staffCountText').textContent = `Hiển thị ${staffList.length} nhân viên`;
+
+    if (!staffList || staffList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-5 text-center text-on-surface-variant">Chưa có nhân viên nào.</td></tr>`;
+        return;
+    }
+
+    const html = staffList.map(staff => {
+        const initials = (staff.fullName || staff.username).slice(0, 2).toUpperCase();
+        const isActive = staff.active;
+        const statusColor = isActive ? 'text-tertiary bg-tertiary' : 'text-error bg-error';
+        const opacity = isActive ? '' : 'opacity-75';
+
+        const roleMap = {
+            'CAN_CREATE_BOOKING': 'Đặt sân',
+            'CAN_CHECK_IN': 'Check-in',
+            'CAN_VIEW_REVENUE': 'Doanh thu',
+            'CAN_CANCEL_BOOKING': 'Hủy lịch'
+        };
+
+        let rolesHtml = Array.from(staff.permissions || [])
+            .map(p => `<span class="px-2 py-1 rounded border border-outline-variant/30 text-[10px] uppercase font-bold bg-secondary-container text-on-secondary-container whitespace-nowrap">${roleMap[p] || p}</span>`)
+            .join('');
+
+        if (!rolesHtml) rolesHtml = `<span class="text-xs text-on-surface-variant italic">Không có quyền</span>`;
+
+        return `
+            <tr class="hover:bg-surface-bright transition-colors group ${opacity}">
+                <td class="px-6 py-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 font-bold border border-orange-200">
+                            <span>${initials}</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-on-surface">${staff.fullName || staff.username}</div>
+                            <div class="text-xs text-on-surface-variant">${staff.venueName || '-'}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-5 font-mono text-sm text-on-surface-variant">${staff.username}</td>
+                <td class="px-6 py-5">
+                    <div class="flex flex-wrap gap-1 w-48">
+                        ${rolesHtml}
+                    </div>
+                </td>
+                <td class="px-6 py-5">
+                    <div class="flex items-center gap-2 font-semibold text-sm ${isActive ? 'text-tertiary' : 'text-error'}">
+                        <span class="w-2 h-2 rounded-full ${isActive ? 'bg-tertiary' : 'bg-error'}"></span>
+                        ${isActive ? 'Active' : 'Inactive'}
+                    </div>
+                </td>
+                <td class="px-6 py-5">
+                    <div class="flex items-center justify-center gap-2">
+                        <button class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Sửa">
+                            <span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+                        </button>
+                        ${isActive
+                            ? `<button onclick="toggleStaffStatus(${staff.id}, false)" class="p-2 rounded-md hover:bg-error-container text-error transition-colors" title="Vô hiệu hóa">
+                                <span class="material-symbols-outlined text-xl" data-icon="person_off">person_off</span>
+                               </button>`
+                            : `<button onclick="toggleStaffStatus(${staff.id}, true)" class="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Kích hoạt">
+                                <span class="material-symbols-outlined text-xl" data-icon="restore">restore</span>
+                               </button>`
+                        }
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    tbody.innerHTML = html;
+}
+
+async function toggleStaffStatus(staffId, isActivate) {
+    if(!confirm(`Bạn có chắc chắn muốn ${isActivate ? 'kích hoạt' : 'vô hiệu hóa'} nhân viên này?`)) return;
+
+    try {
+        const ownerId = OwnerAuth.getOwnerId();
+        const endpoint = `/api/staff/${staffId}/${isActivate ? 'activate' : 'deactivate'}?ownerId=${ownerId}`;
+        const res = await OwnerAuth.authFetch(endpoint, { method: 'PUT' });
+        if(!res.ok) throw new Error('Action failed');
+        loadStaff();
+    } catch(e) {
+        alert(e.message);
+    }
+}
 </script>
     </div> <!-- closing flex h-screen -->
     <script>lucide.createIcons();</script>

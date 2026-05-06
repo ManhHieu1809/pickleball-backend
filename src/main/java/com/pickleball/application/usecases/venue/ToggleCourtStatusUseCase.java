@@ -12,11 +12,9 @@ public class ToggleCourtStatusUseCase {
     private final VenueRepository venueRepository;
 
     public Court execute(Long courtId, Long requesterId, boolean activate, boolean isAdmin) {
-        // Find court
         Court court = courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court không tồn tại"));
 
-        // Verify permission
         Venue venue = venueRepository.findById(court.getVenueId())
                 .orElseThrow(() -> new IllegalArgumentException("Venue không tồn tại"));
 
@@ -24,12 +22,11 @@ public class ToggleCourtStatusUseCase {
             throw new IllegalArgumentException("Chỉ chủ sân hoặc admin mới có quyền thay đổi trạng thái court");
         }
 
-        // Toggle status
         if (activate) {
             if (isAdmin) {
-                court.activateByAdmin(); // Admin can unlock
+                court.activateByAdmin();
             } else {
-                court.activate(); // Owner activate (will throw if admin locked)
+                court.activate();
             }
         } else {
             court.deactivate(requesterId, isAdmin);

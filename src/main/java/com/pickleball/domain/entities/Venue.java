@@ -31,12 +31,10 @@ public class Venue {
     private Long approvedByAdminId;
     private LocalDateTime approvedAt;
     private LocalDateTime createdAt;
-    private Long deactivatedByAdminId; // Track if admin locked the venue
+    private Long deactivatedByAdminId;
 
     @Builder.Default
     private List<Court> courts = new ArrayList<>();
-
-
 
     public void approve(Long adminId) {
         this.isActive = true;
@@ -65,7 +63,6 @@ public class Venue {
         if (isAdmin) {
             this.deactivatedByAdminId = deactivatorId;
         }
-        // Owner deactivate: không set deactivatedByAdminId
     }
 
     public void activateByAdmin() {

@@ -7,6 +7,7 @@ import com.pickleball.infrastructure.persistence.mappers.PlayerMapper;
 import com.pickleball.infrastructure.persistence.repositories.PlayerJpaRepository;
 import com.pickleball.infrastructure.persistence.repositories.UserJpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,7 +51,6 @@ public class PlayerRepositoryAdapter implements PlayerRepository {
 
     @Override
     public Optional<Player> findByEmail(String email) {
-        // Tìm User trước, sau đó tìm Player bằng userId
         return userJpaRepository.findByEmail(email)
                 .flatMap(userEntity -> playerJpaRepository.findByUserId(userEntity.getId()))
                 .map(playerMapper::toDomain);
@@ -73,5 +73,18 @@ public class PlayerRepositoryAdapter implements PlayerRepository {
     @Override
     public void updateLocation(Long userId, Double latitude, Double longitude) {
         playerJpaRepository.updateLocation(userId, latitude, longitude, LocalDateTime.now());
+    }
+
+    @Override
+    public List<Player> findTopPlayers(int page, int size) {
+        return playerJpaRepository.findAllByOrderByCurrentEloDesc(PageRequest.of(page, size))
+                .stream()
+                .map(playerMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countTotalPlayers() {
+        return playerJpaRepository.count();
     }
 }

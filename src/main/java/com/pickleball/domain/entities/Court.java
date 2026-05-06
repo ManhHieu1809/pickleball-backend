@@ -20,7 +20,7 @@ public class Court {
     private Long venueId;
     private String courtName;
     private boolean isActive;
-    private Long deactivatedByAdminId; // Track if admin locked the court
+    private Long deactivatedByAdminId;
 
     @Builder.Default
     private List<CourtPricing> pricing = new ArrayList<>();
@@ -32,7 +32,6 @@ public class Court {
         if (isAdmin) {
             this.deactivatedByAdminId = deactivatorId;
         }
-        // Owner deactivate: không set deactivatedByAdminId
     }
 
     public void activate() {
@@ -44,7 +43,7 @@ public class Court {
 
     public void activateByAdmin() {
         this.isActive = true;
-        this.deactivatedByAdminId = null; // Clear admin lock
+        this.deactivatedByAdminId = null;
     }
 
     public void addPricing(CourtPricing courtPricing) {

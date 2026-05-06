@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,5 +26,8 @@ public interface PlayerJpaRepository extends JpaRepository<PlayerEntity, Long> {
 
     @Modifying
     @Query("UPDATE PlayerEntity p SET p.lastLatitude = :lat, p.lastLongitude = :lng, p.locationUpdatedAt = :now WHERE p.userId = :userId")
-    void updateLocation(@Param("userId") Long userId, @Param("lat") Double lat, @Param("lng") Double lng, @Param("now") LocalDateTime now);
+    void updateLocation(@Param("userId") Long userId, @Param("lat") Double lat, @Param("lng") Double lng, @Param("now") LocalDateTime now);        
+
+    @EntityGraph(attributePaths = {"user"})
+    Page<PlayerEntity> findAllByOrderByCurrentEloDesc(Pageable pageable);
 }

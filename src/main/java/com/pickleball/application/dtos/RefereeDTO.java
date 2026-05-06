@@ -18,6 +18,7 @@ public class RefereeDTO {
     private RefereeType refereeType;
     private Long worksAtVenueId;
     private Boolean isActive;
+    private Boolean isReady;
     private BigDecimal trustScore;
     private Integer totalMatchesRefereed;
     private LocalDateTime approvedAt;

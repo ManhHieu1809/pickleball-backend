@@ -22,7 +22,6 @@ public class CreateCourtUseCase {
     private final CourtPricingRepository courtPricingRepository;
 
     public Court execute(Long venueId, String courtName, List<CourtPricingRequest> pricingRequests) {
-        // Validate venue exists and is active
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new IllegalArgumentException("Venue không tồn tại"));
 
@@ -30,7 +29,6 @@ public class CreateCourtUseCase {
             throw new IllegalArgumentException("Venue chưa được duyệt hoặc không hoạt động");
         }
 
-        // Create court
         Court court = Court.builder()
                 .venueId(venueId)
                 .courtName(courtName)
@@ -40,7 +38,6 @@ public class CreateCourtUseCase {
 
         Court savedCourt = courtRepository.save(court);
 
-        // Create pricing if provided
         if (pricingRequests != null && !pricingRequests.isEmpty()) {
             for (CourtPricingRequest pricingRequest : pricingRequests) {
                 CourtPricing pricing = CourtPricing.builder()

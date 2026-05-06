@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * DTO for Ranked Match response (WORKFLOW §II.3).
- * Extends CasualMatchDTO concept with referee info and ranked-specific fields.
- */
 @Data
 @Builder
 @AllArgsConstructor
@@ -22,7 +18,6 @@ public class RankedMatchDTO {
     private BookingDTO booking;
     private PaymentDTO payment;
 
-    // Cost breakdown
     private BigDecimal depositPerPlayer;
     private String depositCurrency;
     private BigDecimal venueFee;
@@ -30,9 +25,8 @@ public class RankedMatchDTO {
     private BigDecimal platformFee;
     private BigDecimal totalCost;
 
-    // Player info
     private Integer currentPlayerCount;
-    private Integer requiredPlayerCount;    // Always 4
+    private Integer requiredPlayerCount;
     private List<PlayerMatchDTO> playerCandidates;
 
     // Referee info

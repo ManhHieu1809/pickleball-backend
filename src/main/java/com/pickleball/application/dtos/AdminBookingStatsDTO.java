@@ -8,6 +8,6 @@ import lombok.Data;
 public class AdminBookingStatsDTO {
     private long totalBookings;
     private long todayBookings;
-    private long activeBookings; // CONFIRMED OR PENDING
+    private long activeBookings;
     private long cancelledBookings;
 }

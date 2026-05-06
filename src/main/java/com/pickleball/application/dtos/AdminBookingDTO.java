@@ -20,17 +20,13 @@ public class AdminBookingDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
-
-    // User info who created it
     private Long createdByPlayerId;
     private String creatorName;
 
-    // Financial breakdown
     private BigDecimal venueFee;
     private BigDecimal refereeFee;
     private BigDecimal platformFee;
 
-    // Payment info (if available)
     private String paymentStatus;
     private String paymentMethod;
 }

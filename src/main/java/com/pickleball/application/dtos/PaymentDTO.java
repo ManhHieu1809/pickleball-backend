@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-/**
- * DTO for payment information in booking response
- */
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,9 +15,9 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentDTO {
     private String transactionId;
-    private String status;          // PENDING, SUCCESS, FAILED, REFUNDED
+    private String status;
     private BigDecimal amount;
     private String currency;
-    private String paymentUrl;      // URL for user to complete payment (if async)
+    private String paymentUrl;
     private String message;
 }

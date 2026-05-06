@@ -93,27 +93,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -144,13 +144,10 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
@@ -197,8 +194,8 @@
 </div>
 <h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Sân đang sử dụng</h3>
 <div class="flex items-baseline gap-1 mt-1">
-<p class="text-4xl font-black tracking-tighter">8</p>
-<p class="text-on-surface-variant font-bold">/10</p>
+<p class="text-4xl font-black tracking-tighter" id="stat-playing-courts">8</p>
+<p class="text-on-surface-variant font-bold" id="stat-total-courts">/10</p>
 </div>
 </div>
 <!-- Card 4 -->
@@ -209,7 +206,7 @@
 </span>
 </div>
 <h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Sân trống hiện tại</h3>
-<p class="text-4xl font-black tracking-tighter mt-1 text-green-600">2</p>
+<p class="text-4xl font-black tracking-tighter mt-1 text-green-600" id="stat-available-courts">2</p>
 </div>
 </div>
 </section>
@@ -232,281 +229,88 @@
 </div>
 </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-<!-- COURT A1: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A1</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Anh Tuấn</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">15:30</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-<!-- COURT A2: TRỐNG -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-green-500"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A2</h4>
-<span class="text-[10px] bg-green-500/10 text-green-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">TRỐNG</span>
-</div>
-<div class="mb-10 text-center py-4">
-<span class="material-symbols-outlined text-green-500/20 text-5xl" data-icon="check_circle">check_circle</span>
-</div>
-<div class="grid grid-cols-2 gap-2">
-<button class="py-2 kinetic-gradient text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">Đặt nhanh</button>
-<button class="py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">Khóa sân</button>
-</div>
-</div>
-</div>
-<!-- COURT A3: SẮP CÓ KHÁCH -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-yellow-400"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A3</h4>
-<span class="text-[10px] bg-yellow-400/20 text-yellow-700 px-2 py-1 rounded font-bold uppercase tracking-tighter">Sắp có khách</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Tiếp theo</p>
-<p class="font-bold text-on-surface">Chị Lan</p>
-<div class="mt-3 flex items-center gap-2 text-yellow-600">
-<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-<span class="text-lg font-black tracking-tighter">18:00</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chuẩn bị</button>
-</div>
-</div>
-<!-- COURT A4: ĐANG KHÓA -->
-<div class="bg-surface-container-low rounded-xl shadow-sm overflow-hidden relative opacity-75">
-<div class="absolute left-0 top-0 w-1 h-full bg-slate-400"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg text-slate-500">Sân A4</h4>
-<span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">ĐANG KHÓA</span>
-</div>
-<div class="mb-8">
-<p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Lý do</p>
-<p class="font-bold text-slate-600">Bảo trì hệ thống</p>
-</div>
-<button class="w-full py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-50 transition-colors">Mở khóa</button>
-</div>
-</div>
-<!-- COURT A5: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A5</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Anh Hoàng (Member)</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">42:15</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-<!-- Extra Courts to complete grid (Mental model of 10) -->
-<!-- COURT A6: TRỐNG -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-green-500"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A6</h4>
-<span class="text-[10px] bg-green-500/10 text-green-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">TRỐNG</span>
-</div>
-<div class="mb-10 text-center py-4">
-<span class="material-symbols-outlined text-green-500/20 text-5xl" data-icon="check_circle">check_circle</span>
-</div>
-<div class="grid grid-cols-2 gap-2">
-<button class="py-2 kinetic-gradient text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">Đặt nhanh</button>
-<button class="py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">Khóa sân</button>
-</div>
-</div>
-</div>
-<!-- COURT A7: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A7</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Nhóm Anh Hùng</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">05:45</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-<!-- COURT A8: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A8</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Chị Ngọc</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">30:00</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-<!-- COURT A9: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A9</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Tân Bình Team</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">12:20</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-<!-- COURT A10: ĐANG CHƠI -->
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative">
-<div class="absolute left-0 top-0 w-1 h-full bg-error"></div>
-<div class="p-5">
-<div class="flex justify-between items-start mb-3">
-<h4 class="font-black text-lg">Sân A10</h4>
-<span class="text-[10px] bg-error/10 text-error px-2 py-1 rounded font-bold uppercase tracking-tighter">Đang chơi</span>
-</div>
-<div class="mb-6">
-<p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Khách hàng</p>
-<p class="font-bold text-on-surface">Anh Quân</p>
-<div class="mt-3 flex items-center gap-2 text-error">
-<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span>
-<span class="text-xl font-black tracking-tighter">55:10</span>
-</div>
-</div>
-<button class="w-full py-2 bg-surface-container-high rounded-lg text-sm font-bold hover:bg-surface-container-highest transition-colors">Chi tiết</button>
-</div>
-</div>
-</div>
-</section>
-<!-- SECTION: QUICK ACTIONS & CHART BENTO GRID -->
-<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
-<!-- BENTO CARD: CHART -->
-<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
-<div class="flex justify-between items-start mb-10">
-<div>
-<h3 class="text-xl font-black tracking-tight">Doanh thu 7 ngày gần nhất</h3>
-<p class="text-sm text-on-surface-variant font-medium">Hiệu suất kinh doanh tuần qua</p>
-</div>
-<div class="bg-surface-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-on-surface">Thứ 2 - Chủ Nhật</div>
-</div>
-<div class="flex items-end justify-between h-48 gap-4 px-2">
-<!-- Bar Chart (CSS based) -->
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 60%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 40%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T2</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 45%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 60%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T3</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 80%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 70%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T4</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 55%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 35%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T5</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 95%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 85%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">T6</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 100%">
-<div class="absolute bottom-0 w-full kinetic-gradient rounded-t-lg" style="height: 100%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-orange-600">T7</span>
-</div>
-<div class="flex flex-col items-center flex-1 group">
-<div class="w-full bg-surface-container rounded-t-lg relative transition-all group-hover:bg-primary/20" style="height: 90%">
-<div class="absolute bottom-0 w-full bg-primary/40 rounded-t-lg transition-all" style="height: 90%"></div>
-</div>
-<span class="text-[10px] mt-2 font-bold text-on-surface-variant">CN</span>
-</div>
-</div>
-</div>
-<!-- BENTO CARD: QUICK ACTIONS -->
-<div class="bg-surface-container p-8 rounded-2xl">
-<h3 class="text-xl font-black tracking-tight mb-6">Thao tác nhanh</h3>
-<div class="grid grid-cols-2 gap-4">
-<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
-<span class="material-symbols-outlined text-primary" data-icon="edit_note">edit_note</span>
-<span class="text-xs font-bold uppercase tracking-tighter">📝 Tạo Walk-in</span>
-</button>
-<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
-<span class="material-symbols-outlined text-error" data-icon="lock">lock</span>
-<span class="text-xs font-bold uppercase tracking-tighter">🔒 Khóa sân nhanh</span>
-</button>
-<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
-<span class="material-symbols-outlined text-tertiary" data-icon="calendar_month">calendar_month</span>
-<span class="text-xs font-bold uppercase tracking-tighter">👁️ Xem lịch</span>
-</button>
-<button class="bg-surface-container-lowest p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white hover:shadow-md transition-all group active:scale-95">
-<span class="material-symbols-outlined text-green-600" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span class="text-xs font-bold uppercase tracking-tighter">💰 Doanh thu</span>
-</button>
-</div>
-<div class="mt-8 p-4 bg-primary/5 rounded-xl border border-primary/10">
-<div class="flex items-center gap-3 mb-2">
-<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
-<p class="text-xs font-bold uppercase text-primary">Mẹo tối ưu</p>
-</div>
-<p class="text-xs text-on-primary-container leading-relaxed">Sân A2 thường trống vào khung giờ 16:00 - 18:00. Hãy tạo chương trình khuyến mãi Giờ Vàng!</p>
-</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6" id="live-courts-container">
+<!-- Dữ liệu sân sẽ được render bởi Javascript tại đây -->
 </div>
 </section>
 </div>
 </main>
     </div>
     <script>lucide.createIcons();</script>
-</body></html>
+<script src="/js/owner-auth.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        OwnerAuth.checkAccessAndRenderMenu();
+        const ownerId = OwnerAuth.getOwnerId();
+        if (!ownerId) {
+            console.error("No owner ID found. Redirecting to login...");
+            OwnerAuth.logout();
+            return;
+        }
+
+        try {
+            // Placeholder: Thay endpoint thực tế tại đây nếu system đã hỗ trợ tính toán gộp (VD: api/bookings/owner/stats)
+            // Hiện tại ta có thể mock fetch danh sách venue để lấy tổng số sân
+            const venuesRes = await OwnerAuth.authFetch(`/api/venues/owner/${ownerId}`);
+            if (venuesRes.ok) {
+                const venuesData = await venuesRes.json();
+                const venues = venuesData.data || [];
+
+                let allCourts = [];
+                for (const v of venues) {
+                    const courtsRes = await OwnerAuth.authFetch(`/api/courts/venue/${v.id}`);
+                    if (courtsRes.ok) {
+                        const courtsData = await courtsRes.json();
+                        allCourts = allCourts.concat(courtsData.data || []);
+                    }
+                }
+
+                // Tạm mock stat dựa trên tổng số sân (do chưa có API trả thẳng booking/doanh thu cho dashboard chủ sân)
+                const totalCourts = allCourts.length;
+                document.getElementById("stat-playing-courts").textContent = "0"; // Mock
+                document.getElementById("stat-total-courts").textContent = `/${totalCourts}`;
+                document.getElementById("stat-available-courts").textContent = totalCourts;
+
+                renderLiveCourts(allCourts);
+            }
+        } catch (error) {
+            console.error("Lỗi khi load dữ liệu dashboard:", error);
+        }
+    });
+
+    function renderLiveCourts(courts) {
+        const container = document.getElementById("live-courts-container");
+        container.innerHTML = "";
+
+        if (!courts || courts.length === 0) {
+            container.innerHTML = `<p class="col-span-full uppercase text-sm font-bold text-slate-400">Không có sân nào.</p>`;
+            return;
+        }
+
+        courts.forEach(court => {
+            // Tạm thời coi tất cả sân là Trống (vì dữ liệu hiện tại từ bảng court chưa trả kèm Realtime API cho bookings)
+            // Nếu có API CourtStatus, thay đổi trạng thái và màu tương ứng
+            const div = document.createElement("div");
+            div.className = "bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative";
+            div.innerHTML = `
+                <div class="absolute left-0 top-0 w-1 h-full bg-green-500"></div>
+                <div class="p-5">
+                    <div class="flex justify-between items-start mb-3">
+                        <h4 class="font-black text-lg">${court.courtName || 'Sân ' + court.id}</h4>
+                        <span class="text-[10px] bg-green-500/10 text-green-600 px-2 py-1 rounded font-bold uppercase tracking-tighter">TRỐNG</span>
+                    </div>
+                    <div class="mb-10 text-center py-4">
+                        <span class="material-symbols-outlined text-green-500/20 text-5xl" data-icon="check_circle">check_circle</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="py-2 kinetic-gradient text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity">Đặt nhanh</button>
+                        <button class="py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">Khóa sân</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+</script>
+</body>
+</html>

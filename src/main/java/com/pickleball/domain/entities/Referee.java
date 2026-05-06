@@ -23,6 +23,8 @@ public class Referee {
     @Builder.Default
     private Boolean isActive = true;
     @Builder.Default
+    private Boolean isReady = false;
+    @Builder.Default
     private BigDecimal trustScore = new BigDecimal("100.00");
     @Builder.Default
     private Integer totalMatchesRefereed = 0;
@@ -35,6 +37,14 @@ public class Referee {
 
     public void deactivate() {
         this.isActive = false;
+        this.isReady = false;
+    }
+
+    public void toggleReady(boolean ready) {
+        if (ready && !isActive) {
+            throw new IllegalStateException("Active flags must be true to toggle ready");
+        }
+        this.isReady = ready;
     }
 
     public boolean isEligibleForMatch() {
@@ -46,10 +56,7 @@ public class Referee {
     }
 
     public void incrementTrustScore() {
-        // Increment by 1.00
         this.trustScore = this.trustScore.add(BigDecimal.ONE);
-        // Cap at 100.00? Assuming max trust is not strictly limited but let's keep it reasonable or just add.
-        // Usually trust score is capped at 100. Let's assume 100 max.
         if (this.trustScore.compareTo(new BigDecimal("100.00")) > 0) {
             this.trustScore = new BigDecimal("100.00");
         }
@@ -60,7 +67,6 @@ public class Referee {
         if (this.trustScore.compareTo(BigDecimal.ZERO) < 0) {
             this.trustScore = BigDecimal.ZERO;
         }
-        // Auto-ban if trust score drops below threshold
         if (this.trustScore.compareTo(new BigDecimal("30.00")) < 0) {
             this.isActive = false;
         }

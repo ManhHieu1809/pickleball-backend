@@ -10,24 +10,20 @@ import java.util.Map;
 @Data
 @Builder
 public class DashboardStatsDTO {
-
-    // Summary cards
     private long totalBookings;
     private long todayBookings;
     private long newUsersThisMonth;
     private long activeVenues;
 
-    // Pending actions
     private long pendingOwnerRequests;
     private long pendingVenues;
 
-    // Booking type distribution
     private Map<String, Long> bookingTypeDistribution;
 
-    // Recent bookings
+    private List<BigDecimal> revenueLast7Days;
+
     private List<RecentBookingDTO> recentBookings;
 
-    // Pending role requests
     private List<PendingActionDTO> pendingActions;
 
     @Data
@@ -46,7 +42,7 @@ public class DashboardStatsDTO {
     @Builder
     public static class PendingActionDTO {
         private Long id;
-        private String type; // OWNER_REQUEST, VENUE_PENDING
+        private String type;
         private String title;
         private String description;
         private String submittedAt;

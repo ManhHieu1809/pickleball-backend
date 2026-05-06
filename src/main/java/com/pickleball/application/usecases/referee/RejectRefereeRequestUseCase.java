@@ -5,9 +5,6 @@ import com.pickleball.domain.enums.RequestType;
 import com.pickleball.domain.repositories.RoleRequestRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Admin rejects a referee registration request.
- */
 public class RejectRefereeRequestUseCase {
 
     private final RoleRequestRepository roleRequestRepository;

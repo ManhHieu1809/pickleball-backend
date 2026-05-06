@@ -16,12 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Scheduled service to cancel expired PENDING casual matches
- * and refund deposits to participants who already paid.
- *
- * Runs every 5 minutes.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +24,7 @@ public class CasualMatchCleanupScheduler {
     private final BookingRepository bookingRepository;
     private final PaymentService paymentService;
 
-    @Scheduled(fixedDelay = 300_000) // 5 minutes
+    @Scheduled(fixedDelay = 300_000)
     @Transactional
     public void cancelExpiredCasualMatches() {
         List<Booking> expiredBookings = bookingRepository.findExpiredPendingCasual(LocalDateTime.now());
@@ -65,7 +59,6 @@ public class CasualMatchCleanupScheduler {
             }
         }
 
-        // Cancel the booking
         booking.cancel();
         bookingRepository.save(booking);
         log.info("Cancelled expired casual match bookingId={}", booking.getId());

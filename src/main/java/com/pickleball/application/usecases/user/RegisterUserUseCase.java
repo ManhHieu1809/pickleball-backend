@@ -35,12 +35,9 @@ public class RegisterUserUseCase {
 
             user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 
-            // Save user first
             User savedUser = userRepository.save(user);
 
-            // Create player only if user was successfully saved and has ID
             if (savedUser.getId() != null) {
-                // Check if player already exists to avoid duplicate
                 if (playerRepository.findByUserId(savedUser.getId()).isEmpty()) {
                     try {
                         Player player = Player.builder()
@@ -48,8 +45,6 @@ public class RegisterUserUseCase {
                                 .build();
                         playerRepository.save(player);
                     } catch (Exception e) {
-                        // Log the error but don't fail the entire registration
-                        // Player can be created later if needed
                         throw new RuntimeException("Failed to create player profile: " + e.getMessage(), e);
                     }
                 }
@@ -59,7 +54,6 @@ public class RegisterUserUseCase {
 
             return savedUser;
         } catch (Exception e) {
-            // Ensure any exception causes transaction rollback
             throw e;
         }
     }

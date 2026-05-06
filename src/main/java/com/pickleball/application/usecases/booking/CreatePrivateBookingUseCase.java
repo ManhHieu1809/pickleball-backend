@@ -1,5 +1,6 @@
 package com.pickleball.application.usecases.booking;
 
+import com.pickleball.application.usecases.wallet.PayWithWalletUseCase;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.entities.BookingParticipant;
 import com.pickleball.domain.entities.CourtPricing;
@@ -26,9 +27,8 @@ public class CreatePrivateBookingUseCase {
     private final CourtRepository courtRepository;
     private final CourtPricingRepository courtPricingRepository;
     private final PriceCalculationService priceCalculationService;
-    private final PaymentService paymentService;
+    private final PayWithWalletUseCase payWithWalletUseCase;
 
-    // phí nền tảng 20%
     private static final BigDecimal PLATFORM_FEE_PERCENTAGE = new BigDecimal("0.20");
 
     public CreatePrivateBookingUseCase(
@@ -36,30 +36,26 @@ public class CreatePrivateBookingUseCase {
             CourtRepository courtRepository,
             CourtPricingRepository courtPricingRepository,
             PriceCalculationService priceCalculationService,
-            PaymentService paymentService) {
+            PayWithWalletUseCase payWithWalletUseCase) {
         this.bookingRepository = bookingRepository;
         this.courtRepository = courtRepository;
         this.courtPricingRepository = courtPricingRepository;
         this.priceCalculationService = priceCalculationService;
-        this.paymentService = paymentService;
+        this.payWithWalletUseCase = payWithWalletUseCase;
     }
 
 
     public BookingWithPayment execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime, Long hostUserId) {
-        // 1. kiểm tra court tồn tại
         courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court not found"));
 
-        // 2. kiem tra xung đột lịch
         List<Booking> conflictingBookings = bookingRepository.findConflictingBookings(courtId, startTime, endTime);
         if (!conflictingBookings.isEmpty()) {
             throw new IllegalArgumentException("Time slot is already booked");
         }
 
-        // 3. Tính phí sân
         Money venueFee = calculateVenueFee(courtId, startTime, endTime);
 
-        // 4. Tạo booking ở trạng thái PENDING
         Booking booking = Booking.builder()
                 .courtId(courtId)
                 .startTime(startTime)
@@ -70,11 +66,9 @@ public class CreatePrivateBookingUseCase {
                 .createdByPlayerId(hostUserId)
                 .build();
 
-        // Tính toán chi phí
         booking.calculateCosts(venueFee, null, PLATFORM_FEE_PERCENTAGE);
         booking = bookingRepository.save(booking);
 
-        // 5. Thêm host participant
         BookingParticipant host = BookingParticipant.builder()
                 .bookingId(booking.getId())
                 .userId(hostUserId)
@@ -86,27 +80,30 @@ public class CreatePrivateBookingUseCase {
                 .build();
         booking.addParticipant(host);
 
-        // 6. Tiến hành thanh toán (User thanh toán 100% phí thuê địa điểm)
-        String orderId = "BOOKING_" + booking.getId();
         String description = "Private booking - Court #" + courtId + " - " + startTime.toLocalDate();
 
-        PaymentResult paymentResult = paymentService.createPayment(orderId, venueFee, description, hostUserId);
-
-        // 7. Cập nhật trạng thái đặt chỗ dựa trên kết quả thanh toán
-        if (paymentResult.success()) {
-            if ("SUCCESS".equals(paymentResult.status())) {
-                booking.confirm();
-                host.setJoinStatus(JoinStatus.PAID);
-            }
-        } else {
+        // Thanh toán bằng ví nội bộ
+        String transactionId;
+        PaymentResult paymentResult;
+        try {
+            transactionId = payWithWalletUseCase.execute(
+                    hostUserId,
+                    venueFee.getAmount(),
+                    booking.getId(),
+                    description
+            );
+            paymentResult = PaymentResult.success(transactionId, venueFee);
+            booking.confirm();
+            host.setJoinStatus(JoinStatus.PAID);
+        } catch (Exception e) {
+            paymentResult = PaymentResult.failed("Thanh toán thất bại: " + e.getMessage());
             booking.cancel();
         }
-        booking = bookingRepository.save(booking);
 
+        booking = bookingRepository.save(booking);
         return new BookingWithPayment(booking, paymentResult);
     }
 
-//   Tính phí thuê địa điểm dựa trên quy tắc của CourtPricing
     private Money calculateVenueFee(Long courtId, LocalDateTime startTime, LocalDateTime endTime) {
         List<CourtPricing> pricings = courtPricingRepository.findByCourtId(courtId);
 
@@ -122,12 +119,10 @@ public class CreatePrivateBookingUseCase {
                 startTime.getDayOfWeek()
         );
 
-        // Calculate total
         BigDecimal totalAmount = pricePerHour.getAmount().multiply(BigDecimal.valueOf(hours));
         return new Money(totalAmount, pricePerHour.getCurrency());
     }
 
-    // trả về kết quả booking kèm theo thông tin thanh toán
     public record BookingWithPayment(
             Booking booking,
             PaymentResult paymentResult

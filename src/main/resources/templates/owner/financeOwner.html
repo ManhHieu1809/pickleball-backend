@@ -91,27 +91,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -142,13 +142,10 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
@@ -174,7 +171,7 @@
 </div>
 <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Tổng doanh thu (Gross)</p>
 <div class="flex items-baseline gap-1">
-<span class="text-4xl font-black tracking-tighter text-on-surface">145.280.000</span>
+<span id="grossRevenue" class="text-4xl font-black tracking-tighter text-on-surface">0</span>
 <span class="text-sm font-bold text-on-surface-variant uppercase">VNĐ</span>
 </div>
 <div class="mt-4 flex items-center gap-2 text-tertiary text-xs font-bold">
@@ -189,7 +186,7 @@
 </div>
 <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Phí nền tảng (20%)</p>
 <div class="flex items-baseline gap-1">
-<span class="text-4xl font-black tracking-tighter text-error">-29.056.000</span>
+<span id="platformFees" class="text-4xl font-black tracking-tighter text-error">0</span>
 <span class="text-sm font-bold text-error uppercase">VNĐ</span>
 </div>
 <p class="mt-4 text-on-surface-variant/60 text-[10px] uppercase font-bold tracking-wider">Khấu trừ tự động từ hệ thống</p>
@@ -201,7 +198,7 @@
 </div>
 <p class="text-[11px] font-bold text-white/80 uppercase tracking-widest mb-4">Thực nhận (Net)</p>
 <div class="flex items-baseline gap-1">
-<span class="text-4xl font-black tracking-tighter text-white">116.224.000</span>
+<span id="netRevenue" class="text-4xl font-black tracking-tighter text-white">0</span>
 <span class="text-sm font-bold text-white/90 uppercase">VNĐ</span>
 </div>
 <div class="mt-4 inline-flex items-center px-2 py-1 bg-white/20 rounded-md text-white text-[10px] font-bold uppercase tracking-wider">
@@ -312,31 +309,8 @@
 <!-- Top Customers -->
 <div class="bg-surface-container-lowest p-8 rounded-xl">
 <h3 class="font-black text-sm uppercase tracking-widest mb-6">Top khách hàng thân thiết</h3>
-<div class="space-y-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center font-black text-orange-600">AN</div>
-<div class="flex-1">
-<p class="text-sm font-bold">Nguyễn Văn An</p>
-<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">24 buổi đặt</p>
-</div>
-<p class="text-sm font-black text-on-surface">12.5M</p>
-</div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-slate-600">LH</div>
-<div class="flex-1">
-<p class="text-sm font-bold">Trần Lê Hoàng</p>
-<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">18 buổi đặt</p>
-</div>
-<p class="text-sm font-black text-on-surface">9.2M</p>
-</div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-slate-600">MC</div>
-<div class="flex-1">
-<p class="text-sm font-bold">Phạm Minh Chính</p>
-<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">15 buổi đặt</p>
-</div>
-<p class="text-sm font-black text-on-surface">7.8M</p>
-</div>
+<div class="space-y-6" id="topCustomersContainer">
+    <div class="text-center text-sm text-slate-400 py-4">Đang tải dữ liệu...</div>
 </div>
 </div>
 </div>
@@ -344,47 +318,8 @@
 <!-- Court Comparison Bar Chart -->
 <div class="bg-surface-container-lowest p-8 rounded-xl space-y-8">
 <h3 class="font-black text-sm uppercase tracking-widest">Hiệu suất theo sân</h3>
-<div class="space-y-6">
-<!-- Court A1 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="text-xs font-bold uppercase">Sân A1</span>
-<span class="text-xs font-black text-orange-600">85% Tỷ lệ lấp đầy</span>
-</div>
-<div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-primary-container rounded-full" style="width: 85%"></div>
-</div>
-</div>
-<!-- Court A2 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="text-xs font-bold uppercase">Sân A2</span>
-<span class="text-xs font-black text-orange-600">72% Tỷ lệ lấp đầy</span>
-</div>
-<div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-primary-container rounded-full" style="width: 72%"></div>
-</div>
-</div>
-<!-- Court B1 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="text-xs font-bold uppercase">Sân B1</span>
-<span class="text-xs font-black text-orange-600">68% Tỷ lệ lấp đầy</span>
-</div>
-<div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-primary-container rounded-full" style="width: 68%"></div>
-</div>
-</div>
-<!-- Court B2 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="text-xs font-bold uppercase">Sân B2</span>
-<span class="text-xs font-black text-slate-400">45% Tỷ lệ lấp đầy</span>
-</div>
-<div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-slate-300 rounded-full" style="width: 45%"></div>
-</div>
-</div>
+<div class="space-y-6" id="courtPerformanceContainer">
+    <div class="text-center text-sm text-slate-400 py-4">Đang tải dữ liệu...</div>
 </div>
 </div>
 <!-- Smart Insight & Stats -->
@@ -423,5 +358,93 @@
         </div>
     </main>
     </div>
-    <script>lucide.createIcons();</script>
+    <script src="/js/owner-auth.js"></script>
+    <script>
+        lucide.createIcons();
+        document.addEventListener("DOMContentLoaded", () => {
+            OwnerAuth.checkAccessAndRenderMenu();
+            loadFinanceOverview();
+        });
+
+        async function loadFinanceOverview() {
+            const ownerId = OwnerAuth.getOwnerId();
+            if(!ownerId) return;
+
+            try {
+                const res = await OwnerAuth.authFetch(`/api/owner/finance/overview/${ownerId}`);
+                if (!res.ok) throw new Error("Lỗi tải finance");
+                const resData = await res.json();
+                const data = resData.data;
+                
+                // Cập nhật Bento Cards
+                if (document.getElementById("grossRevenue")) 
+                    document.getElementById("grossRevenue").innerText = data.grossRevenue.toLocaleString();
+                if (document.getElementById("platformFees"))
+                    document.getElementById("platformFees").innerText = "-" + data.platformFee.toLocaleString();
+                if (document.getElementById("netRevenue"))
+                    document.getElementById("netRevenue").innerText = data.netRevenue.toLocaleString();
+                
+                // Cập nhật Top Customers
+                const topCustomersContainer = document.getElementById("topCustomersContainer");
+                if (topCustomersContainer) {
+                    topCustomersContainer.innerHTML = "";
+                    if (!data.topCustomers || data.topCustomers.length === 0) {
+                        topCustomersContainer.innerHTML = '<div class="text-sm text-slate-400">Chưa có dữ liệu khách hàng</div>';
+                    } else {
+                        data.topCustomers.forEach(c => {
+                            const initials = c.userName.substring(0, 2).toUpperCase();
+                            const div = document.createElement("div");
+                            div.className = "flex items-center gap-4";
+                            div.innerHTML = `
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center font-black text-orange-600">${initials}</div>
+                            <div class="flex-1">
+                            <p class="text-sm font-bold">${c.userName}</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">${c.totalBookings} buổi đặt</p>
+                            </div>
+                            <p class="text-sm font-black text-on-surface">${c.totalSpent.toLocaleString()}đ</p>
+                            `;
+                            topCustomersContainer.appendChild(div);
+                        });
+                    }
+                }
+
+                // Cập nhật Hiệu suất theo sân (Court Performance)
+                const courtPerfContainer = document.getElementById("courtPerformanceContainer");
+                if (courtPerfContainer) {
+                    courtPerfContainer.innerHTML = "";
+                    if (!data.courtPerformances || data.courtPerformances.length === 0) {
+                        courtPerfContainer.innerHTML = '<div class="text-sm text-slate-400">Chưa có dữ liệu sân</div>';
+                    } else {
+                        data.courtPerformances.forEach(cp => {
+                            const occupancy = Math.round(cp.occupancyRate);
+                            let bgClass = "bg-primary-container";
+                            let textClass = "text-orange-600";
+                            if (occupancy < 50) {
+                                bgClass = "bg-slate-300";
+                                textClass = "text-slate-400";
+                            }
+                            
+                            const div = document.createElement("div");
+                            div.className = "space-y-2";
+                            div.innerHTML = `
+                            <div class="flex justify-between items-end">
+                            <span class="text-xs font-bold uppercase">${cp.courtName}</span>
+                            <span class="text-xs font-black ${textClass}">${occupancy}% Tỷ lệ lấp đầy</span>
+                            </div>
+                            <div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
+                            <div class="h-full ${bgClass} rounded-full" style="width: ${occupancy}%"></div>
+                            </div>
+                            `;
+                            courtPerfContainer.appendChild(div);
+                        });
+                    }
+                }
+
+            } catch(e) {
+                console.error("Lỗi:", e);
+                document.getElementById("topCustomersContainer").innerHTML = '<div class="text-sm text-error">Lỗi tải dữ liệu</div>';
+                document.getElementById("courtPerformanceContainer").innerHTML = '<div class="text-sm text-error">Lỗi tải dữ liệu</div>';
+            }
+        }
+    </script>
 </body></html>

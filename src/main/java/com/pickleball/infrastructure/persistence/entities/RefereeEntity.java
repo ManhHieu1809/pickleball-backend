@@ -49,6 +49,10 @@ public class RefereeEntity {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Column(name = "is_ready")
+    @Builder.Default
+    private Boolean isReady = false;
+
     @Column(name = "trust_score", precision = 5, scale = 2)
     @Builder.Default
     private BigDecimal trustScore = new BigDecimal("100.00");

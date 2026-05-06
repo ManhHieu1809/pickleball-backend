@@ -19,7 +19,7 @@ public class TestQuestion {
     private String optionB;
     private String optionC;
     private String optionD;
-    private String correctAnswer; // 'A', 'B', 'C', 'D'
+    private String correctAnswer;
     @Builder.Default
     private QuestionDifficulty difficulty = QuestionDifficulty.MEDIUM;
     @Builder.Default

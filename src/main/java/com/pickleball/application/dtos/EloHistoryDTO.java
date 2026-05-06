@@ -1,0 +1,1 @@
+package com.pickleball.application.dtos; import lombok.Builder; import lombok.Data; import java.time.LocalDateTime; @Data @Builder public class EloHistoryDTO { private Long id; private Long rankedMatchId; private Long seasonId; private Integer eloBefore; private Integer eloChange; private Integer eloAfter; private LocalDateTime createdAt; }

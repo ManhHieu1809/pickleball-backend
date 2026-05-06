@@ -17,5 +17,5 @@ public class SubmitTestAnswersRequest {
 
     @NotNull(message = "Answers are required")
     @Size(min = 10, max = 10, message = "Must answer exactly 10 questions")
-    private Map<Long, String> answers; // questionId -> answer (A/B/C/D)
+    private Map<Long, String> answers;
 }

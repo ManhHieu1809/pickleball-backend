@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServiceConfiguration {
 
-    // BookingApplicationService is auto-created via @Service + @RequiredArgsConstructor
-
     @Bean
     public VenueApplicationService venueApplicationService(
             CreateVenueUseCase createVenueUseCase,

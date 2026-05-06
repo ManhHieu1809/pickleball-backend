@@ -26,22 +26,17 @@ public class VenueStaffRepositoryAdapter implements VenueStaffRepository {
     @Override
     @Transactional
     public VenueStaff save(VenueStaff staff) {
-        // Save staff entity
         VenueStaffEntity entity = mapper.toEntity(staff);
         VenueStaffEntity saved = staffJpaRepository.save(entity);
 
-        // Save permissions
         if (staff.getPermissions() != null && !staff.getPermissions().isEmpty()) {
-            // Delete old permissions first
             permissionJpaRepository.deleteByStaffId(saved.getId());
 
-            // Save new permissions
             List<VenueStaffPermissionEntity> permEntities =
                 mapper.toPermissionEntities(saved.getId(), staff.getPermissions());
             permissionJpaRepository.saveAll(permEntities);
         }
 
-        // Reload with permissions
         List<VenueStaffPermissionEntity> permissions = permissionJpaRepository.findByStaffId(saved.getId());
         return mapper.toDomain(saved, permissions);
     }

@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Use Case: Lấy danh sách time slots available cho một court
- * SIMPLIFIED: Không lưu DB, generate on-demand
- */
 @Slf4j
 @RequiredArgsConstructor
 public class GetAvailableSlotsUseCase {
@@ -32,9 +28,6 @@ public class GetAvailableSlotsUseCase {
     private static final LocalTime CLOSING_TIME = LocalTime.of(22, 0);
     private static final int SLOT_DURATION_MINUTES = 60; // Fixed 1 hour
 
-    /**
-     * Model cho 1 virtual time slot
-     */
     public static class TimeSlotInfo {
         private final LocalTime startTime;
         private final LocalTime endTime;
@@ -54,26 +47,20 @@ public class GetAvailableSlotsUseCase {
         public boolean isAvailable() { return isAvailable; }
     }
 
-    /**
-     * Execute: Generate virtual slots và check availability
-     */
     public List<TimeSlotInfo> execute(Long courtId, LocalDate date) {
         log.debug("Getting available slots for court {} on {}", courtId, date);
 
-        // 1. Get pricing rules
         List<CourtPricing> pricings = courtPricingRepository.findByCourtId(courtId);
         if (pricings.isEmpty()) {
             log.warn("No pricing rules for court {}", courtId);
             return new ArrayList<>();
         }
 
-        // 2. Get booked time ranges for this court on this date
         Set<LocalTime> bookedStartTimes = bookingRepository.findByCourtIdAndDate(courtId, date)
                 .stream()
                 .map(booking -> booking.getStartTime().toLocalTime())
                 .collect(Collectors.toSet());
 
-        // 3. Generate virtual slots (7h-22h, every 1 hour)
         List<TimeSlotInfo> slots = new ArrayList<>();
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
@@ -81,10 +68,8 @@ public class GetAvailableSlotsUseCase {
         while (currentTime.isBefore(CLOSING_TIME)) {
             LocalTime slotEndTime = currentTime.plusMinutes(SLOT_DURATION_MINUTES);
 
-            // Calculate price for this slot
             Money price = priceCalculationService.calculateSlotPrice(pricings, currentTime, dayOfWeek);
 
-            // Check if booked
             boolean isAvailable = !bookedStartTimes.contains(currentTime);
 
             TimeSlotInfo slot = new TimeSlotInfo(currentTime, slotEndTime, price, isAvailable);
@@ -99,9 +84,6 @@ public class GetAvailableSlotsUseCase {
         return slots;
     }
 
-    /**
-     * Chỉ lấy slots available (filter out booked)
-     */
     public List<TimeSlotInfo> executeAvailableOnly(Long courtId, LocalDate date) {
         return execute(courtId, date).stream()
                 .filter(TimeSlotInfo::isAvailable)

@@ -51,21 +51,17 @@ public class VenueApplicationService {
 
     @Transactional
     public VenueDTO createVenue(CreateVenueRequest request) {
-        // Check if user is approved as VenueOwner
         VenueOwner venueOwner = venueOwnerRepository.findByUserId(request.getOwnerId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Bạn chưa được phê duyệt làm chủ sân. Vui lòng submit request trước khi tạo venue"));
 
-        // Validate venue owner has complete information
         if (!venueOwner.hasCompleteInformation()) {
             throw new IllegalArgumentException(
                     "Thông tin chủ sân chưa đầy đủ. Vui lòng hoàn tất thông tin thuế và ngân hàng");
         }
 
-        // Create location value object
         Location location = new Location(request.getLatitude(), request.getLongitude());
 
-        // Create venue
         Venue venue = createVenueUseCase.execute(
                 request.getOwnerId(),
                 request.getName(),
@@ -74,13 +70,10 @@ public class VenueApplicationService {
                 request.getLongitude()
         );
 
-        // Set additional fields
         venue.setDescription(request.getDescription());
 
-        // Save venue
         Venue savedVenue = venueRepository.save(venue);
 
-        // Convert to DTO
         return convertToDTO(savedVenue);
     }
 
@@ -89,13 +82,9 @@ public class VenueApplicationService {
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new IllegalArgumentException("Venue not found"));
 
-        // Business logic: approve venue
         venue.approve(adminId);
 
-        // Save
         Venue updatedVenue = venueRepository.save(venue);
-
-        // TODO: Send notification to venue owner
 
         return convertToDTO(updatedVenue);
     }
@@ -105,19 +94,12 @@ public class VenueApplicationService {
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new IllegalArgumentException("Venue not found"));
 
-        // Check if already approved
         if (venue.isActive() && venue.getApprovedByAdminId() != null) {
             throw new IllegalArgumentException("Cannot reject an already approved venue");
         }
 
         venue.deactivate(adminId, true);
-
-        // Save
         Venue updatedVenue = venueRepository.save(venue);
-
-        // TODO: Send notification to venue owner with rejection reason
-        log.info("Venue {} rejected by admin {}. Reason: {}", venueId, adminId, reason);
-
         return convertToDTO(updatedVenue);
     }
 
@@ -132,18 +114,14 @@ public class VenueApplicationService {
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new IllegalArgumentException("Venue not found"));
 
-        // Check ownership
         if (!venue.getOwnerId().equals(ownerId)) {
             throw new IllegalArgumentException("Only venue owner can update");
         }
 
-        // Update fields
         venue.setName(request.getName());
         venue.setAddress(request.getAddress());
         venue.setLocation(new Location(request.getLatitude(), request.getLongitude()));
         venue.setDescription(request.getDescription());
-
-        // Save
         Venue updatedVenue = venueRepository.save(venue);
 
         return convertToDTO(updatedVenue);
@@ -197,10 +175,8 @@ public class VenueApplicationService {
         return dto;
     }
 
-    // Court-related methods
     @Transactional
     public CourtDTO createCourt(CreateCourtRequest request, Long ownerId) {
-        // Verify venue ownership
         Venue venue = venueRepository.findById(request.getVenueId())
                 .orElseThrow(() -> new IllegalArgumentException("Venue không tồn tại"));
 
@@ -208,7 +184,6 @@ public class VenueApplicationService {
             throw new IllegalArgumentException("Chỉ chủ sân mới có quyền tạo court");
         }
 
-        // Convert pricing requests
         List<CreateCourtUseCase.CourtPricingRequest> pricingRequests = new ArrayList<>();
         if (request.getPricings() != null) {
             pricingRequests = request.getPricings().stream()
@@ -221,7 +196,6 @@ public class VenueApplicationService {
                     .collect(Collectors.toList());
         }
 
-        // Create court
         Court court = createCourtUseCase.execute(
                 request.getVenueId(),
                 request.getCourtName(),
@@ -246,7 +220,6 @@ public class VenueApplicationService {
                     .map(this::convertCourtPricingToDTO)
                     .collect(Collectors.toList());
         } else if (court.getId() != null) {
-            // Load pricing from repository if not loaded
             List<CourtPricing> pricings = courtPricingRepository.findByCourtId(court.getId());
             pricingDTOs = pricings.stream()
                     .map(this::convertCourtPricingToDTO)
@@ -291,38 +264,22 @@ public class VenueApplicationService {
         return convertCourtToDTO(court);
     }
 
-    /**
-     * Lấy thông tin chi tiết của court bao gồm:
-     * - Thông tin venue mà court thuộc về
-     * - Danh sách giá theo từng khung giờ
-     * - Độ dài mỗi ca chơi (slot duration)
-     */
     public DetailedCourtDTO getDetailedCourtById(Long courtId) {
-        // Lấy thông tin court
         Court court = getCourtByIdUseCase.execute(courtId);
-
-        // Lấy thông tin venue
         Venue venue = venueRepository.findById(court.getVenueId())
                 .orElseThrow(() -> new IllegalArgumentException("Venue không tồn tại"));
 
-        // Lấy danh sách pricing
         List<CourtPricing> pricings = courtPricingRepository.findByCourtId(courtId);
 
-        // Convert sang DTO
         return convertToDetailedCourtDTO(court, venue, pricings);
     }
 
     private DetailedCourtDTO convertToDetailedCourtDTO(Court court, Venue venue, List<CourtPricing> pricings) {
-        // Convert venue info
         VenueDTO venueDTO = convertToDTO(venue);
-
-        // Convert pricing list
         List<CourtPricingDTO> pricingDTOs = pricings.stream()
                 .map(this::convertCourtPricingToDTO)
                 .collect(Collectors.toList());
 
-        // Slot duration: mặc định 60 phút (1 tiếng) cho mỗi ca
-        // Có thể cấu hình theo venue trong tương lai
         Integer slotDurationMinutes = 60;
 
         return DetailedCourtDTO.builder()

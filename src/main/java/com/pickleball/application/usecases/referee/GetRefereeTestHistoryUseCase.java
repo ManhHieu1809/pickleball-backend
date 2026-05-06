@@ -5,9 +5,6 @@ import com.pickleball.domain.repositories.TestAttemptRepository;
 
 import java.util.List;
 
-/**
- * Get test history for a player.
- */
 public class GetRefereeTestHistoryUseCase {
 
     private final TestAttemptRepository testAttemptRepository;

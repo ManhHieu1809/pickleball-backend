@@ -6,9 +6,6 @@ import com.pickleball.domain.repositories.MatchDisputeRepository;
 import com.pickleball.domain.repositories.RankedMatchRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Referee submits evidence for a dispute (within 24h deadline).
- */
 public class SubmitRefereeEvidenceUseCase {
 
     private final MatchDisputeRepository matchDisputeRepository;
@@ -26,7 +23,6 @@ public class SubmitRefereeEvidenceUseCase {
         MatchDispute dispute = matchDisputeRepository.findById(disputeId)
                 .orElseThrow(() -> new IllegalArgumentException("Dispute not found with id: " + disputeId));
 
-        // Verify the referee is the one assigned to the match
         RankedMatch match = rankedMatchRepository.findById(dispute.getRankedMatchId())
                 .orElseThrow(() -> new IllegalStateException("Ranked match not found"));
 
@@ -34,7 +30,6 @@ public class SubmitRefereeEvidenceUseCase {
             throw new IllegalStateException("Only the assigned referee can submit evidence for this dispute");
         }
 
-        // Submit evidence (validates deadline and status internally)
         dispute.submitRefereeEvidence(evidenceUrl, response);
 
         return matchDisputeRepository.save(dispute);

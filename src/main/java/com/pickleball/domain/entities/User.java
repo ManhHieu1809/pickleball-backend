@@ -23,9 +23,6 @@ public class User {
     private String profilePictureUrl;
     private LocalDateTime createdAt;
 
-
-
-
     public void updateProfile(String fullName, String phoneNumber, String profilePictureUrl) {
         if (fullName != null && !fullName.trim().isEmpty()) {
             this.fullName = fullName;

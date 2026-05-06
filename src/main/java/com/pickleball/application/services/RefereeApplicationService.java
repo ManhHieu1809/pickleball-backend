@@ -6,6 +6,8 @@ import com.pickleball.application.usecases.booking.SubmitMatchResultUseCase;
 import com.pickleball.application.usecases.booking.ResolveDisputeUseCase;
 import com.pickleball.application.usecases.booking.SubmitDisputeUseCase;
 import com.pickleball.application.usecases.referee.*;
+import com.pickleball.application.usecases.referee.GetRefereeMatchesUseCase;
+import com.pickleball.application.usecases.referee.GetRefereeMatchesUseCase.RefereeMatchInfo;
 import com.pickleball.domain.entities.*;
 import com.pickleball.domain.enums.DisputeDecision;
 import com.pickleball.domain.repositories.MatchDisputeRepository;
@@ -31,6 +33,8 @@ public class RefereeApplicationService {
     private final SubmitDisputeUseCase submitDisputeUseCase;
     private final SubmitRefereeEvidenceUseCase submitRefereeEvidenceUseCase;
     private final ResolveDisputeUseCase resolveDisputeUseCase;
+    private final GetPendingRefereeRequestsUseCase getPendingRefereeRequestsUseCase;
+    private final GetRefereeMatchesUseCase getRefereeMatchesUseCase;
     private final RefereeRepository refereeRepository;
     private final MatchDisputeRepository matchDisputeRepository;
 
@@ -61,6 +65,15 @@ public class RefereeApplicationService {
     }
 
     @Transactional
+    public RefereeDTO toggleAvailability(Long userId, boolean isReady) {
+        Referee referee = refereeRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Referee not found with userId: " + userId));
+        referee.toggleReady(isReady);
+        refereeRepository.save(referee);
+        return toRefereeDTO(referee);
+    }
+
+    @Transactional
     public RoleRequestDTO approveRefereeRequest(Long requestId, Long adminId) {
         RoleRequest request = approveRefereeRequestUseCase.execute(requestId, adminId);
         return toRoleRequestDTO(request);
@@ -72,18 +85,21 @@ public class RefereeApplicationService {
         return toRoleRequestDTO(request);
     }
 
-    // ==================== Match Result ====================
+    public List<RoleRequestDTO> getPendingRefereeRequests() {
+        return getPendingRefereeRequestsUseCase.execute().stream()
+                .map(this::toRoleRequestDTO)
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
-    public void submitMatchResult(Long matchId, SubmitMatchResultRequest request) {
-        submitMatchResultUseCase.executeByMatchId(
-                matchId,
+    public void submitMatchResult(Long bookingId, SubmitMatchResultRequest request) {
+        submitMatchResultUseCase.execute(
+                bookingId,
                 request.getRefereeUserId(),
                 request.getTeamAScore(),
                 request.getTeamBScore());
     }
-
-    // ==================== Disputes ====================
 
     @Transactional
     public MatchDisputeDTO submitDispute(SubmitDisputeRequest request) {
@@ -111,7 +127,7 @@ public class RefereeApplicationService {
                 disputeId,
                 request.getAdminId(),
                 request.getDecisionType(),
-                request.getDecision() // Admin decision text
+                request.getDecision()
         );
         return toMatchDisputeDTO(dispute);
     }
@@ -122,13 +138,45 @@ public class RefereeApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public MatchDisputeDTO getDisputeById(Long disputeId) {
-        MatchDispute dispute = matchDisputeRepository.findById(disputeId)
-                .orElseThrow(() -> new IllegalArgumentException("Dispute not found with id: " + disputeId));
-        return toDisputeDTO(dispute);
+    public List<MatchDisputeDTO> getRefereeDisputes(Long refereeId) {
+        return matchDisputeRepository.findByRefereeId(refereeId).stream()
+                .map(this::toMatchDisputeDTO)
+                .collect(Collectors.toList());
     }
 
-    // ==================== Mappers ====================
+    public List<RankedMatchDTO> getRefereeMatches(Long refereeId, String status) {
+        List<RefereeMatchInfo> infoList = getRefereeMatchesUseCase.execute(refereeId, status);
+        return infoList.stream().map(info -> {
+            RankedMatchDTO dto = new RankedMatchDTO();
+            dto.setRankedMatchId(info.match().getId());
+            dto.setMatchStatus(info.match().getStatus().name());
+            
+            if (info.booking() != null) {
+                BookingDTO bookingDTO = new BookingDTO();
+                bookingDTO.setId(info.booking().getId());
+                bookingDTO.setCourtId(info.booking().getCourtId());
+                bookingDTO.setStartTime(info.booking().getStartTime());
+                bookingDTO.setEndTime(info.booking().getEndTime());
+                bookingDTO.setBookingType(info.booking().getBookingType());
+                bookingDTO.setStatus(info.booking().getStatus());
+                
+                if (info.booking().getVenueFee() != null) {
+                    bookingDTO.setVenueFee(info.booking().getVenueFee().getAmount());
+                }
+                if (info.booking().getRefereeFee() != null) {
+                    bookingDTO.setRefereeFee(info.booking().getRefereeFee().getAmount());
+                }
+                dto.setBooking(bookingDTO);
+                
+                if (info.booking().getTotalCost() != null) {
+                    dto.setTotalCost(info.booking().getTotalCost().getAmount());
+                }
+            }
+            
+            dto.setRefereeAssigned(true);
+            return dto;
+        }).collect(Collectors.toList());
+    }
 
     private TestQuestionDTO toQuestionDTO(TestQuestion question) {
         return TestQuestionDTO.builder()
@@ -139,7 +187,6 @@ public class RefereeApplicationService {
                 .optionB(question.getOptionB())
                 .optionC(question.getOptionC())
                 .optionD(question.getOptionD())
-                // NOTE: correctAnswer NOT included
                 .build();
     }
 
@@ -168,6 +215,7 @@ public class RefereeApplicationService {
                 .refereeType(referee.getRefereeType())
                 .worksAtVenueId(referee.getWorksAtVenueId())
                 .isActive(referee.getIsActive())
+                .isReady(referee.getIsReady())
                 .trustScore(referee.getTrustScore())
                 .totalMatchesRefereed(referee.getTotalMatchesRefereed())
                 .approvedAt(referee.getApprovedAt())

@@ -7,7 +7,9 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -86,27 +88,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -137,13 +139,10 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
@@ -238,25 +237,24 @@
 <div class="space-y-6">
 <div>
 <label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Tên cơ sở</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value="Kinetic Center Quận 1"/>
+<input id="detailVenueName" class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value=""/>
 </div>
 <div>
 <label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Địa chỉ</label>
-<input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value="123 Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM"/>
+<input id="detailVenueAddress" class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" type="text" value=""/>
 </div>
 <div>
 <label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Mô tả</label>
-<textarea class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" rows="4">Hệ thống sân Pickleball tiêu chuẩn quốc tế, trang thiết bị hiện đại, không gian thoáng đãng giữa lòng thành phố.</textarea>
+<textarea id="detailVenueDescription" class="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 focus:bg-surface-container-lowest focus:ring-0 border-b-2 border-transparent focus:border-primary transition-all" rows="4"></textarea>
 </div>
-<!-- Map Integration Placeholder -->
-<div class="rounded-xl overflow-hidden h-48 relative border-2 border-outline-variant/10">
-<img class="w-full h-full object-cover grayscale opacity-50" data-alt="Stylized map layout" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG_vZKaGpStGSFhTwxKPqX-HpYDPnsfme1p_XAFFksF71d0Eo7yMCcSrngXVdhe0bENaCzHvLstCw7GfDxHWrwUDsE4swAUXSR3T0dAXlJNCwWyhT7yfFDIp4NT4siwHIYFsrvrrAGtn5W95kJthYI-BHkiqGrH9ZdEzCOyPI0h-OUW744EXfpNDLO7wiq_NsA0s1iBpFsmY9s85be_ub_G8X1jVQq3AYKCY_3fDNUCnrSv98BUelsVw7fhHDbA-iE-OE1CHZPSvc"/>
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="bg-white/90 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">pin_drop</span>
-<span class="text-sm font-bold">Chọn vị trí trên bản đồ</span>
-</div>
-</div>
+<!-- Map Integration -->
+<div class="space-y-2">
+    <label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Vị trí bản đồ</label>
+    <div id="detailVenueMap" class="rounded-xl overflow-hidden h-48 relative border-2 border-outline-variant/10 w-full z-0"></div>
+    <div class="flex gap-2 mt-2">
+        <input type="text" id="detailVenueLat" class="w-1/2 bg-surface-container-high border-none rounded-lg px-2 py-1 text-xs text-slate-500 cursor-not-allowed" placeholder="Latitude" readonly>
+        <input type="text" id="detailVenueLng" class="w-1/2 bg-surface-container-high border-none rounded-lg px-2 py-1 text-xs text-slate-500 cursor-not-allowed" placeholder="Longitude" readonly>
+    </div>
 </div>
 </div>
 <!-- Media & Amenities -->
@@ -281,29 +279,15 @@
 <!-- Amenities -->
 <div>
 <label class="block text-xs font-black text-on-surface-variant uppercase tracking-widest mb-4">Tiện ích cơ sở</label>
-<div class="flex flex-wrap gap-4">
-<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
-<span class="material-symbols-outlined text-sm">wifi</span> Wifi
-                            </div>
-<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
-<span class="material-symbols-outlined text-sm">local_parking</span> Parking
-                            </div>
-<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-bold text-sm hover:bg-primary/10 hover:text-primary transition-all cursor-pointer">
-<span class="material-symbols-outlined text-sm">restaurant</span> Canteen
-                            </div>
-<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
-<span class="material-symbols-outlined text-sm">shower</span> Showers
-                            </div>
-<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-bold text-sm hover:bg-primary/10 hover:text-primary transition-all cursor-pointer">
-<span class="material-symbols-outlined text-sm">local_bar</span> Drinks
-                            </div>
+<div id="detailAmenitiesContainer" class="flex flex-wrap gap-4">
+<!-- Dynamically populated -->
 </div>
 </div>
 </div>
 </div>
 <div class="mt-12 flex justify-end gap-4 border-t border-outline-variant/20 pt-8">
-<button class="px-6 py-3 font-bold text-on-surface-variant hover:text-on-surface transition-colors">Hủy thay đổi</button>
-<button class="architectural-gradient px-8 py-3 rounded-xl text-white font-bold shadow-lg shadow-primary/20">Lưu thông tin</button>
+<button type="button" onclick="loadVenues()" class="px-6 py-3 font-bold text-on-surface-variant hover:text-on-surface transition-colors">Hủy thay đổi</button>
+<button id="btnSaveDetail" class="architectural-gradient px-8 py-3 rounded-xl text-white font-bold shadow-lg shadow-primary/20">Lưu thông tin</button>
 </div>
 </section>
 <!-- Section 3: Courts & Pricing -->
@@ -323,75 +307,22 @@
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
 <!-- Court Toggle List -->
-<div class="lg:col-span-1 space-y-4">
-<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-primary">
-<div>
-<p class="font-black text-on-surface">Sân 1</p>
-<span class="text-xs text-tertiary font-bold">Hoạt động</span>
-</div>
-<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
-<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-primary">
-<div>
-<p class="font-black text-on-surface">Sân 2</p>
-<span class="text-xs text-tertiary font-bold">Hoạt động</span>
-</div>
-<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
-<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 border-outline-variant">
-<div>
-<p class="font-black text-on-surface">Sân 3</p>
-<span class="text-xs text-on-surface-variant font-bold">Tạm dừng</span>
-</div>
-<div class="w-10 h-5 bg-surface-container-high rounded-full relative cursor-pointer">
-<div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
-</div>
-</div>
-<button class="w-full py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-bold hover:border-primary hover:text-primary transition-all">
-                        + Thêm sân mới
-                    </button>
+<div class="lg:col-span-1 space-y-4" id="courtListContainer">
+    <div class="text-sm text-slate-400 text-center py-4">Đang tải danh sách sân...</div>
 </div>
 <!-- Price Matrix Table -->
 <div class="lg:col-span-3 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container">
-<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Khung giờ</th>
-<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Sáng (5:00-11:00)</th>
-<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Trưa (11:00-14:00)</th>
-<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Chiều (14:00-17:00)</th>
-<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest bg-primary/5">Cao điểm (17:00-22:00)</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Thứ / Ngày</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Thời gian</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest">Giá / Giờ</th>
+<th class="p-6 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">Thao tác</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/10">
-<tr>
-<td class="p-6 font-bold text-on-surface">Thứ 2 - 6</td>
-<td class="p-6">
-<div class="flex items-center gap-1">
-<input class="w-16 bg-surface-container-low border-none rounded text-sm font-bold p-1 focus:ring-1 focus:ring-primary" type="text" value="150"/>
-<span class="text-xs text-on-surface-variant">.000đ</span>
-</div>
-</td>
-<td class="p-6 text-sm font-bold text-on-surface">120.000đ</td>
-<td class="p-6 text-sm font-bold text-on-surface">150.000đ</td>
-<td class="p-6 bg-primary/5">
-<div class="flex items-center gap-1">
-<input class="w-16 bg-white border border-primary/30 rounded text-sm font-bold p-1 text-primary focus:ring-1 focus:ring-primary" type="text" value="220"/>
-<span class="text-xs text-primary">.000đ</span>
-</div>
-</td>
-</tr>
-<tr>
-<td class="p-6 font-bold text-on-surface">Cuối tuần (T7-CN)</td>
-<td class="p-6 text-sm font-bold text-on-surface">200.000đ</td>
-<td class="p-6 text-sm font-bold text-on-surface">180.000đ</td>
-<td class="p-6 text-sm font-bold text-on-surface">200.000đ</td>
-<td class="p-6 bg-primary/5 font-bold text-primary">280.000đ</td>
-</tr>
+<tbody id="courtPricingBody" class="divide-y divide-outline-variant/10">
+    <tr><td colspan="5" class="p-6 text-center text-slate-400">Vui lòng chọn một sân để xem bảng giá</td></tr>
 </tbody>
 </table>
 </div>
@@ -413,7 +344,7 @@
             <h2 class="text-4xl font-black text-on-surface tracking-tight font-headline">Thêm cơ sở mới</h2>
             <p class="text-on-surface-variant mt-2 text-lg">Thiết lập thông tin cho địa điểm thi đấu Pickleball tiếp theo của bạn.</p>
             </div>
-            <form class="space-y-12">
+            <form id="addVenueForm" class="space-y-12">
             <!-- Section 1: Thông tin cơ bản & Bản đồ (Asymmetric Layout) -->
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
             <div class="lg:col-span-3 space-y-8">
@@ -424,39 +355,28 @@
                                         </h3>
             <div class="space-y-2">
             <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Tên cơ sở</label>
-            <input class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Nhập tên trung tâm Pickleball..." type="text"/>
+            <input id="venueName" class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Nhập tên trung tâm Pickleball..." type="text" required/>
             </div>
             <div class="space-y-2">
             <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Địa chỉ (Address)</label>
             <div class="relative">
-            <input class="w-full bg-surface-container-high border-none rounded-lg pl-12 pr-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Số nhà, tên đường, quận/huyện..." type="text"/>
+            <input id="venueAddress" class="w-full bg-surface-container-high border-none rounded-lg pl-12 pr-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Số nhà, tên đường, quận/huyện..." type="text" required/>
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="location_on">location_on</span>
             </div>
             </div>
             <div class="space-y-2">
             <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Mô tả (Description)</label>
-            <textarea class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Giới thiệu ngắn gọn về cơ sở vật chất, không gian..." rows="4"></textarea>
-            </div>
-            </div>
+            <textarea id="venueDescription" class="w-full bg-surface-container-high border-none rounded-lg px-4 py-4 focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-primary-container transition-all text-on-surface font-medium" placeholder="Giới thiệu ngắn gọn về cơ sở vật chất, không gian..." rows="4"></textarea>
             </div>
             <!-- Map Section -->
-            <div class="lg:col-span-2">
-            <div class="bg-surface-container-lowest h-full rounded-xl overflow-hidden flex flex-col shadow-sm">
-            <div class="p-6">
-            <h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-1">Vị trí địa lý</h3>
-            <p class="text-xs text-on-surface-variant">Xác định vị trí chính xác để người chơi dễ dàng tìm thấy.</p>
-            </div>
-            <div class="flex-1 min-h-[300px] relative bg-slate-200">
-            <img alt="Map View" class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_6jN1mldwpY179S4BTMqvrLryFKwUGvWxb0RSJHdP8cvg0GCXKBVU9Ibo5Jk8XJezClhrzNZ1YA9DA6vJGC-eV_xNm0jQgJDmygVaerbhThOhVWobfxmehxqjq4HwG2d44BI2h6BOzoXYZ2UWqr5bsZRY7V0edHUa6U15yICOfvMoLda-teq1EeLGCOJjYh7yJMQcbaMk6fKP9-SZpnGDi_ZAX4k6Kp61WoQmovPtlRJuIrk6loh9khmDnkVaccHZjl3MQig7mEs"/>
-            <div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-            <button class="bg-white text-on-surface px-6 py-3 rounded-lg shadow-xl font-bold text-sm flex items-center gap-2 hover:bg-slate-50 transition-colors active:scale-95" type="button">
-            <span class="material-symbols-outlined text-primary" data-icon="near_me">near_me</span>
-                                                    Chọn vị trí trên bản đồ
-                                                </button>
-            </div>
-            </div>
-            </div>
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-on-secondary-fixed-variant ml-1">Vị trí trên bản đồ</label>
+                <div class="text-xs text-slate-500 mb-2">Kéo thả ghim để chọn vị trí chính xác của cơ sở.</div>
+                <div id="venueMap" class="rounded-xl overflow-hidden h-64 relative border-2 border-outline-variant/10 w-full z-0"></div>
+                <div class="flex gap-4 mt-2">
+                    <input type="text" id="venueLat" class="w-1/2 bg-surface-container-high border-none rounded-lg px-4 py-2 text-sm text-slate-500 cursor-not-allowed" placeholder="Latitude (Tự động)" readonly required>
+                    <input type="text" id="venueLng" class="w-1/2 bg-surface-container-high border-none rounded-lg px-4 py-2 text-sm text-slate-500 cursor-not-allowed" placeholder="Longitude (Tự động)" readonly required>
+                </div>
             </div>
             </div>
             <!-- Section 2: Upload Images (Horizontal Ledger Style) -->
@@ -491,42 +411,42 @@
             <div class="grid grid-cols-2 gap-4">
             <!-- Amenity Chip -->
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Wifi" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="wifi">wifi</span>
             <span class="text-sm font-semibold">Wifi</span>
             </div>
             </label>
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Parking" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="local_parking">local_parking</span>
             <span class="text-sm font-semibold">Parking</span>
             </div>
             </label>
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Canteen" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="restaurant">restaurant</span>
             <span class="text-sm font-semibold">Canteen</span>
             </div>
             </label>
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Showers" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="shower">shower</span>
             <span class="text-sm font-semibold">Showers</span>
             </div>
             </label>
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Drinks" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="local_drink">local_drink</span>
             <span class="text-sm font-semibold">Drinks</span>
             </div>
             </label>
             <label class="group flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg cursor-pointer hover:shadow-md transition-all">
-            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container" type="checkbox"/>
+            <input class="w-5 h-5 rounded border-slate-300 text-primary-container focus:ring-primary-container amenity-cb" value="Pro Shop" type="checkbox"/>
             <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-on-secondary-container group-hover:text-primary" data-icon="shopping_bag">shopping_bag</span>
             <span class="text-sm font-semibold">Pro Shop</span>
@@ -576,33 +496,436 @@
             <button id="closeAddVenueBtn2" class="px-8 py-3 text-sm font-bold uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" type="button">
                                     Hủy bỏ
                                 </button>
-            <button class="bg-gradient-to-r from-primary to-primary-container px-10 py-4 rounded-lg text-on-primary font-black uppercase tracking-widest text-sm shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all" type="button" onclick="document.getElementById('addVenueModal').classList.add('hidden');">
+            <button class="bg-gradient-to-r from-primary to-primary-container px-10 py-4 rounded-lg text-on-primary font-black uppercase tracking-widest text-sm shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-95 transition-all" type="submit">
                                     Xác nhận thêm cơ sở
                                 </button>
+            </div>
+            </div>
             </div>
             </form>
         </div>
     </div>
 </div>
 
+<script src="/js/owner-auth.js"></script>
 <script>
+let currentSelectedVenue = null;
+let addVenueMap = null;
+let addVenueMarker = null;
+let detailVenueMap = null;
+let detailVenueMarker = null;
+
 document.addEventListener("DOMContentLoaded", () => {
+    OwnerAuth.checkAccessAndRenderMenu();
     const btn1 = document.getElementById("openAddVenueBtn1");
     const btn2 = document.getElementById("openAddVenueBtn2");
     const modal = document.getElementById("addVenueModal");
     const close1 = document.getElementById("closeAddVenueBtn1");
     const close2 = document.getElementById("closeAddVenueBtn2");
 
-    const showModal = () => { if (modal) modal.classList.remove("hidden"); };
+    const initMap = () => {
+        if (!addVenueMap) {
+            // Default center: Ho Chi Minh City
+            addVenueMap = L.map('venueMap').setView([10.762622, 106.660172], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(addVenueMap);
+
+            addVenueMarker = L.marker([10.762622, 106.660172], {draggable: true}).addTo(addVenueMap);
+            
+            // Set initial input values
+            document.getElementById('venueLat').value = 10.762622;
+            document.getElementById('venueLng').value = 106.660172;
+
+            addVenueMarker.on('dragend', function (e) {
+                const pos = addVenueMarker.getLatLng();
+                document.getElementById('venueLat').value = pos.lat.toFixed(6);
+                document.getElementById('venueLng').value = pos.lng.toFixed(6);
+            });
+
+            addVenueMap.on('click', function(e) {
+                addVenueMarker.setLatLng(e.latlng);
+                document.getElementById('venueLat').value = e.latlng.lat.toFixed(6);
+                document.getElementById('venueLng').value = e.latlng.lng.toFixed(6);
+            });
+        } else {
+            addVenueMap.invalidateSize();
+        }
+    };
+
+    const showModal = () => { 
+        if (modal) {
+            modal.classList.remove("hidden");
+            // Must invalidate size after modal is shown to ensure tiles load correctly
+            setTimeout(initMap, 200); 
+        }
+    };
     const hideModal = () => { if (modal) modal.classList.add("hidden"); };
 
     if (btn1) btn1.addEventListener("click", showModal);
     if (btn2) btn2.addEventListener("click", showModal);
-    
+
     if (close1) close1.addEventListener("click", hideModal);
     if (close2) close2.addEventListener("click", hideModal);
+
+    const addForm = document.getElementById("addVenueForm");
+    if (addForm) {
+        addForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = addForm.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = 'Đang xử lý...';
+
+            const ownerId = OwnerAuth.getOwnerId();
+            const name = document.getElementById("venueName").value;
+            const address = document.getElementById("venueAddress").value;
+            const description = document.getElementById("venueDescription").value;
+            const amenityCbs = Array.from(document.querySelectorAll('.amenity-cb:checked')).map(cb => cb.value);
+
+            const payload = {
+                ownerId: parseInt(ownerId, 10),
+                name: name,
+                address: address,
+                description: description,
+                latitude: parseFloat(document.getElementById("venueLat").value) || 10.762622,
+                longitude: parseFloat(document.getElementById("venueLng").value) || 106.660172,
+                images: [],
+                amenities: amenityCbs
+            };
+
+            try {
+                const res = await OwnerAuth.authFetch('/api/venues', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error('Could not create venue');
+                alert("Tạo cơ sở thành công! Chờ Admin duyệt.");
+                hideModal();
+                addForm.reset();
+                loadVenues();
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi khi thêm cơ sở: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Xác nhận thêm cơ sở';
+            }
+        });
+    }
+
+    // Fetch and render venues
+    loadVenues();
+
+    document.getElementById("btnSaveDetail").addEventListener("click", async () => {
+        if (!currentSelectedVenue || !currentSelectedVenue.id) return;
+
+        const btn = document.getElementById("btnSaveDetail");
+        btn.disabled = true;
+        btn.innerHTML = "Đang lưu...";
+
+        const ownerId = OwnerAuth.getOwnerId();
+        const name = document.getElementById("detailVenueName").value;
+        const address = document.getElementById("detailVenueAddress").value;
+        const description = document.getElementById("detailVenueDescription").value;
+
+        // Assuming you have an API to update PUT /api/venues/{venueId}
+        try {
+            const payload = {
+                ownerId: parseInt(ownerId, 10),
+                name,
+                address,
+                description,
+                latitude: parseFloat(document.getElementById("detailVenueLat").value) || currentSelectedVenue.latitude || 10.762622,
+                longitude: parseFloat(document.getElementById("detailVenueLng").value) || currentSelectedVenue.longitude || 106.660172
+            };
+            const res = await OwnerAuth.authFetch(`/api/venues/${currentSelectedVenue.id}?ownerId=${ownerId}`, {
+                method: "PUT",
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error("Update failed");
+            alert("Lưu thông tin thành công!");
+            loadVenues();
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi khi lưu thông tin: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = "Lưu thông tin";
+        }
+    });
 });
+
+
+function displayVenueDetails(venue, doScroll = false) {
+    if (!venue) return;
+    currentSelectedVenue = venue;
+
+    document.getElementById("detailVenueName").value = venue.name || "";
+    document.getElementById("detailVenueAddress").value = venue.address || "";
+    document.getElementById("detailVenueDescription").value = venue.description || "";
+    
+    // Map setup for Edit
+    const lat = venue.latitude || 10.762622;
+    const lng = venue.longitude || 106.660172;
+    document.getElementById("detailVenueLat").value = lat;
+    document.getElementById("detailVenueLng").value = lng;
+
+    if (!detailVenueMap) {
+        detailVenueMap = L.map('detailVenueMap').setView([lat, lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(detailVenueMap);
+
+        detailVenueMarker = L.marker([lat, lng], {draggable: true}).addTo(detailVenueMap);
+        
+        detailVenueMarker.on('dragend', function(e) {
+            const pos = detailVenueMarker.getLatLng();
+            document.getElementById('detailVenueLat').value = pos.lat.toFixed(6);
+            document.getElementById('detailVenueLng').value = pos.lng.toFixed(6);
+        });
+
+        detailVenueMap.on('click', function(e) {
+            detailVenueMarker.setLatLng(e.latlng);
+            document.getElementById('detailVenueLat').value = e.latlng.lat.toFixed(6);
+            document.getElementById('detailVenueLng').value = e.latlng.lng.toFixed(6);
+        });
+    } else {
+        detailVenueMap.setView([lat, lng], 13);
+        detailVenueMarker.setLatLng([lat, lng]);
+        setTimeout(() => detailVenueMap.invalidateSize(), 200);
+    }
+
+    const amenitiesContainer = document.getElementById("detailAmenitiesContainer");
+    amenitiesContainer.innerHTML = "";
+
+    const iconsMap = {
+        "Wifi": "wifi", "Parking": "local_parking", "Canteen": "restaurant",
+        "Showers": "shower", "Drinks": "local_drink", "Pro Shop": "shopping_bag"
+    };
+
+    const amenities = venue.amenities || [];
+    if (amenities.length === 0) {
+        amenitiesContainer.innerHTML = '<span class="text-sm text-slate-400">Không có tiện ích nào</span>';
+    } else {
+        amenities.forEach(am => {
+            const icon = iconsMap[am] || "check_circle";
+            amenitiesContainer.innerHTML += `
+                <div class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-bold text-sm">
+                    <span class="material-symbols-outlined text-sm">${icon}</span> ${am}
+                </div>
+            `;
+        });
+    }
+
+    if (doScroll) {
+        // Scroll to details section smoothly
+        document.getElementById("detailVenueName").scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Load courts for this venue
+    loadCourtsForVenue(venue.id);
+}
+
+async function loadCourtsForVenue(venueId) {
+    const listContainer = document.getElementById("courtListContainer");
+    const pricingBody = document.getElementById("courtPricingBody");
+    if(!listContainer || !pricingBody) return;
+
+    listContainer.innerHTML = '<div class="text-sm text-slate-400 text-center py-4">Đang tải danh sách sân...</div>';
+    pricingBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">Đang tải...</td></tr>';
+    
+    try {
+        const res = await OwnerAuth.authFetch(`/api/courts/venue/${venueId}`);
+        const result = await res.json();
+        const courts = result.data || [];
+        
+        listContainer.innerHTML = '';
+        if (courts.length === 0) {
+            listContainer.innerHTML = '<div class="text-sm text-slate-400 text-center py-4">Chưa có sân nào</div>';
+            pricingBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">Không có dữ liệu</td></tr>';
+        } else {
+            courts.forEach((c) => {
+                const isActive = c.isActive;
+                const statusClass = isActive ? "text-tertiary" : "text-on-surface-variant";
+                const borderClass = isActive ? "border-primary" : "border-outline-variant";
+                const bgToggle = isActive ? "bg-primary" : "bg-surface-container-high";
+                const dotPos = isActive ? "right-0.5" : "left-0.5";
+                const textStatus = isActive ? "Hoạt động" : "Tạm dừng";
+
+                const courtEl = document.createElement("div");
+                courtEl.className = `bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between shadow-sm border-l-4 ${borderClass} cursor-pointer hover:bg-slate-50 transition-all mb-4`;
+                courtEl.onclick = () => loadCourtPricing(c.id);
+                
+                courtEl.innerHTML = `
+                    <div>
+                    <p class="font-black text-on-surface">${c.courtName}</p>
+                    <span class="text-xs ${statusClass} font-bold">${textStatus}</span>
+                    </div>
+                    <div class="w-10 h-5 ${bgToggle} rounded-full relative cursor-pointer">
+                    <div class="absolute ${dotPos} top-0.5 w-4 h-4 bg-white rounded-full shadow-md"></div>
+                    </div>
+                `;
+                listContainer.appendChild(courtEl);
+            });
+            // Load first court pricing automatically
+            loadCourtPricing(courts[0].id);
+        }
+        
+        listContainer.innerHTML += `
+        <button class="w-full py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-bold hover:border-primary hover:text-primary transition-all">
+            + Thêm sân mới
+        </button>
+        `;
+    } catch (err) {
+        console.error("Lỗi khi tải sân:", err);
+        listContainer.innerHTML = '<div class="text-sm text-error text-center py-4">Lỗi tải danh sách sân</div>';
+    }
+}
+
+const dayOfWeekMap = {
+    1: 'Thứ 2', 2: 'Thứ 3', 3: 'Thứ 4', 4: 'Thứ 5', 5: 'Thứ 6', 6: 'Thứ 7', 7: 'Chủ Nhật'
+};
+
+async function loadCourtPricing(courtId) {
+    const pricingBody = document.getElementById("courtPricingBody");
+    if (!pricingBody) return;
+    pricingBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">Đang tải giá...</td></tr>';
+    try {
+        const res = await OwnerAuth.authFetch(`/api/courts/${courtId}`);
+        const result = await res.json();
+        const courtDetails = result.data;
+        const pricings = courtDetails.pricings || [];
+        
+        pricingBody.innerHTML = '';
+        if (pricings.length === 0) {
+            pricingBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">Chưa thiết lập giá cho sân này</td></tr>';
+            return;
+        }
+        
+        // Currently we render them row by row sequentially.
+        // The table header is Khung giờ | Sáng | Trưa | Chiều | Cao điểm
+        // Since the backend returns specific times, we will just adapt the columns.
+        // We'll replace the static headers by showing Day | Start | End | Price
+        
+        // Actually to preserve the UI design, let's just make it a list of rows:
+        pricings.forEach(p => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td class="p-6 font-bold text-on-surface">${dayOfWeekMap[p.dayOfWeek] || 'Tất cả'}</td>
+                <td class="p-6 text-sm font-bold text-on-surface">${p.startTime.substring(0,5)} - ${p.endTime.substring(0,5)}</td>
+                <td class="p-6 text-sm font-bold text-primary">${p.pricePerHour.toLocaleString()}đ</td>
+                <td class="p-6 text-right">
+                    <button class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">edit</span></button>
+                    <button class="text-slate-400 hover:text-error transition-colors ml-2"><span class="material-symbols-outlined text-sm">delete</span></button>
+                </td>
+            `;
+            pricingBody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error(err);
+        pricingBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-error">Lỗi tải thông tin giá</td></tr>';
+    }
+}
+
+async function loadVenues() {
+    const ownerId = OwnerAuth.getOwnerId();
+    if (!ownerId) {
+        console.error("No owner ID found");
+        return;
+    }
+
+    try {
+        const response = await OwnerAuth.authFetch(`/api/venues/owner/${ownerId}`);
+        if (!response.ok) throw new Error("Failed to fetch venues");
+        const resData = await response.json();
+        const venues = resData.data || [];
+
+        const venueListGrid = document.querySelector("section.grid");
+        if (!venueListGrid) return;
+
+        // Clear current (keep empty state btn somewhere or re-create it)
+        venueListGrid.innerHTML = "";
+
+        if (venues.length > 0) {
+            // By default select the first venue, or keep the previously selected one
+            const defaultVenue = venues.find(v => v.id === (currentSelectedVenue ? currentSelectedVenue.id : null)) || venues[0];
+            displayVenueDetails(defaultVenue, false);
+        } else {
+            currentSelectedVenue = null;
+        }
+
+        venues.forEach(venue => {
+            const statusClass = venue.isActive ?
+                "bg-tertiary text-white" : "bg-orange-100 text-orange-600";
+            const statusText = venue.isActive ? "Approved" : "Pending";
+            const fallbackImg = "https://lh3.googleusercontent.com/aida-public/AB6AXuAVDDf5ZPIypSMbrT5wSWkw6AK7-sav6vwqzlbqckdU_4GZI5OAz1SWUHQ06PGOfu_V-JWnuCyNvUhCCry78cXS-3VeIWHtGaecfvUcxt4qNqfQdirKxT7pmHQaAOwkMu6DhaEXGrc2sHKvAt8gARfJFnXNKMPVz1FMhnM2y_9xvkr2PYGno4-hK3p9tVdtUF-TPGnJ-vJiaPCGsZq9p4dGEXlId-vQQzscwdWUj6-HiQ3ni7snQx9mVGlOs1mGFn4MX2R3GYgqgp0";
+
+            const card = document.createElement("div");
+            const isSelected = venue.id === (currentSelectedVenue ? currentSelectedVenue.id : null);
+            card.className = `group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer ${isSelected ? 'ring-2 ring-primary scale-[1.02]' : ''}`;
+            card.onclick = () => {
+                // Remove highlight from all cards
+                document.querySelectorAll('#venueListGrid > div').forEach(c => {
+                    c.classList.remove('ring-2', 'ring-primary', 'scale-[1.02]');
+                });
+                card.classList.add('ring-2', 'ring-primary', 'scale-[1.02]');
+                displayVenueDetails(venue, true);
+            };
+
+            card.innerHTML = `
+                <div class="h-48 relative overflow-hidden">
+                    <img src="${venue.images?.[0] || fallbackImg}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+                    <div class="absolute top-4 left-4 ${statusClass} text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">${statusText}</div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-on-surface">${venue.name}</h3>
+                            <p class="text-sm text-on-surface-variant flex items-center gap-1 mt-1">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                ${venue.address}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 py-4 border-t border-outline-variant/20 mt-2">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-on-surface-variant uppercase tracking-tighter">Mã sân</span>
+                            <span class="text-xl font-bold text-primary">#${venue.id}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            venueListGrid.appendChild(card);
+        });
+
+        // Re-append the Add Button
+        const addBtnCard = document.createElement("div");
+        addBtnCard.id = "openAddVenueBtn2Dynamic";
+        addBtnCard.className = "border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-8 text-on-surface-variant hover:border-primary hover:text-primary transition-all cursor-pointer bg-surface-container-low/30 min-h-[300px]";
+        addBtnCard.innerHTML = `
+            <span class="material-symbols-outlined text-4xl mb-2">add_circle</span>
+            <p class="font-bold">Thêm cơ sở mới</p>
+        `;
+        addBtnCard.addEventListener("click", () => {
+            const modal = document.getElementById("addVenueModal");
+            if (modal) {
+                modal.classList.remove("hidden");
+                // Need to call initMap or let global showModal handle it. 
+                // Since initMap is inside DOMContentLoaded, we'll dispatch a click on btn1 or handle it.
+                // It's safer to just click btn1
+                const btn1 = document.getElementById("openAddVenueBtn1");
+                if (btn1) btn1.click();
+            }
+        });
+        venueListGrid.appendChild(addBtnCard);
+    } catch (err) {
+        console.error(err);
+    }
+}
 </script>
-    </div> <!-- closing flex h-screen -->
+    </div>
     <script>lucide.createIcons();</script>
-</body></html>
+</body>
+</html>

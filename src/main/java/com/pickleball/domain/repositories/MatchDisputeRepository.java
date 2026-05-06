@@ -15,4 +15,5 @@ public interface MatchDisputeRepository {
     List<MatchDispute> findByReportingPlayerId(Long playerId);
     List<MatchDispute> findExpiredAwaitingEvidence(LocalDateTime now);
     List<MatchDispute> findAll();
+    List<MatchDispute> findByRefereeId(Long refereeId);
 }

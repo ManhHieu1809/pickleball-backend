@@ -17,6 +17,7 @@ public class RefereeMapper {
                 .approvedByAdminId(entity.getApprovedByAdminId())
                 .approvedAt(entity.getApprovedAt())
                 .isActive(entity.getIsActive())
+                .isReady(entity.getIsReady())
                 .trustScore(entity.getTrustScore())
                 .totalMatchesRefereed(entity.getTotalMatchesRefereed())
                 .build();
@@ -34,6 +35,7 @@ public class RefereeMapper {
                 .approvedByAdminId(domain.getApprovedByAdminId())
                 .approvedAt(domain.getApprovedAt())
                 .isActive(domain.getIsActive())
+                .isReady(domain.getIsReady())
                 .trustScore(domain.getTrustScore())
                 .totalMatchesRefereed(domain.getTotalMatchesRefereed())
                 .build();

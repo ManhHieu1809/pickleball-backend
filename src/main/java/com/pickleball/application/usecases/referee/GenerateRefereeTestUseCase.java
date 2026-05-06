@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Generate a referee AI test with 10 random questions (2 per category).
- */
 public class GenerateRefereeTestUseCase {
 
     private final TestQuestionRepository testQuestionRepository;
@@ -31,7 +28,6 @@ public class GenerateRefereeTestUseCase {
 
         List<TestQuestion> questions = new ArrayList<>();
 
-        // Get 2 questions from each of the 5 categories
         for (QuestionCategory category : QuestionCategory.values()) {
             List<TestQuestion> categoryQuestions =
                     testQuestionRepository.findRandomQuestionsByCategory(category, QUESTIONS_PER_CATEGORY);
@@ -44,7 +40,6 @@ public class GenerateRefereeTestUseCase {
             questions.addAll(categoryQuestions);
         }
 
-        // Shuffle the final list so categories are mixed
         Collections.shuffle(questions);
         return questions;
     }

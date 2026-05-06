@@ -10,7 +10,7 @@ public class AdminViewController {
 
     @GetMapping("/login")
     public String login() {
-        return "admin/login/loginAdmin";
+        return "login";
     }
 
     @GetMapping("/dashboard")
@@ -56,5 +56,10 @@ public class AdminViewController {
     @GetMapping("/system")
     public String system() {
         return "admin/system";
+    }
+
+    @GetMapping("/ranking")
+    public String ranking() {
+        return "admin/ranking";
     }
 }

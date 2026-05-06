@@ -19,10 +19,6 @@ public class TimeSlotApplicationService {
 
     private final GetAvailableSlotsUseCase getAvailableSlotsUseCase;
 
-    /**
-     * Lấy danh sách slots available cho court và ngày
-     * Generate on-demand, không lưu DB
-     */
     public List<TimeSlotDTO> getAvailableSlots(Long courtId, LocalDate date) {
         List<GetAvailableSlotsUseCase.TimeSlotInfo> slots =
                 getAvailableSlotsUseCase.executeAvailableOnly(courtId, date);
@@ -32,9 +28,6 @@ public class TimeSlotApplicationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Lấy tất cả slots (bao gồm BOOKED) - cho owner/admin
-     */
     public List<TimeSlotDTO> getAllSlots(Long courtId, LocalDate date) {
         List<GetAvailableSlotsUseCase.TimeSlotInfo> slots =
                 getAvailableSlotsUseCase.execute(courtId, date);

@@ -20,7 +20,7 @@ public class CreateWalkInBookingRequest {
 
     private String customerPhone;
 
-    private String paymentMethod;  // CASH, BANK_TRANSFER, MOMO, ZALOPAY
+    private String paymentMethod;
 
     private String notes;
 }

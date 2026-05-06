@@ -15,6 +15,12 @@ public interface BookingRepository {
 
     List<Booking> findByPlayerId(Long playerId);
 
+    List<Booking> findByOwnerId(Long ownerId);
+
+    List<Booking> findByVenueId(Long venueId);
+
+    List<Booking> findByStaffId(Long staffId);
+
     List<Booking> findByCourtIdAndStartTimeBetween(Long courtId, LocalDateTime start, LocalDateTime end);
 
     List<Booking> findByCourtIdAndDate(Long courtId, LocalDate date);
@@ -28,6 +34,8 @@ public interface BookingRepository {
     List<Long> findParticipantUserIdsByBookingId(Long bookingId);
 
     List<Booking> findExpiredPendingCasual(LocalDateTime now);
+
+    List<Booking> findExpiredRankedNoShows(LocalDateTime timeThreshold);
 
     List<Long> findRecentOpponentUserIds(Long userId, int lastNMatches);
 }

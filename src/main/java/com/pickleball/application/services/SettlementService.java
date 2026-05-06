@@ -43,10 +43,7 @@ public class SettlementService {
             throw new IllegalStateException("Booking must be COMPLETED to process settlement");
         }
 
-        // 1. Distribute Venue Fees
         processVenuePayment(booking);
-
-        // 2. Distribute Referee Fees
         processRefereePayment(booking);
     }
 
@@ -66,7 +63,6 @@ public class SettlementService {
         BigDecimal platformFee = grossAmount.multiply(PLATFORM_FEE_PERCENTAGE);
         BigDecimal netAmount = grossAmount.subtract(platformFee);
 
-        // Credit owner wallet
         Wallet ownerWallet = walletRepository.findByUserId(ownerId)
                 .orElseGet(() -> {
                     Wallet newWallet = Wallet.builder()
@@ -80,7 +76,6 @@ public class SettlementService {
         ownerWallet.credit(netAmount);
         walletRepository.save(ownerWallet);
 
-        // Record Transaction
         Transaction transaction = Transaction.builder()
                 .userId(ownerId)
                 .bookingId(booking.getId())
@@ -107,8 +102,6 @@ public class SettlementService {
 
         BigDecimal amount = booking.getRefereeFee().getAmount();
         Long refereeId = referee.getUserId();
-
-        // Credit referee wallet
         Wallet refereeWallet = walletRepository.findByUserId(refereeId)
                 .orElseGet(() -> {
                     Wallet newWallet = Wallet.builder().userId(refereeId).balance(BigDecimal.ZERO).build();
@@ -118,7 +111,6 @@ public class SettlementService {
         refereeWallet.credit(amount);
         walletRepository.save(refereeWallet);
 
-        // Record Transaction
         Transaction transaction = Transaction.builder()
                 .userId(refereeId)
                 .bookingId(booking.getId())

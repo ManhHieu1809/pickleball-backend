@@ -19,20 +19,17 @@ public class AdminVenueDTO {
     private Double latitude;
     private Double longitude;
 
-    // Status
-    private String status; // PENDING, ACTIVE, LOCKED
+    private String status;
     private Boolean isActive;
     private Long approvedByAdminId;
     private Long deactivatedByAdminId;
     private LocalDateTime approvedAt;
 
-    // Owner details
     private Long ownerId;
     private String ownerName;
     private String ownerEmail;
     private String ownerPhone;
 
-    // Courts info
     private Integer totalCourts;
 
     private LocalDateTime createdAt;

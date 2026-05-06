@@ -1,4 +1,3 @@
-// File: presentation/controllers/BookingController.java
 package com.pickleball.presentation.controllers;
 
 import com.pickleball.application.dtos.*;
@@ -31,8 +30,6 @@ public class BookingController {
         return ResponseHelper.created(bookingDTO);
     }
 
-    // ==================== Casual Match Endpoints ====================
-
     @PostMapping("/casual")
     public ResponseEntity<ApiResponse<CasualMatchDTO>> createCasualMatch(
             @Valid @RequestBody CreateBookingRequest request) {
@@ -46,8 +43,6 @@ public class BookingController {
         List<CasualMatchDTO> matches = bookingService.getAvailableCasualMatches();
         return ResponseHelper.ok(matches);
     }
-
-    // ==================== Ranked Match Endpoints ====================
 
     @PostMapping("/ranked")
     public ResponseEntity<ApiResponse<RankedMatchDTO>> createRankedMatch(
@@ -70,8 +65,6 @@ public class BookingController {
         return ResponseHelper.ok(candidates, "Ranked match candidates retrieved");
     }
 
-    // ==================== Common Endpoints ====================
-
     @GetMapping("/{bookingId}/candidates")
     public ResponseEntity<ApiResponse<List<PlayerMatchDTO>>> getCandidates(
             @PathVariable Long bookingId) {
@@ -85,6 +78,14 @@ public class BookingController {
             @Valid @RequestBody JoinBookingRequest request) {
         BookingDTO bookingDTO = bookingService.joinBooking(bookingId, request);
         return ResponseHelper.ok(bookingDTO, "Joined booking successfully");
+    }
+
+    @PostMapping("/{bookingId}/accept-match")
+    public ResponseEntity<ApiResponse<BookingDTO>> acceptMatch(
+            @PathVariable Long bookingId,
+            @RequestParam Long userId) {
+        BookingDTO bookingDTO = bookingService.acceptMatch(bookingId, userId);
+        return ResponseHelper.ok(bookingDTO, "Match accepted and deposit paid successfully");
     }
 
     @PostMapping("/{bookingId}/cancel")
@@ -108,7 +109,18 @@ public class BookingController {
         return ResponseHelper.ok(bookings);
     }
 
-    // ==================== Check-In Endpoints ====================
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<ApiResponse<List<BookingDTO>>> getOwnerBookings(@PathVariable Long ownerId) {
+        List<BookingDTO> bookings = bookingService.getOwnerBookings(ownerId);
+        return ResponseHelper.ok(bookings);
+    }
+
+    @GetMapping("/venue/{venueId}")
+    public ResponseEntity<ApiResponse<List<BookingDTO>>> getVenueBookings(@PathVariable Long venueId) {
+        List<BookingDTO> bookings = bookingService.getVenueBookings(venueId);
+        return ResponseHelper.ok(bookings);
+    }
+
 
     @PostMapping("/{bookingId}/check-in")
     public ResponseEntity<ApiResponse<Void>> checkIn(
@@ -138,9 +150,6 @@ public class BookingController {
     public ResponseEntity<ApiResponse<MatchDisputeDTO>> submitDispute(
             @PathVariable Long bookingId,
             @Valid @RequestBody SubmitDisputeRequest request) {
-        // Technically request could have rankedMatchId, but context is booking.
-        // We assume caller passes rankedMatchId in body or we find it from booking.
-        // For simplicity, we rely on body.
         MatchDisputeDTO dispute = bookingService.submitDispute(request);
         return ResponseHelper.created(dispute);
     }

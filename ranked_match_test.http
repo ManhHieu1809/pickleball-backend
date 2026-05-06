@@ -1,0 +1,464 @@
+### Configuration
+@baseUrl = http://localhost:8080/api
+
+# HƯỚNG DẪN:
+# Không bấm "Run All". Hãy bấm vào nút Run (▶ màu xanh lá cây) ở bên trái của TỪNG chữ POST, GET, PUT theo thứ tự từ trên xuống dưới.
+# Sau khi chạy các request Đăng nhập (login), các biến token sẽ tự động được lưu để dùng cho các request bên dưới!
+
+### Admin/Staff Account (Điền tài khoản Admin của bạn vào đây)
+@adminEmail = admin@pickleball.com
+@adminPassword = password
+@adminToken = {adminToken_here}
+
+### Thông tin Court dùng chung
+@courtId = 1
+
+### ================= START TẠO TÀI KHOẢN =================
+
+### 1. Tạo Player 1 (Host của trận Rank)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rank_host@test.com",
+  "password": "password",
+  "fullName": "Rank Host Player",
+  "phoneNumber": "0987654301"
+}
+###
+### Đăng nhập Player 1
+# @name loginPlayer1
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rank_host@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("player1Token", response.body.data.accessToken);
+    client.global.set("player1Id", response.body.data.user.id);
+%}
+
+### Update Vị trí GPS của Player 1 (Haversine requirement)
+PUT {{baseUrl}}/players/location
+Authorization: Bearer {{player1Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player1Id}},
+  "latitude": 21.030115,
+  "longitude": 105.800325
+}
+
+### ---------------------------------------------------------
+
+### 2. Tạo Player 2
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rank_player2@test.com",
+  "password": "password",
+  "fullName": "Rank Player 2",
+  "phoneNumber": "0987654302"
+}
+
+### Đăng nhập Player 2
+# @name loginPlayer2
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rank_player2@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("player2Token", response.body.data.accessToken);
+    client.global.set("player2Id", response.body.data.user.id);
+%}
+
+### Update Vị trí GPS của Player 2
+PUT {{baseUrl}}/players/location
+Authorization: Bearer {{player2Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player2Id}},
+  "latitude": 21.036411,
+  "longitude": 105.782982
+}
+
+### ---------------------------------------------------------
+
+### 3. Tạo Player 3
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rank_player3@test.com",
+  "password": "password",
+  "fullName": "Rank Player 3",
+  "phoneNumber": "0987654303"
+}
+
+### Đăng nhập Player 3
+# @name loginPlayer3
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rank_player3@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("player3Token", response.body.data.accessToken);
+    client.global.set("player3Id", response.body.data.user.id);
+%}
+
+### Update Vị trí GPS của Player 3
+PUT {{baseUrl}}/players/location
+Authorization: Bearer {{player3Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player3Id}},
+  "latitude": 21.038382,
+  "longitude": 105.791839
+}
+
+### ---------------------------------------------------------
+
+### 4. Tạo Referee (Đầu tiên sẽ là một tài khoản bình thường)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rank_referee@test.com",
+  "password": "password",
+  "fullName": "Rank Referee",
+  "phoneNumber": "0987654304"
+}
+
+### Đăng nhập Referee
+# @name loginReferee
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "anhhoang@gmail.com",
+  "password": "hieu1809"
+}
+
+> {%
+    client.global.set("refereeToken", response.body.data.accessToken);
+    client.global.set("refereeId", response.body.data.user.id);
+%}
+
+### Tạo bài test cho trọng tài
+# @name genTest
+GET {{baseUrl}}/referee/test/generate
+Authorization: Bearer {{refereeToken}}
+
+### Nộp bài test (Cần cung cấp đủ 10 câu trả lời, đây là một ví dụ)
+# @name submitTest
+POST {{baseUrl}}/referee/test/submit
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "userId": {{refereeId}},
+  "answers": {
+    "1": "A",
+    "2": "A",
+    "3": "A",
+    "4": "A",
+    "5": "A",
+    "6": "A",
+    "7": "A",
+    "8": "A",
+    "9": "A",
+    "10": "A"
+  }
+}
+
+### (Admin) Phê duyệt Request trở thành trọng tài
+# Bạn cần lấy request ID từ response (hoặc DB) và điền vào form này dưới tư cách admin/staff
+# @name approveReferee
+@refereeRequestId = 1
+POST {{baseUrl}}/staff/referee-requests/{{refereeRequestId}}/approve
+Authorization: Bearer {{adminToken}}
+
+### Bật trạng thái Sẵn sàng cho trọng tài
+PUT {{baseUrl}}/referee/{{refereeId}}/availability?isReady=true
+Authorization: Bearer {{refereeToken}}
+
+
+### ================= BẮT ĐẦU QUY TRÌNH MATCHMAKING =================
+
+
+### 1. Player 1 (Host) TÌM TRẬN Ranked (Xếp hàng)
+# @name joinQueueP1
+POST {{baseUrl}}/matchmaking/join
+Authorization: Bearer {{player1Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player1Id}},
+  "role": "PLAYER",
+  "latitude": 21.028511,
+  "longitude": 105.804817
+}
+
+### 2. Player 2 TÌM TRẬN Ranked (Xếp hàng)
+# @name joinQueueP2
+POST {{baseUrl}}/matchmaking/join
+Authorization: Bearer {{player2Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player2Id}},
+  "role": "PLAYER",
+  "latitude": 21.036411,
+  "longitude": 105.782982
+}
+
+### 3. Player 3 TÌM TRẬN Ranked (Xếp hàng)
+# @name joinQueueP3
+POST {{baseUrl}}/matchmaking/join
+Authorization: Bearer {{player3Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player3Id}},
+  "role": "PLAYER",
+  "latitude": 21.028511,
+  "longitude": 105.804817
+}
+
+### Đăng nhập Player 2
+# @name loginPlayer4
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "hieunguyen@gmail.com",
+  "password": "hieu1809"
+}
+
+> {%
+    client.global.set("player4Token", response.body.data.accessToken);
+    client.global.set("player4Id", response.body.data.user.id);
+%}
+
+### 4. Player 4 TÌM TRẬN Ranked (Hệ thống cần 4 players, ta tạo thêm 1 người chờ)
+# Bạn nên tạo thêm tài khoản Player 4 ở đầu file, rồi bấm login để mô phỏng giống thật nhất.
+# Hoặc sửa logic Code bot tự push vào Queue (tuỳ chọn)
+# @name joinQueueP4
+POST {{baseUrl}}/matchmaking/join
+Authorization: Bearer {{player4Token}}
+# Đang mượn token tạm, bạn hãy update code test đăng ký P4 nhé
+Content-Type: application/json
+
+{
+  "userId": {{player4Id}},
+  "role": "PLAYER",
+  "latitude": 21.028511,
+  "longitude": 105.804817
+}
+
+
+
+### 5. Referee TÌM TRẬN Ranked (Xếp hàng)
+# @name joinQueueRef
+POST {{baseUrl}}/matchmaking/join
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "userId": {{refereeId}},
+  "role": "REFEREE",
+  "latitude": 21.028511,
+  "longitude": 105.804817
+}
+
+### --- CHỜ 60 GIÂY --- HỆ THỐNG CRONJOB SẼ TỰ TÌM SÂN VÀ TẠO TRẬN ---
+### (Kiểm tra Log Console của Spring Boot backend để thấy chữ: "Successfully grouped 4 players...")
+
+### KIỂM TRA TRẠNG THÁI HIỆN TẠI CỦA PLAYER 1 TRONG HÀNG CHỜ
+GET {{baseUrl}}/matchmaking/status?userId={{player1Id}}
+Authorization: Bearer {{player1Token}}
+
+### ================= LUỒNG CHƠI RANKED (Sau khi Cronjob tự ghép thành công) =================
+
+### Lấy danh sách My Bookings của Player 1 để lấy ra ID booking vừa được tạo
+GET {{baseUrl}}/bookings/my?userId={{player1Id}}
+Authorization: Bearer {{player1Token}}
+
+### ================= CÁC THÀNH VIÊN XÁC NHẬN VÀ ĐÓNG CỌC =================
+### (Lưu ý: Thay đổi {{rankedBookingId}} thành ID vừa lấy được ở bước trên)
+@rankedBookingId =35
+
+### Player 1 chấp nhận và thanh toán
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player1Id}}
+Authorization: Bearer {{player1Token}}
+
+### Player 2 chấp nhận và thanh toán
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player2Id}}
+Authorization: Bearer {{player2Token}}
+
+### Player 3 chấp nhận và thanh toán
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player3Id}}
+Authorization: Bearer {{player3Token}}
+
+### Player 4 chấp nhận và thanh toán
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player4Id}}
+Authorization: Bearer {{player4Token}}
+
+### Referee chấp nhận và thanh toán
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{refereeId}}
+Authorization: Bearer {{refereeToken}}
+
+### Kiểm tra lại trạng thái trận đấu (Lúc này sẽ thấy status = CONFIRMED)
+GET {{baseUrl}}/bookings/{{rankedBookingId}}
+Authorization: Bearer {{player1Token}}
+> {%
+    // Assuming the response is a list and we want the most recent booking ID
+    // You might need to adjust the json path depending on your actual API response structure
+    if (response.body.data && response.body.data.length > 0) {
+        var lastBooking = response.body.data[response.body.data.length - 1]; // or [0] depending on sort
+        client.global.set("bookingId", lastBooking.id);
+    }
+%}
+
+
+
+### 6. Check-In (cần GPS cho tất cả Players - Nếu Server báo PENDING thì phải gọi API thanh toán cọc nữa)
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{player1Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player1Id}},
+  "latitude": 21.028511,
+  "longitude": 105.795182,
+  "checkInMethod": "GPS"
+}
+
+
+### player 2 (Tương tự cho các Player khác...)
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{player2Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player2Id}},
+  "latitude": 21.028511,
+  "longitude": 105.795182,
+  "checkInMethod": "GPS"
+}
+
+### player 3 (Tương tự cho các Player khác...)
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{player3Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player3Id}},
+  "latitude": 21.028511,
+  "longitude": 105.795182,
+  "checkInMethod": "GPS"
+}
+
+### player 4 (Tương tự cho các Player khác...)
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{player4Token}}
+Content-Type: application/json
+
+{
+  "userId": {{player4Id}},
+  "latitude": 21.028511,
+  "longitude": 105.795182,
+  "checkInMethod": "GPS"
+}
+
+### refeere  (Tương tự cho các Player khác...)
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "userId": {{refereeId}},
+  "latitude": 21.028511,
+  "longitude": 105.795182,
+  "checkInMethod": "GPS"
+}
+
+########
+### 7. Trọng tài Submit Kết Quả trận đấu
+POST {{baseUrl}}/referee/matches/{{rankedBookingId}}/result
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "refereeUserId": {{refereeId}},
+  "teamAScore": 11,
+  "teamBScore": 8,
+  "winningTeam": "A"
+}
+
+### 8. Player 1 Confirm Kết quả
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/confirm-result
+Authorization: Bearer {{player1Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{player1Id}},
+  "accepted": true
+}
+
+### 8. Player 2 Confirm Kết quả
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/confirm-result
+Authorization: Bearer {{player2Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{player2Id}},
+  "accepted": true
+}
+
+### 8. Player 3 Confirm Kết quả
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/confirm-result
+Authorization: Bearer {{player3Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{player3Id}},
+  "accepted": true
+}
+
+### 8. Player 4 Confirm Kết quả
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/confirm-result
+Authorization: Bearer {{player4Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{player4Id}},
+  "accepted": true
+}
+
+
+### (Làm tương tự để các player còn lại Confirm kết quả)
+
+### rút tiền
+POST /api/wallet/withdraw
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "amount": 50000,
+  "description": "Rút tiền về tài khoản ngân hàng"
+}

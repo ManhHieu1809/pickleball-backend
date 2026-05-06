@@ -96,27 +96,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -147,13 +147,10 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
@@ -161,33 +158,38 @@
 <!-- Filter Bar -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-surface-container-low p-4 rounded-xl">
 <div class="flex flex-wrap gap-4 items-center">
+<!-- Venue Selector -->
 <div class="relative group">
-<select class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none">
-<option>Sân A1</option>
-<option>Sân A2</option>
-<option>Sân B1</option>
-<option>Sân B2</option>
+<select id="venueSelect" class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none w-48 truncate">
+<option value="">Chọn cơ sở...</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-slate-400" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<!-- Court Selector -->
+<div class="relative group">
+<select id="courtSelect" class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none w-32 truncate">
+<option value="">Chọn sân...</option>
 </select>
 <span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-slate-400" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
 </div>
 <div class="relative group">
-<select class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none">
-<option>Tất cả Booking Type</option>
-<option>Private</option>
-<option>Casual</option>
-<option>Ranked</option>
-<option>Walk-in</option>
+<select id="bookingTypeSelect" class="appearance-none bg-surface-container-lowest border-none rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:ring-2 focus:ring-primary shadow-sm outline-none">
+<option value="">Tất cả loại đặt</option>
+<option value="PRIVATE">PRIVATE</option>
+<option value="CASUAL">CASUAL</option>
+<option value="RANKED">RANKED</option>
+<option value="WALKIN">WALK-IN</option>
 </select>
 <span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-slate-400" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
 </div>
 <div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1 rounded-lg shadow-sm">
-<button class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
-<span class="text-sm font-bold px-2">May 15 - May 21, 2024</span>
-<button class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+<button id="prevWeekBtn" class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<span id="weekRangeLabel" class="text-sm font-bold px-2">May 15 - May 21, 2024</span>
+<button id="nextWeekBtn" class="p-1 hover:bg-slate-100 rounded text-slate-400"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
 </div>
 </div>
 <div class="flex gap-3">
-<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
+                  <button onclick="window.location.href='/owner/bookingstaff'" class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
 <span class="material-symbols-outlined text-lg" data-icon="add">add</span>
                     Tạo Walk-in
                 </button>
@@ -204,31 +206,31 @@
 <div class="p-4"></div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Mon</p>
-<p class="text-xl font-black">15</p>
+<p id="date-label-1" class="text-xl font-black">15</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100 bg-white">
 <p class="text-xs font-bold text-orange-600 uppercase tracking-widest">Tue</p>
-<p class="text-xl font-black text-orange-600">16</p>
+<p id="date-label-2" class="text-xl font-black text-orange-600">16</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Wed</p>
-<p class="text-xl font-black">17</p>
+<p id="date-label-3" class="text-xl font-black">17</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Thu</p>
-<p class="text-xl font-black">18</p>
+<p id="date-label-4" class="text-xl font-black">18</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Fri</p>
-<p class="text-xl font-black">19</p>
+<p id="date-label-5" class="text-xl font-black">19</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest text-blue-500">Sat</p>
-<p class="text-xl font-black text-blue-500">20</p>
+<p id="date-label-6" class="text-xl font-black text-blue-500">20</p>
 </div>
 <div class="p-4 text-center border-l border-slate-100">
 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest text-red-500">Sun</p>
-<p class="text-xl font-black text-red-500">21</p>
+<p id="date-label-0" class="text-xl font-black text-red-500">21</p>
 </div>
 </div>
 <!-- Body (Time slots) -->
@@ -255,98 +257,13 @@
 </div>
 <!-- Grid Columns -->
 <!-- Monday -->
-<div class="border-l border-slate-50 relative h-full">
-<div class="h-20 border-b border-slate-50"></div>
-<!-- Blocked Slot -->
-<div class="h-40 border-b border-slate-50 diagonal-stripe flex items-center justify-center">
-<span class="material-symbols-outlined text-slate-300" data-icon="lock">lock</span>
-</div>
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-20 border-b border-slate-50"></div>
-<!-- Booking Card Blue -->
-<div class="h-40 p-1 border-b border-slate-50">
-<div class="w-full h-full bg-tertiary/10 border-l-4 border-tertiary rounded p-2 flex flex-col justify-between">
-<span class="text-[10px] font-bold text-tertiary uppercase tracking-tighter">Casual • 14:00-16:00</span>
-<span class="text-xs font-bold truncate">Trần Hoàng M.</span>
-</div>
-</div>
-</div>
-<!-- Tuesday (Active Day) -->
-<div class="border-l border-slate-50 relative h-full bg-slate-50/20">
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-20 border-b border-slate-50"></div>
-<!-- Booking Card Green -->
-<div class="h-40 p-1 border-b border-slate-50">
-<div class="w-full h-full bg-emerald-50 border-l-4 border-emerald-500 rounded p-2 flex flex-col justify-between shadow-sm">
-<span class="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter">Private • 08:00-10:00</span>
-<span class="text-xs font-bold truncate">Phạm Ngọc Lan</span>
-</div>
-</div>
-<!-- Click & Drag Cue -->
-<div class="h-20 border-b border-slate-100 border-dashed bg-white group cursor-crosshair relative">
-<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center">
-<span class="text-[10px] text-primary font-bold">CLICK &amp; DRAG</span>
-<span class="material-symbols-outlined text-primary text-sm" data-icon="drag_pan">drag_pan</span>
-</div>
-</div>
-<div class="h-20 border-b border-slate-50"></div>
-<!-- Booking Card Orange (Active/Details Shown) -->
-<div class="h-40 p-1 border-b border-slate-50 relative z-20">
-<div class="w-full h-full bg-orange-50 border-l-4 border-orange-500 rounded p-2 flex flex-col justify-between shadow-md">
-<span class="text-[10px] font-bold text-orange-600 uppercase tracking-tighter">Ranked Match • 12:00-14:00</span>
-<span class="text-xs font-black truncate">Nguyễn Văn A</span>
-<div class="flex items-center gap-1 mt-1">
-<span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-<span class="text-[9px] font-medium text-orange-700">Server Status</span>
-</div>
-</div>
-<!-- Booking Details Popup -->
-<div class="absolute top-1/2 left-[105%] -translate-y-1/2 w-64 bg-white shadow-2xl rounded-xl p-4 z-40 border border-slate-100 ring-1 ring-black/5">
-<div class="flex justify-between items-start mb-4">
-<div>
-<h3 class="text-base font-black leading-tight">Nguyễn Văn A</h3>
-<p class="text-xs text-slate-500">0901 234 567</p>
-</div>
-<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">Confirmed</span>
-</div>
-<div class="space-y-3 mb-5">
-<div class="flex justify-between text-xs">
-<span class="text-slate-400">Thời gian</span>
-<span class="font-bold">12:00 - 14:00</span>
-</div>
-<div class="flex justify-between text-xs">
-<span class="text-slate-400">Loại sân</span>
-<span class="font-bold">Pickleball Pro A1</span>
-</div>
-<div class="flex justify-between text-xs">
-<span class="text-slate-400">Ghi chú</span>
-<span class="font-bold italic">Cần mượn 2 vợt</span>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-2">
-<button class="col-span-2 bg-primary text-white py-2 rounded-lg text-xs font-bold hover:brightness-110">Check-in</button>
-<button class="bg-slate-100 text-slate-600 py-2 rounded-lg text-xs font-bold hover:bg-slate-200">Chỉnh sửa</button>
-<button class="bg-red-50 text-red-600 py-2 rounded-lg text-xs font-bold hover:bg-red-100">Hủy lịch</button>
-</div>
-<!-- Arrow pointer for popup -->
-<div class="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rotate-45 border-l border-b border-slate-100"></div>
-</div>
-</div>
-</div>
-<!-- Wed to Sun Columns -->
-<div class="border-l border-slate-50 relative h-full">
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-20 border-b border-slate-50"></div>
-<div class="h-40 border-b border-slate-50 diagonal-stripe flex items-center justify-center">
-<span class="material-symbols-outlined text-slate-300" data-icon="lock">lock</span>
-</div>
-</div>
-<div class="border-l border-slate-50 relative h-full"></div>
-<div class="border-l border-slate-50 relative h-full"></div>
-<div class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
-<div class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
+<div id="col-1" class="border-l border-slate-50 relative h-full"></div>
+<div id="col-2" class="border-l border-slate-50 relative h-full bg-slate-50/20"></div>
+<div id="col-3" class="border-l border-slate-50 relative h-full"></div>
+<div id="col-4" class="border-l border-slate-50 relative h-full"></div>
+<div id="col-5" class="border-l border-slate-50 relative h-full"></div>
+<div id="col-6" class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
+<div id="col-0" class="border-l border-slate-50 relative h-full bg-slate-50/10"></div>
 </div>
 </div>
         </div>
@@ -410,34 +327,340 @@
 </div>
 </div>
 
+    <script src="/js/owner-auth.js"></script>
     <script>
+    let allBookingsGlobal = [];
+    let currentWeekStart = getMonday(new Date());
+    let activePopup = null;
+    let allVenues = [];
+    let allCourts = [];
+
+    function getMonday(d) {
+        const dt = new Date(d);
+        const day = dt.getDay();
+        const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+        dt.setDate(diff);
+        dt.setHours(0,0,0,0);
+        return dt;
+    }
+
+    function formatShortDate(d) {
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
-        // block court modal toggles (keep existing script logic)
+        OwnerAuth.checkAccessAndRenderMenu();
+        // block court modal toggles
         const blockCourtModal = document.getElementById("blockCourtModal");
         const openBlockCourtModalBtn = document.getElementById("openBlockCourtModalBtn");
         const cancelModalBtn = document.getElementById("cancelModalBtn");
         const closeIconBtn = document.getElementById("closeIconBtn");
 
-        if (openBlockCourtModalBtn && blockCourtModal) {
-            openBlockCourtModalBtn.addEventListener("click", function() {
-                blockCourtModal.classList.remove("hidden");
-            });
+        if (openBlockCourtModalBtn) {
+            openBlockCourtModalBtn.addEventListener("click", () => blockCourtModal.classList.remove("hidden"));
         }
+        function closeModal() { if(blockCourtModal) blockCourtModal.classList.add("hidden"); }
+        if (cancelModalBtn) cancelModalBtn.addEventListener("click", closeModal);
+        if (closeIconBtn) closeIconBtn.addEventListener("click", closeModal);
 
-        function closeModal() {
-            if (blockCourtModal) {
-                blockCourtModal.classList.add("hidden");
+        // Click outside to close popup
+        document.addEventListener('click', (e) => {
+            if (activePopup && !activePopup.contains(e.target)) {
+                activePopup.remove();
+                activePopup = null;
             }
-        }
+        });
 
-        if (cancelModalBtn) {
-            cancelModalBtn.addEventListener("click", closeModal);
-        }
+        // Week Navigation Listeners
+        document.getElementById("prevWeekBtn").addEventListener("click", () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            updateCalendarView();
+        });
+        document.getElementById("nextWeekBtn").addEventListener("click", () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            updateCalendarView();
+        });
 
-        if (closeIconBtn) {
-            closeIconBtn.addEventListener("click", closeModal);
-        }
+        // Event listeners for selects
+        document.getElementById("venueSelect").addEventListener("change", handleVenueChange);
+        document.getElementById("courtSelect").addEventListener("change", updateCalendarView);
+        document.getElementById("bookingTypeSelect").addEventListener("change", updateCalendarView);
+
+        // Fetch data
+        loadVenues();
+        loadBookings();
     });
+
+    async function loadVenues() {
+        try {
+            const user = OwnerAuth.getUser();
+            if (!user) return;
+
+            const isStaff = user.roles && user.roles.includes('STAFF');
+            const venueSelect = document.getElementById("venueSelect");
+            venueSelect.innerHTML = '<option value="">Chọn cơ sở...</option>';
+
+            if (isStaff) {
+                // If STAFF, just use their venueId and load it
+                if (!user.venueId) throw new Error("Staff has no assigned venue");
+                allVenues = [{
+                    id: user.venueId,
+                    name: user.venueName || "Cơ sở của bạn"
+                }];
+            } else {
+                // If OWNER, load all their venues
+                const ownerId = OwnerAuth.getOwnerId();
+                if (!ownerId) return;
+
+                const response = await OwnerAuth.authFetch(`/api/venues/owner/${ownerId}`);
+                if (!response.ok) throw new Error("Failed to fetch venues");
+                const resData = await response.json();
+                allVenues = resData.data || [];
+            }
+
+            allVenues.forEach(venue => {
+                venueSelect.innerHTML += `<option value="${venue.id}">${venue.name}</option>`;
+            });
+
+            // Automatically select first venue if available
+            if (allVenues.length > 0) {
+                venueSelect.value = allVenues[0].id;
+                await handleVenueChange(null);
+            }
+        } catch (err) {
+            console.error("Error loading venues:", err);
+        }
+    }
+
+    async function handleVenueChange(e) {
+        const venueId = document.getElementById("venueSelect").value;
+        const courtSelect = document.getElementById("courtSelect");
+
+        courtSelect.innerHTML = '<option value="">Chọn sân...</option>';
+        allCourts = [];
+
+        if (!venueId) {
+            updateCalendarView();
+            return;
+        }
+
+        try {
+            const response = await OwnerAuth.authFetch(`/api/courts/venue/${venueId}`);
+            if (!response.ok) throw new Error("Failed to fetch courts");
+            const resData = await response.json();
+            allCourts = resData.data || [];
+
+            allCourts.forEach(court => {
+                courtSelect.innerHTML += `<option value="${court.id}">${court.courtName}</option>`;
+            });
+
+            // Automatically select first court if available
+            if (allCourts.length > 0) {
+                courtSelect.value = allCourts[0].id;
+            }
+
+            updateCalendarView();
+        } catch (err) {
+            console.error("Error loading courts:", err);
+        }
+    }
+
+    async function loadBookings() {
+        try {
+            const user = OwnerAuth.getUser();
+            if (!user) return;
+
+            const isStaff = user.roles && user.roles.includes('STAFF');
+            let response;
+
+            if (isStaff) {
+                if (!user.venueId) return;
+                response = await OwnerAuth.authFetch(`/api/bookings/venue/${user.venueId}`);
+            } else {
+                const ownerId = OwnerAuth.getOwnerId();
+                if (!ownerId) return;
+                response = await OwnerAuth.authFetch(`/api/bookings/owner/${ownerId}`);
+            }
+
+            if (!response.ok) throw new Error("Failed to fetch bookings");
+            const resData = await response.json();
+            allBookingsGlobal = resData.data || [];
+
+            updateCalendarView();
+        } catch (err) {
+            console.error("Error loading bookings:", err);
+        }
+    }
+
+    function updateCalendarView() {
+        const weekEnd = new Date(currentWeekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        // Update header label
+        document.getElementById("weekRangeLabel").innerText = `${formatShortDate(currentWeekStart)} - ${formatShortDate(weekEnd)}`;
+
+        // Update day numbers in grid header
+        for(let i = 0; i < 7; i++) {
+            const currentDay = new Date(currentWeekStart);
+            currentDay.setDate(currentDay.getDate() + i);
+
+            // map day to mapping: Mon=1, Tue=2... Sun=0
+            const mappingIdx = currentDay.getDay();
+            const node = document.getElementById(`date-label-${mappingIdx}`);
+            if(node) node.innerText = currentDay.getDate();
+        }
+
+        // Filter bookings for this week
+        const startMillis = currentWeekStart.getTime();
+        const endMillis = weekEnd.getTime() + 86400000; // EOD Sunday
+
+        const selectedVenueId = document.getElementById("venueSelect").value;
+        const selectedCourtId = document.getElementById("courtSelect").value;
+        const selectedBookingType = document.getElementById("bookingTypeSelect").value;
+
+        const filtered = allBookingsGlobal.filter(b => {
+             const t = new Date(b.startTime).getTime();
+             const isTimeMatch = t >= startMillis && t < endMillis;
+
+             // if a specific court is selected, match to court name (or court id if returned by API)
+             // API returns `courtName` in BookingDTO based on how we look at booking data.
+             let isCourtMatch = true;
+             if (selectedCourtId) {
+                 const targetCourt = allCourts.find(c => c.id == selectedCourtId);
+                 if (targetCourt) {
+                     isCourtMatch = b.courtName === targetCourt.courtName || b.courtId == selectedCourtId;
+                 }
+             }
+
+             let isTypeMatch = true;
+             if (selectedBookingType) {
+                 isTypeMatch = b.bookingType === selectedBookingType;
+             }
+
+             return isTimeMatch && isCourtMatch && isTypeMatch;
+        });
+
+        if (activePopup) {
+            activePopup.remove();
+            activePopup = null;
+        }
+
+        renderBookings(filtered);
+    }
+
+    function renderBookings(bookings) {
+        // Clear all columns
+        for(let i=0; i<=6; i++) {
+            const col = document.getElementById("col-" + i);
+            if(col) col.innerHTML = '';
+        }
+
+        bookings.forEach(b => {
+            const startDate = new Date(b.startTime);
+            const endDate = new Date(b.endTime);
+
+            // get day of week
+            const day = startDate.getDay();
+            const col = document.getElementById("col-" + day);
+            if (!col) return;
+
+            // calculate positions
+            const startHour = startDate.getHours();
+            const startMin = startDate.getMinutes();
+            const endHour = endDate.getHours();
+            const endMin = endDate.getMinutes();
+
+            const offset = (startHour - 6) * 80 + (startMin / 60) * 80;
+            const duration = (endDate - startDate) / 3600000;
+            const height = duration * 80;
+
+            if (offset < 0) return;
+
+            let colorClasses = "bg-slate-100 border-slate-400 text-slate-700 hover:bg-slate-200";
+            if (b.bookingType === 'PRIVATE') {
+                colorClasses = "bg-emerald-50 border-emerald-500 text-emerald-600 hover:bg-emerald-100";
+            } else if (b.bookingType === 'CASUAL') {
+                colorClasses = "bg-tertiary/10 border-tertiary text-tertiary hover:bg-tertiary/20";
+            } else if (b.bookingType === 'RANKED') {
+                colorClasses = "bg-orange-50 border-orange-500 text-orange-600 hover:bg-orange-100";
+            }
+
+            const timeStr = `${startHour.toString().padStart(2,'0')}:${startMin.toString().padStart(2,'0')} - ${endHour.toString().padStart(2,'0')}:${endMin.toString().padStart(2,'0')}`;
+
+            const card = document.createElement("div");
+            card.className = "absolute left-0 right-0 p-1 z-10 hover:z-20 transition-all group";
+            card.style.top = offset + "px";
+            card.style.height = height + "px";
+
+            card.innerHTML = `
+                <div class="w-full h-full border-l-4 rounded p-2 flex flex-col shadow-sm hover:shadow-md cursor-pointer ${colorClasses}">
+                    <span class="text-[10px] font-bold uppercase tracking-tighter truncate">${b.bookingType} • ${timeStr}</span>
+                    <span class="text-xs font-bold truncate mt-1">Court: ${b.courtName || 'N/A'}</span>
+                    <span class="text-[9px] font-medium truncate mt-0.5 opacity-80">Status: ${b.status}</span>
+                </div>
+            `;
+
+            // Hover / Click interaction for Popup
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(activePopup) activePopup.remove();
+
+                activePopup = document.createElement("div");
+                activePopup.className = "absolute top-1/2 left-[105%] -translate-y-1/2 w-64 bg-white shadow-2xl rounded-xl p-4 z-[100] border border-slate-100 ring-1 ring-black/5 animate-in fade-in zoom-in duration-200";
+
+                // Format price if any
+                const cost = b.totalCost ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(b.totalCost) : "0 ₫";
+
+                activePopup.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-base font-black leading-tight text-slate-800">Booking #${b.id}</h3>
+                            <p class="text-xs font-bold ${b.bookingType === 'RANKED' ? 'text-orange-500' : 'text-slate-500'} uppercase mt-1">${b.bookingType}</p>
+                        </div>
+                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">${b.status}</span>
+                    </div>
+                    <div class="space-y-3 mb-5 text-slate-600">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">Date</span>
+                            <span class="font-bold text-slate-800">${new Date(b.startTime).toLocaleDateString()}</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">Time</span>
+                            <span class="font-bold text-slate-800">${timeStr}</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">Court</span>
+                            <span class="font-bold text-slate-800">${b.courtName || 'N/A'}</span>
+                        </div>
+                        <div class="flex justify-between text-xs items-center">
+                            <span class="text-slate-400">Cost</span>
+                            <span class="font-bold text-primary">${cost}</span>
+                        </div>
+                        ${b.notes ? `
+                        <div class="flex justify-between text-xs mt-2 border-t pt-2 border-slate-100">
+                            <span class="text-slate-400">Notes</span>
+                            <span class="font-bold italic truncate max-w-[120px]" title="${b.notes}">${b.notes}</span>
+                        </div>` : ''}
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bg-slate-100 text-slate-600 py-2 rounded-lg text-xs font-bold hover:bg-slate-200 col-span-2">Close</button>
+                    </div>
+                    <div class="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rotate-45 border-l border-b border-slate-100"></div>
+                `;
+
+                // Add close listener immediately
+                activePopup.querySelector('button').addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    activePopup.remove();
+                    activePopup = null;
+                });
+
+                card.appendChild(activePopup);
+            });
+
+            col.appendChild(card);
+        });
+    }
     </script>
     </div>
     <script>lucide.createIcons();</script>

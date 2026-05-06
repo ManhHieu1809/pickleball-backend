@@ -18,20 +18,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Use Case: Create Walk-in Booking (WORKFLOW §VIII)
- *
- * Flow:
- * 1. Venue Staff creates booking for walk-in customer
- * 2. Customer pays on-site (cash/transfer)
- * 3. Staff records payment
- * 4. Booking is confirmed immediately
- *
- * Key points:
- * - Staff must have CAN_CREATE_BOOKING permission
- * - Court must belong to staff's venue
- * - Payment is recorded, not processed online
- */
 public class CreateWalkInBookingUseCase {
 
     private final BookingRepository bookingRepository;
@@ -62,10 +48,9 @@ public class CreateWalkInBookingUseCase {
             LocalDateTime endTime,
             String customerName,
             String customerPhone,
-            String paymentMethod,  // CASH, BANK_TRANSFER, etc.
+            String paymentMethod,
             String notes) {
 
-        // 1. Validate staff exists and has permission
         VenueStaff staff = venueStaffRepository.findById(staffId)
                 .orElseThrow(() -> new IllegalArgumentException("Nhân viên không tồn tại"));
 
@@ -73,7 +58,6 @@ public class CreateWalkInBookingUseCase {
             throw new IllegalArgumentException("Nhân viên không có quyền tạo booking");
         }
 
-        // 2. Validate court exists and belongs to staff's venue
         Court court = courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Sân không tồn tại"));
 
@@ -85,31 +69,26 @@ public class CreateWalkInBookingUseCase {
             throw new IllegalArgumentException("Sân hiện đang không hoạt động");
         }
 
-        // 3. Check for conflicting bookings
         List<Booking> conflictingBookings = bookingRepository.findConflictingBookings(courtId, startTime, endTime);
         if (!conflictingBookings.isEmpty()) {
             throw new IllegalArgumentException("Slot này đã được đặt");
         }
 
-        // 4. Calculate price
         Money venueFee = calculateVenueFee(courtId, startTime, endTime);
 
-        // 5. Create booking with WALK_IN type
         Booking booking = Booking.builder()
                 .courtId(courtId)
                 .startTime(startTime)
                 .endTime(endTime)
                 .bookingType(BookingType.WALK_IN)
-                .status(BookingStatus.CONFIRMED)  // Walk-in is immediately confirmed
+                .status(BookingStatus.CONFIRMED)
                 .createdAt(LocalDateTime.now())
                 .createdByStaffId(staffId)
                 .notes(buildNotes(customerName, customerPhone, paymentMethod, notes))
                 .build();
 
-        // Calculate costs
         booking.calculateCosts(venueFee, null, PLATFORM_FEE_PERCENTAGE);
 
-        // Save booking
         Booking savedBooking = bookingRepository.save(booking);
 
         return new WalkInBookingResult(
@@ -125,7 +104,6 @@ public class CreateWalkInBookingUseCase {
         List<CourtPricing> pricings = courtPricingRepository.findByCourtId(courtId);
 
         if (pricings.isEmpty()) {
-            // Default price if no pricing configured
             return new Money(new BigDecimal("200000"), "VND");
         }
 
@@ -162,9 +140,6 @@ public class CreateWalkInBookingUseCase {
         return sb.toString().trim();
     }
 
-    /**
-     * Result record for walk-in booking
-     */
     public record WalkInBookingResult(
             Booking booking,
             String customerName,

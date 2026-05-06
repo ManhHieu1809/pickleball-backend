@@ -30,7 +30,6 @@ public class PaginatedResponse<T> {
         private boolean hasPrevious;
     }
 
-    // Static factory method
     public static <T> PaginatedResponse<T> of(List<T> content, int page, int size, long totalElements) {
         int totalPages = (int) Math.ceil((double) totalElements / size);
 

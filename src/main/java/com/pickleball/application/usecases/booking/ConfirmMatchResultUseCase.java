@@ -28,7 +28,6 @@ public class ConfirmMatchResultUseCase {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
 
-        // Validate player is a participant (PLAYER role)
         boolean isParticipant = booking.getParticipants().stream()
                 .anyMatch(p -> p.getUserId().equals(playerUserId) && p.getRole() == ParticipantRole.PLAYER);
 
@@ -41,20 +40,17 @@ public class ConfirmMatchResultUseCase {
         } else {
             match.dispute();
         }
-        
-        // If match is now CONFIRMED (all players agreed), finalize the flow
+
+        // Save early so that updateEloUseCase sees the correct status from the repository adapter
+        rankedMatchRepository.save(match);
+
         if (match.getStatus() == MatchStatus.CONFIRMED) {
-            // 1. Update Elo
             updateEloUseCase.execute(bookingId);
-            
-            // 2. Mark Booking as COMPLETED
+
             booking.setStatus(BookingStatus.COMPLETED);
             bookingRepository.save(booking);
-            
-            // 3. Process Settlement
+
             settlementService.processSettlement(bookingId);
         }
-
-        rankedMatchRepository.save(match);
     }
 }

@@ -4,5 +4,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DatabaseConfig {
-    // JPA configuration will be handled by Spring Boot auto-configuration
 }

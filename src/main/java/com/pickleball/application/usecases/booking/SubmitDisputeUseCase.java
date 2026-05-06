@@ -21,10 +21,6 @@ public class SubmitDisputeUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Ranked match not found: " + rankedMatchId));
 
         if (match.getStatus() != MatchStatus.SUBMITTED && match.getStatus() != MatchStatus.IN_DISPUTE) {
-            // Allow dispute only if result is submitted or already in dispute (another player disputed)
-            // Actually, if it's already confirmed, it might be too late? 
-            // The requirement says "Player creates dispute". Usually before confirmation.
-            // If match is CONFIRMED, usually dispute is harder. Let's assume SUBMITTED or IN_DISPUTE.
             throw new IllegalStateException("Cannot dispute match with status: " + match.getStatus());
         }
 

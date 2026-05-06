@@ -1,5 +1,6 @@
 package com.pickleball.application.usecases.booking;
 
+import com.pickleball.application.usecases.wallet.PayWithWalletUseCase;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.entities.BookingParticipant;
 import com.pickleball.domain.entities.Court;
@@ -28,16 +29,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Use Case: Create Casual Match (WORKFLOW II.2)
- *
- * Flow:
- * 1. Host selects "Create Match" with Ranked = OFF
- * 2. Host deposits 25% of court fee
- * 3. System finds 3 matching players (Elo +/-200)
- * 4. Each player deposits 25% -> when 4 confirmed -> CONFIRMED
- * 5. Match happens (no referee, no Elo changes)
- */
 public class CreateCasualMatchUseCase {
 
     private final BookingRepository bookingRepository;
@@ -46,7 +37,7 @@ public class CreateCasualMatchUseCase {
     private final PlayerRepository playerRepository;
     private final VenueRepository venueRepository;
     private final PriceCalculationService priceCalculationService;
-    private final PaymentService paymentService;
+    private final PayWithWalletUseCase payWithWalletUseCase;
     private final MatchmakingService matchmakingService;
 
     private static final BigDecimal PLATFORM_FEE_PERCENTAGE = new BigDecimal("0.20");
@@ -60,7 +51,7 @@ public class CreateCasualMatchUseCase {
             PlayerRepository playerRepository,
             VenueRepository venueRepository,
             PriceCalculationService priceCalculationService,
-            PaymentService paymentService,
+            PayWithWalletUseCase payWithWalletUseCase,
             MatchmakingService matchmakingService) {
         this.bookingRepository = bookingRepository;
         this.courtRepository = courtRepository;
@@ -68,33 +59,27 @@ public class CreateCasualMatchUseCase {
         this.playerRepository = playerRepository;
         this.venueRepository = venueRepository;
         this.priceCalculationService = priceCalculationService;
-        this.paymentService = paymentService;
+        this.payWithWalletUseCase = payWithWalletUseCase;
         this.matchmakingService = matchmakingService;
     }
 
     public CasualMatchResult execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime, Long hostUserId,
             String notes) {
-        // 1. Validate court
         courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court not found"));
 
-        // 2. Validate host is a player
         Player hostPlayer = playerRepository.findByUserId(hostUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Player profile not found"));
 
-        // 3. Check time slot conflicts
         List<Booking> conflicts = bookingRepository.findConflictingBookings(courtId, startTime, endTime);
         if (!conflicts.isEmpty()) {
             throw new IllegalArgumentException("Time slot is already booked");
         }
 
-        // 4. Calculate venue fee
         Money venueFee = calculateVenueFee(courtId, startTime, endTime);
 
-        // 5. Calculate deposit per player (25%)
         Money depositPerPlayer = calculateDeposit(venueFee);
 
-        // 6. Create booking CASUAL with PENDING status
         Booking booking = Booking.builder()
                 .courtId(courtId)
                 .startTime(startTime)
@@ -109,7 +94,6 @@ public class CreateCasualMatchUseCase {
         booking.calculateCosts(venueFee, null, PLATFORM_FEE_PERCENTAGE);
         booking = bookingRepository.save(booking);
 
-        // 7. Add host as participant with 25% deposit
         BookingParticipant host = BookingParticipant.builder()
                 .bookingId(booking.getId())
                 .userId(hostUserId)
@@ -121,14 +105,21 @@ public class CreateCasualMatchUseCase {
                 .build();
         booking.addParticipant(host);
 
-        // 8. Process host deposit payment (25%)
-        String orderId = "CASUAL_DEPOSIT_" + booking.getId() + "_HOST";
         String description = "Casual match deposit - Court #" + courtId + " - " + startTime.toLocalDate();
-        PaymentResult paymentResult = paymentService.createPayment(orderId, depositPerPlayer, description, hostUserId);
+        PaymentResult paymentResult;
 
-        if (paymentResult.success() && "SUCCESS".equals(paymentResult.status())) {
+        // Thanh toán bằng ví nội bộ
+        try {
+            String transactionId = payWithWalletUseCase.execute(
+                    hostUserId,
+                    depositPerPlayer.getAmount(),
+                    booking.getId(),
+                    description
+            );
+            paymentResult = PaymentResult.success(transactionId, depositPerPlayer);
             host.setJoinStatus(JoinStatus.PAID);
-        } else if (!paymentResult.success()) {
+        } catch (Exception e) {
+            paymentResult = PaymentResult.failed("Thanh toán thất bại: " + e.getMessage());
             booking.cancel();
             booking = bookingRepository.save(booking);
             return new CasualMatchResult(booking, paymentResult, Collections.emptyList(), depositPerPlayer);
@@ -136,7 +127,6 @@ public class CreateCasualMatchUseCase {
 
         booking = bookingRepository.save(booking);
 
-        // 9. Find matching candidates via MatchmakingService
         List<Player> candidates = findCandidates(hostPlayer, booking.getId());
 
         return new CasualMatchResult(booking, paymentResult, candidates, depositPerPlayer);
@@ -149,11 +139,9 @@ public class CreateCasualMatchUseCase {
         List<Player> playersInRange = playerRepository.findByEloRange(eloRange[0], eloRange[1]);
         List<Long> existingParticipants = bookingRepository.findParticipantUserIdsByBookingId(bookingId);
 
-        // Anti-repetition: get recent opponents
         List<Long> recentOpponents = bookingRepository.findRecentOpponentUserIds(
                 hostPlayer.getUserId(), matchmakingService.getAntiRepetitionLastN());
 
-        // GPS filter: get venue location from booking's court
         Double venueLat = null;
         Double venueLng = null;
         Booking booking = bookingRepository.findById(bookingId).orElse(null);

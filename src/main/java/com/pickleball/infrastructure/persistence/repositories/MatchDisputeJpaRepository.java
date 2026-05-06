@@ -18,6 +18,9 @@ public interface MatchDisputeJpaRepository extends JpaRepository<MatchDisputeEnt
 
     List<MatchDisputeEntity> findByReportingPlayerId(Long playerId);
 
+    @Query("SELECT d FROM MatchDisputeEntity d JOIN RankedMatchEntity r ON d.rankedMatchId = r.id WHERE r.refereeId = :refereeId")
+    List<MatchDisputeEntity> findByRefereeId(@Param("refereeId") Long refereeId);
+
     @Query("SELECT d FROM MatchDisputeEntity d WHERE d.status = 'AWAITING_EVIDENCE' AND d.evidenceDeadline < :now")
     List<MatchDisputeEntity> findExpiredAwaitingEvidence(@Param("now") LocalDateTime now);
 }

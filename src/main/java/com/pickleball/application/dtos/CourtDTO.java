@@ -16,7 +16,7 @@ public class CourtDTO {
     private Long venueId;
     private String courtName;
     private Boolean isActive;
-    private Long deactivatedByAdminId; // Who locked it
+    private Long deactivatedByAdminId;
     private List<CourtPricingDTO> pricings;
 }
 

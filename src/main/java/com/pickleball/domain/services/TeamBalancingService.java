@@ -11,15 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Domain Service - Team Balancing Algorithm (WORKFLOW §II.3)
- *
- * Balances 4 solo players into two teams (A and B) based on Elo ratings.
- * Algorithm:
- * 1. Sort 4 players by Elo descending: P1, P2, P3, P4
- * 2. Team A = [P1, P4] (Highest and Lowest)
- * 3. Team B = [P2, P3] (2nd and 3rd)
- */
 public class TeamBalancingService {
 
     private final PlayerRepository playerRepository;
@@ -30,7 +21,7 @@ public class TeamBalancingService {
 
     public void balanceTeams(Booking booking) {
         if (booking.getBookingType() != BookingType.RANKED) {
-            return; // Only ranked matches need team balancing
+            return;
         }
 
         List<BookingParticipant> players = booking.getParticipants().stream()

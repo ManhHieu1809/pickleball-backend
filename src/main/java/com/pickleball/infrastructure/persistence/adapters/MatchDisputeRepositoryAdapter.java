@@ -67,4 +67,11 @@ public class MatchDisputeRepositoryAdapter implements MatchDisputeRepository {
                 .map(MatchDisputeMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<MatchDispute> findByRefereeId(Long refereeId) {
+        return jpaRepository.findByRefereeId(refereeId).stream()
+                .map(MatchDisputeMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }

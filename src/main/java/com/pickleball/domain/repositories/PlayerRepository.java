@@ -12,4 +12,6 @@ public interface PlayerRepository {
     List<Player> findByEloRange(int minElo, int maxElo);
     List<Player> findByUserIdIn(List<Long> userIds);
     void updateLocation(Long userId, Double latitude, Double longitude);
+    List<Player> findTopPlayers(int page, int size);
+    long countTotalPlayers();
 }

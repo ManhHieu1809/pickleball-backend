@@ -8,10 +8,6 @@ import com.pickleball.domain.repositories.RefereeRepository;
 import com.pickleball.domain.repositories.RoleRequestRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Admin approves a referee registration request.
- * Creates a Referee entry and updates the request status.
- */
 public class ApproveRefereeRequestUseCase {
 
     private final RoleRequestRepository roleRequestRepository;
@@ -42,12 +38,10 @@ public class ApproveRefereeRequestUseCase {
             throw new IllegalStateException("User is already a referee");
         }
 
-        // Determine referee type
         RefereeType refereeType = request.getRequestType() == RequestType.VENUE_REFEREE
                 ? RefereeType.VENUE
                 : RefereeType.PLATFORM;
 
-        // Create referee entry
         Referee referee = Referee.builder()
                 .userId(request.getUserId())
                 .testPassed(true)
@@ -60,7 +54,6 @@ public class ApproveRefereeRequestUseCase {
 
         refereeRepository.save(referee);
 
-        // Update request status
         request.approve(adminId);
         return roleRequestRepository.save(request);
     }

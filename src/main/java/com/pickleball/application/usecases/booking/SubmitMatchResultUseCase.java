@@ -32,10 +32,7 @@ public class SubmitMatchResultUseCase {
         }
 
         String winningTeam = teamAScore > teamBScore ? "A" : "B";
-
-        // Domain method handles status checks and referee validation
         match.submitResult(refereeUserId, teamAScore, teamBScore, winningTeam);
-
         rankedMatchRepository.save(match);
     }
 }

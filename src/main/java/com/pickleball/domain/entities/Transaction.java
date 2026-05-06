@@ -15,8 +15,8 @@ public class Transaction {
     private Long userId;
     private Long bookingId;
     private BigDecimal amount;
-    private String type; // DEPOSIT, BOOKING_PAYMENT, TOP_UP, WITHDRAWAL, REFUND, PENALTY, PAYOUT
-    private String status; // PENDING, SUCCESS, FAILED
+    private String type;
+    private String status;
     private String description;
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

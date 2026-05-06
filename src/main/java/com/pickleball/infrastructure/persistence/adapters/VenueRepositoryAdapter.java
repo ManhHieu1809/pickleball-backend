@@ -59,7 +59,6 @@ public class VenueRepositoryAdapter implements VenueRepository {
 
     @Override
     public List<Venue> findPendingVenues() {
-        // Pending venues: not active AND not approved by admin yet
         return venueJpaRepository.findByIsActiveFalseAndApprovedByAdminIdIsNull().stream()
                 .map(venueMapper::toDomain)
                 .collect(Collectors.toList());

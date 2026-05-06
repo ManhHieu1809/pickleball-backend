@@ -19,20 +19,12 @@ public class RefereeController {
 
     private final RefereeApplicationService refereeApplicationService;
 
-    // ==================== AI Test Endpoints ====================
-
-    /**
-     * Generate 10 random questions (2 per category) for referee test.
-     */
     @GetMapping("/test/generate")
     public ResponseEntity<ApiResponse<List<TestQuestionDTO>>> generateTest() {
         List<TestQuestionDTO> questions = refereeApplicationService.generateTest();
         return ResponseHelper.ok(questions);
     }
 
-    /**
-     * Submit test answers. If score >= 9/10, auto-creates referee registration request.
-     */
     @PostMapping("/test/submit")
     public ResponseEntity<ApiResponse<RefereeTestResultDTO>> submitTest(
             @Valid @RequestBody SubmitTestAnswersRequest request) {
@@ -40,9 +32,6 @@ public class RefereeController {
         return ResponseHelper.ok(result);
     }
 
-    /**
-     * Get test attempt history for a player.
-     */
     @GetMapping("/test/history")
     public ResponseEntity<ApiResponse<List<RefereeTestResultDTO>>> getTestHistory(
             @RequestParam Long userId) {
@@ -50,11 +39,6 @@ public class RefereeController {
         return ResponseHelper.ok(history);
     }
 
-    // ==================== Referee Profile ====================
-
-    /**
-     * Get referee profile (trust score, match count, etc.)
-     */
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<RefereeDTO>> getRefereeProfile(
             @RequestParam Long userId) {
@@ -62,11 +46,22 @@ public class RefereeController {
         return ResponseHelper.ok(profile);
     }
 
-    // ==================== Match Result (Referee Only) ====================
+    @PutMapping("/{refereeId}/availability")
+    public ResponseEntity<ApiResponse<RefereeDTO>> toggleAvailability(
+            @PathVariable Long refereeId,
+            @RequestParam boolean isReady) {
+        RefereeDTO updatedProfile = refereeApplicationService.toggleAvailability(refereeId, isReady);
+        return ResponseHelper.ok(updatedProfile, "Availability updated to " + isReady);
+    }
 
-    /**
-     * Referee submits match result (score + winning team).
-     */
+    @GetMapping("/{refereeId}/matches")
+    public ResponseEntity<ApiResponse<List<RankedMatchDTO>>> getRefereeMatches(
+            @PathVariable Long refereeId,
+            @RequestParam(required = false) String status) {
+        List<RankedMatchDTO> matches = refereeApplicationService.getRefereeMatches(refereeId, status);
+        return ResponseHelper.ok(matches);
+    }
+
     @PostMapping("/matches/{matchId}/result")
     public ResponseEntity<ApiResponse<Void>> submitMatchResult(
             @PathVariable Long matchId,
@@ -75,11 +70,6 @@ public class RefereeController {
         return ResponseHelper.ok(null, "Match result submitted successfully");
     }
 
-    // ==================== Dispute - Referee Evidence ====================
-
-    /**
-     * Referee submits evidence for a dispute (within 24h deadline).
-     */
     @PostMapping("/disputes/{disputeId}/evidence")
     public ResponseEntity<ApiResponse<MatchDisputeDTO>> submitEvidence(
             @PathVariable Long disputeId,
@@ -88,11 +78,13 @@ public class RefereeController {
         return ResponseHelper.ok(dispute, "Evidence submitted successfully");
     }
 
-    // ==================== Dispute - Player Submit ====================
+    @GetMapping("/{refereeId}/disputes")
+    public ResponseEntity<ApiResponse<List<MatchDisputeDTO>>> getRefereeDisputes(
+            @PathVariable Long refereeId) {
+        List<MatchDisputeDTO> disputes = refereeApplicationService.getRefereeDisputes(refereeId);
+        return ResponseHelper.ok(disputes);
+    }
 
-    /**
-     * Player submits a dispute against referee's result.
-     */
     @PostMapping("/disputes")
     public ResponseEntity<ApiResponse<MatchDisputeDTO>> submitDispute(
             @Valid @RequestBody SubmitDisputeRequest request) {

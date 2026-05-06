@@ -43,7 +43,6 @@ public class UserManagementService {
             userPage = userJpaRepository.findAll(pageable);
         }
 
-        // Map to DTOs with role enrichment
         Page<AdminUserDTO> dtoPage = userPage.map(this::mapToAdminUserDTO);
 
         if (role != null && !role.trim().isEmpty() && !role.equalsIgnoreCase("ALL")) {
@@ -53,18 +52,12 @@ public class UserManagementService {
         return dtoPage;
     }
 
-    /**
-     * Get a single user's full details by ID.
-     */
     public AdminUserDTO getUserById(Long userId) {
         UserEntity user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         return mapToAdminUserDTO(user);
     }
 
-    /**
-     * Get user statistics for the admin dashboard.
-     */
     public AdminUserStatsDTO getUserStats() {
         long totalUsers = userJpaRepository.count();
         long totalPlayers = playerJpaRepository.count();
@@ -89,13 +82,9 @@ public class UserManagementService {
                 .build();
     }
 
-    /**
-     * Map a UserEntity to AdminUserDTO with role-specific enrichment.
-     */
     private AdminUserDTO mapToAdminUserDTO(UserEntity user) {
         List<String> roles = new ArrayList<>();
 
-        // Player info
         Integer currentElo = null;
         Integer loyaltyPoints = null;
         String loyaltyTier = null;
@@ -108,7 +97,6 @@ public class UserManagementService {
             loyaltyTier = player.getLoyaltyTier() != null ? player.getLoyaltyTier().name() : null;
         }
 
-        // Owner info
         String taxCode = null;
         String bankAccountNumber = null;
         String bankName = null;
@@ -123,7 +111,6 @@ public class UserManagementService {
             venueCount = (int) venueJpaRepository.countByOwnerId(user.getId());
         }
 
-        // Referee info
         String refereeType = null;
         Boolean testPassed = null;
         Boolean refereeActive = null;
@@ -136,12 +123,10 @@ public class UserManagementService {
             refereeActive = referee.getIsActive();
         }
 
-        // Admin check
         if (adminJpaRepository.existsByUserId(user.getId())) {
             roles.add("ADMIN");
         }
 
-        // If no specific role found, default to PLAYER
         if (roles.isEmpty()) {
             roles.add("PLAYER");
         }

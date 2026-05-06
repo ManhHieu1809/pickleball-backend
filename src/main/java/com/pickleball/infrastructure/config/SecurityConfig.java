@@ -69,7 +69,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/staff/**").permitAll()
                         .requestMatchers("/api/referee/**").permitAll()
                         .requestMatchers("/api/players/**").permitAll()
-                        // All other requests require authentication
+                        .requestMatchers("/api/leaderboard/**").permitAll()
+                        .requestMatchers("/owner/**").permitAll()
+                        .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

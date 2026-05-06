@@ -20,9 +20,6 @@ public class EloCalculationService {
         private int eloAfter;
     }
 
-    /**
-     * Calculates Elo changes for a 2v2 match.
-     */
     public Map<Long, EloChangeResult> calculateEloChanges(
             List<Player> teamAPlayers,
             List<Player> teamBPlayers,

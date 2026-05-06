@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +34,6 @@ public class DashboardService {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
 
     public DashboardStatsDTO getDashboardStats() {
-        // ===== Summary cards =====
         long totalBookings = bookingJpaRepository.count();
 
         LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
@@ -45,30 +45,40 @@ public class DashboardService {
 
         long activeVenues = venueJpaRepository.findByIsActiveTrue().size();
 
-        // ===== Pending actions count =====
         List<RoleRequestEntity> pendingRequests = roleRequestJpaRepository.findByStatus(RequestStatus.PENDING);
         long pendingOwnerRequests = pendingRequests.size();
 
         List<VenueEntity> pendingVenuesList = venueJpaRepository.findByIsActiveFalseAndApprovedByAdminIdIsNull();
         long pendingVenues = pendingVenuesList.size();
 
-        // ===== Booking type distribution =====
         Map<String, Long> bookingTypeDistribution = new LinkedHashMap<>();
         for (BookingType type : BookingType.values()) {
             long count = bookingJpaRepository.countByBookingType(type);
             bookingTypeDistribution.put(type.name(), count);
         }
 
-        // ===== Recent bookings (last 5) =====
         List<BookingEntity> recentBookingEntities = bookingJpaRepository.findRecentBookings(PageRequest.of(0, 5));
         List<DashboardStatsDTO.RecentBookingDTO> recentBookings = recentBookingEntities.stream()
                 .map(this::mapToRecentBooking)
                 .collect(Collectors.toList());
 
-        // ===== Pending actions list =====
+        List<BigDecimal> revenueLast7Days = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = start.plusDays(1);
+            List<BookingEntity> dailyBookings = bookingJpaRepository.findByStartTimeBetween(start, end);
+            BigDecimal dailyRevenue = dailyBookings.stream()
+                .filter(b -> b.getStatus() == com.pickleball.domain.enums.BookingStatus.CONFIRMED 
+                             || b.getStatus() == com.pickleball.domain.enums.BookingStatus.COMPLETED)
+                .map(b -> b.getTotalCost() != null ? b.getTotalCost() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            revenueLast7Days.add(dailyRevenue);
+        }
+
         List<DashboardStatsDTO.PendingActionDTO> pendingActions = new ArrayList<>();
 
-        // Add pending role requests
         for (RoleRequestEntity req : pendingRequests) {
             pendingActions.add(DashboardStatsDTO.PendingActionDTO.builder()
                     .id(req.getId())
@@ -79,7 +89,6 @@ public class DashboardService {
                     .build());
         }
 
-        // Add pending venues
         for (VenueEntity venue : pendingVenuesList) {
             pendingActions.add(DashboardStatsDTO.PendingActionDTO.builder()
                     .id(venue.getId())
@@ -98,6 +107,7 @@ public class DashboardService {
                 .pendingOwnerRequests(pendingOwnerRequests)
                 .pendingVenues(pendingVenues)
                 .bookingTypeDistribution(bookingTypeDistribution)
+                .revenueLast7Days(revenueLast7Days)
                 .recentBookings(recentBookings)
                 .pendingActions(pendingActions)
                 .build();

@@ -14,9 +14,9 @@ public interface PaymentService {
     record PaymentResult(
             boolean success,
             String transactionId,
-            String status,          // PENDING, SUCCESS, FAILED, REFUNDED
+            String status,
             String message,
-            String paymentUrl,      // URL for user to complete payment (if applicable)
+            String paymentUrl,
             Money amount
     ) {
         public static PaymentResult success(String transactionId, Money amount) {

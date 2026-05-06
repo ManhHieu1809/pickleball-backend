@@ -21,7 +21,6 @@ public class TimeSlotController {
 
     private final TimeSlotApplicationService timeSlotService;
 
-    // Lấy các slots còn trống để đặt - dành cho user
     @GetMapping
     public ResponseEntity<ApiResponse<List<TimeSlotDTO>>> getAvailableSlots(
             @PathVariable Long courtId,
@@ -31,9 +30,6 @@ public class TimeSlotController {
         return ResponseHelper.ok(slots);
     }
 
-    /**
-     * Lấy tất cả slots (bao gồm BOOKED) - dành cho owner/admin
-     */
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<TimeSlotDTO>>> getAllSlots(
             @PathVariable Long courtId,

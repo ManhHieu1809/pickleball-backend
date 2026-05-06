@@ -38,14 +38,12 @@ public class Booking {
 
     private LocalDateTime createdAt;
 
-    private String notes;  // For walk-in booking: customer info, payment method
+    private String notes;
 
     @Builder.Default
     private List<BookingParticipant> participants = new ArrayList<>();
 
 
-
-    // Business Methods
     public void confirm() {
         if (this.status == BookingStatus.PENDING) {
             this.status = BookingStatus.CONFIRMED;
@@ -104,9 +102,8 @@ public class Booking {
 
         long hoursUntilStart = java.time.Duration.between(LocalDateTime.now(), startTime).toHours();
         if (hoursUntilStart > 48) {
-            return totalCost; // 100% refund
+            return totalCost;
         } else {
-            // 50% refund
             BigDecimal refundAmount = totalCost.getAmount().multiply(new BigDecimal("0.5"));
             return new Money(refundAmount, "VND");
         }

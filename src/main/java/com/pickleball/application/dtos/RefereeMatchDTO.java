@@ -8,10 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-/**
- * DTO for referee candidates in Ranked matchmaking.
- * Contains referee information needed for match assignment display.
- */
 @Data
 @Builder
 @AllArgsConstructor

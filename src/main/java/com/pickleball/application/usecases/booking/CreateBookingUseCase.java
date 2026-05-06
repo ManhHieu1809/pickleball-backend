@@ -27,17 +27,14 @@ public class CreateBookingUseCase {
 
     public Booking execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime,
                            BookingType bookingType, Long creatorUserId, boolean isPlayer) {
-        // Kiểm tra court có tồn tại không
         courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court not found"));
 
-        // Kiểm tra xem có booking nào trùng giờ không
         List<Booking> conflictingBookings = bookingRepository.findConflictingBookings(courtId, startTime, endTime);
         if (!conflictingBookings.isEmpty()) {
             throw new IllegalArgumentException("Time slot is already booked");
         }
 
-        // Tạo booking
         Booking booking = Booking.builder()
                 .courtId(courtId)
                 .startTime(startTime)
@@ -49,10 +46,8 @@ public class CreateBookingUseCase {
                 .createdByStaffId(isPlayer ? null : creatorUserId)
                 .build();
 
-        // Lưu booking để có ID
         booking = bookingRepository.save(booking);
 
-        // Nếu là player tạo, thêm họ vào danh sách participant với vai trò HOST
         if (isPlayer) {
             BookingParticipant host = BookingParticipant.builder()
                     .bookingId(booking.getId())
@@ -66,8 +61,6 @@ public class CreateBookingUseCase {
             booking.addParticipant(host);
         }
 
-        // Tính toán chi phí cơ bản (tạm thời fix giá)
-        // TODO: Tính giá theo CourtPricing
         Money baseFee = new Money(new BigDecimal("200000"), "VND");
         booking.calculateCosts(baseFee, null, new BigDecimal("0.20")); // 20% platform fee
 

@@ -39,6 +39,13 @@ public class VenueStaffController {
         return ResponseHelper.created(staff, "Tạo nhân viên thành công");
     }
 
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<ApiResponse<List<VenueStaffDTO>>> getStaffByOwner(
+            @PathVariable Long ownerId) {
+        List<VenueStaffDTO> staffList = staffService.getStaffByOwner(ownerId);
+        return ResponseHelper.ok(staffList);
+    }
+
     @GetMapping("/venue/{venueId}")
     public ResponseEntity<ApiResponse<List<VenueStaffDTO>>> getStaffByVenue(
             @PathVariable Long venueId,

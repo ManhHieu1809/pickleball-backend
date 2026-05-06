@@ -19,5 +19,5 @@ public class SubmitDisputeRequest {
     @NotBlank(message = "Reason is required")
     private String reason;
 
-    private String evidence; // Optional JSON - photos/videos URLs
+    private String evidence;
 }

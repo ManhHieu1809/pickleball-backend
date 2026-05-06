@@ -25,6 +25,6 @@ public class CreateCourtPricingRequest {
     @Positive(message = "Giá mỗi giờ phải lớn hơn 0")
     private BigDecimal pricePerHour;
 
-    private Integer dayOfWeek; // 1=Monday, 7=Sunday, null=all days
+    private Integer dayOfWeek;
 }
 

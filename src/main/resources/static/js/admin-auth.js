@@ -3,7 +3,7 @@ const AdminAuth = (() => {
     const TOKEN_KEY = 'admin_access_token';
     const REFRESH_KEY = 'admin_refresh_token';
     const USER_KEY = 'admin_user';
-    const LOGIN_URL = '/admin/login';
+    const LOGIN_URL = '/login';
 
     function getToken() {
         return localStorage.getItem(TOKEN_KEY);

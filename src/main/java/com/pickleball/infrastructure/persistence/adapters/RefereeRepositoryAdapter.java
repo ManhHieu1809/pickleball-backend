@@ -15,16 +15,28 @@ import java.util.stream.Collectors;
 public class RefereeRepositoryAdapter implements RefereeRepository {
 
     private final RefereeJpaRepository jpaRepository;
+    private final jakarta.persistence.EntityManager entityManager;
 
-    public RefereeRepositoryAdapter(RefereeJpaRepository jpaRepository) {
+    public RefereeRepositoryAdapter(RefereeJpaRepository jpaRepository, jakarta.persistence.EntityManager entityManager) {
         this.jpaRepository = jpaRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public Referee save(Referee referee) {
         RefereeEntity entity = RefereeMapper.toEntity(referee);
-        RefereeEntity saved = jpaRepository.save(entity);
-        return RefereeMapper.toDomain(saved);
+        if (entity.getUser() != null && entity.getUser().getId() != null) {
+            entity.setUser(entityManager.getReference(com.pickleball.infrastructure.persistence.entities.UserEntity.class, entity.getUser().getId()));
+        }
+
+        if (jpaRepository.existsById(entity.getUserId())) {
+            RefereeEntity saved = jpaRepository.save(entity);
+            return RefereeMapper.toDomain(saved);
+        } else {
+            entityManager.persist(entity);
+            return RefereeMapper.toDomain(entity);
+        }
     }
 
     @Override

@@ -89,27 +89,27 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="dashboardOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="venuesOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="bookingOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="staff.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="financeOwner.html" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -140,90 +140,79 @@
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
-                    <!-- User Profile -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                        <div class="flex flex-col items-end hidden sm:flex">
-                            <span class="text-sm font-bold text-slate-900">John Owner</span>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">System Owner</span>
-                        </div>
-                        <img src="https://i.pravatar.cc/150?u=owner" alt="Admin" class="w-10 h-10 rounded-xl border-2 border-white shadow-sm shadow-slate-200/50 object-cover">
+                    <!-- User Profile Dropdown -->
+                    <div data-owner-profile
+                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                        <!-- Nội dung sẽ được inject bởi owner-auth.js -->
                     </div>
                 </div>
             </header>
 <main class="flex-1 p-6 md:p-10 lg:p-12 max-w-7xl mx-auto w-full">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-<!-- Main Form Section -->
-<div class="lg:col-span-8 space-y-10">
-<!-- Conflict Alert -->
-<div class="bg-error-container/40 border-l-4 border-error p-5 rounded-lg flex items-start gap-4 shadow-sm">
-<span class="material-symbols-outlined text-error mt-1" data-icon="warning">warning</span>
-<div>
-<p class="text-on-error-container font-semibold text-sm">Cảnh báo trùng lịch hoặc bảo trì</p>
-<p class="text-on-error-container/80 text-sm mt-1">Sân A2 lúc 18:00 đã có khách đặt! Vui lòng chọn khung giờ khác hoặc đổi sân.</p>
-</div>
-</div>
-<!-- Form Content -->
-<section class="space-y-8">
-<div>
-<h3 class="text-2xl font-bold tracking-tight text-on-surface mb-2 font-headline">Thông tin khách hàng</h3>
-<p class="text-on-surface-variant text-sm font-label uppercase tracking-widest">Khách vãng lai / Walk-in</p>
-</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Form Section -->
+<div class="lg:col-span-8">
+<section class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(25,28,30,0.06)] border border-outline-variant/15 space-y-12
+ relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<!-- Customer Info -->
+<div class="space-y-6 relative z-10">
+<h3 class="text-2xl font-bold tracking-tight text-on-surface mb-2 font-headline">Thông tin khách</h3>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="space-y-2">
-<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Tên khách hàng</label>
-<input class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container" placeholder="Nguyễn Văn A" type="text"/>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Tên khách hàng</label>
+<input id="customerName" class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest tran
+sition-all duration-200 border-b-2 border-transparent focus:border-primary-container" placeholder="Nguyễn Văn A" type="text"/>
 </div>
 <div class="space-y-2">
-<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Số điện thoại</label>
-<input class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container" placeholder="090x xxx xxx" type="tel"/>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Số điện thoại</label>
+<input id="customerPhone" class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest tran
+sition-all duration-200 border-b-2 border-transparent focus:border-primary-container" placeholder="090 123 4567" type="tel"/>
 </div>
 </div>
-<div class="space-y-6 pt-4">
-<h3 class="text-2xl font-bold tracking-tight text-on-surface mb-2 font-headline">Chi tiết đặt sân</h3>
+</div>
+<!-- Court Selection -->
+<div class="space-y-6 pt-4 relative z-10">
+<h3 class="text-2xl font-bold tracking-tight text-on-surface mb-2 font-headline">Chọn sân &amp; Thời gian</h3>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="space-y-2">
-<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Chọn sân</label>
-<select class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container appearance-none">
-<option>Sân A1 - Pickleball Pro</option>
-<option>Sân A2 - Premium Court</option>
-<option>Sân B1 - Training Hub</option>
-<option>Sân B2 - Standard</option>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Sân thi đấu</label>
+<select id="courtId" class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transit
+ion-all duration-200 border-b-2 border-transparent focus:border-primary-container" onchange="loadAvailableSlots()">
+<option value="">Đang tải...</option>
 </select>
 </div>
 <div class="space-y-2">
-<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Ngày đặt</label>
-<input class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container" type="date" value="2023-11-24"/>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Ngày đặt</label>
+<input id="bookingDate" class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container" type="date" onchange="loadAvailableSlots()"/>
 </div>
 </div>
 <div class="space-y-4">
-<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Khung giờ khả dụng</label>
-<div class="grid grid-cols-3 md:grid-cols-5 gap-3">
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">08:00</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">09:30</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">11:00</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">14:00</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-primary-container text-white border-2 border-primary shadow-lg scale-105">15:30</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">17:00</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-error-container/20 text-error/40 cursor-not-allowed opacity-50" disabled="">18:30</button>
-<button class="py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all">20:00</button>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Khung giờ khả dụng</label>
+<div id="slotsContainer" class="grid grid-cols-3 md:grid-cols-5 gap-3">
+<p class="text-sm">Vui lòng chọn sân và ngày trước</p>
 </div>
 </div>
 </div>
-<div class="space-y-6 pt-4">
+<div class="space-y-6 pt-4 relative z-10">
 <h3 class="text-2xl font-bold tracking-tight text-on-surface mb-2 font-headline">Phương thức thanh toán</h3>
-<div class="flex flex-wrap gap-4">
-<button class="flex items-center gap-3 px-6 py-4 rounded-xl bg-white border-2 border-primary-container text-primary font-bold shadow-md">
+<div class="flex flex-wrap gap-4" id="paymentMethods">
+<button type="button" data-method="CASH" class="payment-method-btn flex items-center gap-3 px-6 py-4 rounded-xl bg-white border-2 border-primary-container text-primary font-bold shadow-md transition-all">
 <span class="material-symbols-outlined" data-icon="payments">payments</span>
                                     Tiền mặt
                                 </button>
-<button class="flex items-center gap-3 px-6 py-4 rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-white transition-all border-2 border-transparent hover:border-outline-variant">
+<button type="button" data-method="BANK_TRANSFER" class="payment-method-btn flex items-center gap-3 px-6 py-4 rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-white transition-all border-2 border-transparent hover:border-outline-variant">
 <span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
                                     Chuyển khoản
                                 </button>
-<button class="flex items-center gap-3 px-6 py-4 rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-white transition-all border-2 border-transparent hover:border-outline-variant">
+<button type="button" data-method="CREDIT_CARD" class="payment-method-btn flex items-center gap-3 px-6 py-4 rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-white transition-all border-2 border-transparent hover:border-outline-variant">
 <span class="material-symbols-outlined" data-icon="credit_card">credit_card</span>
                                     Thẻ ATM/Visa
                                 </button>
+                                <input type="hidden" id="selectedPaymentMethod" value="CASH">
+</div>
+<div class="space-y-2 mt-4">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Ghi chú thêm</label>
+<textarea id="bookingNotes" class="w-full bg-surface-container-high border-none rounded-md px-4 py-3 focus:ring-0 focus:bg-surface-container-lowest transition-all duration-200 border-b-2 border-transparent focus:border-primary-container" placeholder="Ví dụ: Khách hẹn thanh toán sau, cần bóng riêng..." rows="2"></textarea>
 </div>
 </div>
 </section>
@@ -231,35 +220,19 @@
 <!-- Price Breakdown & Summary Sidebar -->
 <div class="lg:col-span-4 space-y-8">
 <div class="sticky top-24">
-<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(25,28,30,0.06)] border border-outline-variant/15 relative overflow-hidden">
+<div id="bookingSummary" class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(25,28,30,0.06)] border border-outline-variant/15 relative overflow-hidden">
 <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
 <h4 class="text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-8">Tóm tắt đơn hàng</h4>
-<div class="space-y-5 mb-8">
-<div class="flex justify-between items-center">
-<span class="text-on-surface-variant">Giá gốc (90 phút)</span>
-<span class="font-medium">350.000đ</span>
+<div class="space-y-5 mb-8 text-on-surface-variant">
+Vui lòng chọn giờ để xem giá
 </div>
-<div class="flex justify-between items-center">
-<span class="text-on-surface-variant">Phí nền tảng (20%)</span>
-<span class="font-medium text-tertiary">70.000đ</span>
-</div>
-<div class="pt-5 border-t border-slate-100 flex justify-between items-end">
-<div>
-<p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tổng thanh toán</p>
-<p class="text-4xl font-black text-on-surface tracking-tighter mt-1 font-headline">420.000<span class="text-lg">đ</span></p>
-</div>
-</div>
-</div>
-<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-lg font-bold text-lg shadow-xl shadow-orange-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<button disabled class="opacity-50 w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-lg font-bold text-lg transition-all flex items-center justify-center gap-2">
 <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
                                 Xác nhận đặt sân
                             </button>
-<p class="text-[10px] text-center text-on-surface-variant mt-6 uppercase tracking-widest leading-relaxed">
-                                Bằng cách xác nhận, bạn đồng ý với các<br/>điều khoản sử dụng của CourtLedger
-                            </p>
 </div>
 <!-- Success State Side Panel (Initially Hidden or as a Floating State) -->
-<div class="mt-8 glass-panel border border-primary-container/20 p-8 rounded-xl relative overflow-hidden">
+<div id="successPanel" class="hidden mt-8 glass-panel border border-primary-container/20 p-8 rounded-xl relative overflow-hidden">
 <div class="flex items-center gap-3 mb-6">
 <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center">
 <span class="material-symbols-outlined text-tertiary" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
@@ -276,6 +249,10 @@
 <span class="material-symbols-outlined text-sm" data-icon="print">print</span>
                                 IN PHIẾU THU
                             </button>
+<button onclick="window.location.href='/owner/bookings'" class="w-full bg-surface-container-highest text-on-secondary-container py-4 rounded-lg font-bold text-sm hover:bg-surface-container-high transition-all flex items-center justify-center gap-2 mt-2">
+<span class="material-symbols-outlined text-sm" data-icon="list">list</span>
+                                QUAY LẠI DANH SÁCH
+                            </button>
 </div>
 </div>
 </div>
@@ -283,5 +260,336 @@
 </main>
         </main>
     </div>
-    <script>lucide.createIcons();</script>
+
+    <script src="/js/owner-auth.js"></script>
+    <script>
+        lucide.createIcons();
+
+        document.getElementById('bookingDate').valueAsDate = new Date();
+
+        document.querySelectorAll('.payment-method-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.payment-method-btn').forEach(b => {
+                    b.classList.remove('bg-white', 'border-primary-container', 'text-primary', 'shadow-md');
+                    b.classList.add('bg-surface-container-low', 'text-on-surface-variant', 'border-transparent');
+                });
+
+                const target = e.currentTarget;
+                target.classList.remove('bg-surface-container-low', 'text-on-surface-variant', 'border-transparent');
+                target.classList.add('bg-white', 'border-primary-container', 'text-primary', 'shadow-md');
+
+                document.getElementById('selectedPaymentMethod').value = target.dataset.method;
+            });
+        });
+
+        let selectedSlot = null;
+        let selectedCourtInfo = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            OwnerAuth.checkAccessAndRenderMenu();
+            await loadCourts();
+        });
+
+        async function loadCourts() {
+            const select = document.getElementById('courtId');
+            try {
+                const user = OwnerAuth.getUser();
+                if(!user) {
+                    select.innerHTML = '<option value="">-- Lỗi đăng nhập --</option>';
+                    return;
+                }
+
+                // If user is Staff, get courts for their assigned venue
+                // If user is Owner, get courts for all their venues
+                let allCourts = [];
+
+                if (user.roles && user.roles.includes('STAFF')) {
+                    // Staff only sees their own venue
+                    if (user.venueId) {
+                        const courtsRes = await OwnerAuth.authFetch(`/api/courts/venue/${user.venueId}`);
+                        if(courtsRes.ok) {
+                            const courtsJson = await courtsRes.json();
+                            (courtsJson.data || []).forEach(c => {
+                                allCourts.push({...c, venueName: user.venueName || 'Sân của bạn'});
+                            });
+                        }
+                    } else {
+                        throw new Error('Tài khoản nhân viên chưa được gán ID cơ sở');
+                    }
+                } else {
+                    // Owner sees all their venues
+                    const ownerId = OwnerAuth.getOwnerId();
+                    if(!ownerId) throw new Error('Chưa lấy được ID chủ sân');
+
+                    const res = await OwnerAuth.authFetch(`/api/venues/owner/${ownerId}`);
+                    if (!res.ok) throw new Error("Thất bại khi lấy danh sách cơ sở");
+                    const json = await res.json();
+                    const venues = json.data || [];
+
+                    // Dùng Promise.all để tăng tốc load các sân
+                    const courtPromises = venues.map(async (venue) => {
+                        const courtsRes = await OwnerAuth.authFetch(`/api/courts/venue/${venue.id}`);
+                        if(courtsRes.ok) {
+                            const courtsJson = await courtsRes.json();
+                            (courtsJson.data || []).forEach(c => {
+                                allCourts.push({...c, venueName: venue.name});
+                            });
+                        }
+                    });
+                    await Promise.all(courtPromises);
+                }
+
+                if (allCourts.length === 0) {
+                     select.innerHTML = '<option value="">-- Không có sân nào --</option>';
+                     return;
+                }
+
+                select.innerHTML = '<option value="">-- Chọn sân --</option>' +
+                    allCourts.map(c => `<option value="${c.id}" data-price="${c.basePrice || 200000}" data-name="${c.courtName}">[${c.venueName}] ${c.courtName}</option>`).join('');
+
+            } catch (e) {
+                console.error(e);
+                select.innerHTML = '<option value="">-- ' + (e.message || 'Lỗi tải sân') + ' --</option>';
+            }
+        }
+
+        async function loadAvailableSlots() {
+            const courtId = document.getElementById('courtId').value;
+            const date = document.getElementById('bookingDate').value;
+
+            if(!courtId || !date) return;
+
+            const select = document.getElementById('courtId');
+            const option = select.options[select.selectedIndex];
+            selectedCourtInfo = {
+                id: courtId,
+                name: option.dataset.name,
+                price: parseInt(option.dataset.price || 200000)
+            };
+
+            const container = document.getElementById('slotsContainer');
+            container.innerHTML = '<p class="text-sm">Đang tìm giờ trống...</p>';
+
+            try {
+                // Gọi API lấy TẤT CẢ slot để có thể hiển thị cả những slot đã đặt (mờ đi)
+                const res = await OwnerAuth.authFetch(`/api/courts/${courtId}/slots/all?date=${date}`);
+                if (!res.ok) throw new Error("Failed");
+                const json = await res.json();
+
+                renderSlots(json.data || [], date);
+            } catch(e) {
+                container.innerHTML = '<p class="text-sm text-error">Lỗi khi tải slot</p>';
+            }
+        }
+
+        function renderSlots(slots, selectedDate) {
+            const container = document.getElementById('slotsContainer');
+            selectedSlot = null;
+            updateSummary();
+
+            if(slots.length === 0) {
+                container.innerHTML = '<p class="text-sm">Không có slot nào cho ngày này.</p>';
+                return;
+            }
+
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const isToday = selectedDate === todayStr;
+
+            container.innerHTML = slots.map(s => {
+                const price = s.priceAmount || selectedCourtInfo.price;
+
+                // Kiểm tra xem slot này đã trôi qua thời gian chưa
+                let isPast = false;
+                if (isToday && s.startTime) {
+                    const timeParts = s.startTime.split(':');
+                    const slotDateTime = new Date();
+                    slotDateTime.setHours(parseInt(timeParts[0]), parseInt(timeParts[1] || '0'), 0, 0);
+                    if (slotDateTime < now) {
+                        isPast = true;
+                    }
+                }
+
+                // Nếu slot đã được đặt (available === false) hoặc đã trôi qua (isPast === true)
+                if (s.available === false || isPast) {
+                     return `
+                        <button type="button" disabled
+                            class="py-3 text-sm font-semibold rounded-lg bg-surface-container-highest text-on-surface-variant/40 border border-transparent opacity-60 cursor-not-allowed flex flex-col items-center justify-center min-h-[4rem]">
+                            <span class="line-through">${formatTime(s.startTime)} - ${formatTime(s.endTime)}</span>
+                            <span class="text-[10px] uppercase font-bold mt-1">${s.available === false ? "Đã đặt" : "Đã qua"}</span>
+                        </button>
+                    `;
+                }
+
+                return `
+                    <button type="button"
+                        onclick='selectSlot(${JSON.stringify({
+                            startTime: s.startTime,
+                            endTime: s.endTime,
+                            price: price
+                        })}, this)'
+                        class="slot-btn py-3 text-sm font-semibold rounded-lg bg-surface-container-high text-on-surface-variant border-2 border-transparent hover:border-primary-container/30 transition-all flex flex-col items-center justify-center min-h-[4rem]">
+                        <span>${formatTime(s.startTime)} - ${formatTime(s.endTime)}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectSlot(slot, btnElement) {
+            document.querySelectorAll('.slot-btn').forEach(b => {
+                b.classList.remove('bg-primary-container', 'text-white', 'border-primary', 'shadow-lg', 'scale-105');
+                b.classList.add('bg-surface-container-high', 'text-on-surface-variant', 'border-transparent');
+            });
+
+            btnElement.classList.remove('bg-surface-container-high', 'text-on-surface-variant', 'border-transparent');
+            btnElement.classList.add('bg-primary-container', 'text-white', 'border-primary', 'shadow-lg', 'scale-105');
+
+            selectedSlot = slot;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('bookingSummary');
+            if(!selectedSlot || !selectedCourtInfo) {
+                summary.innerHTML = `
+                    <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+                    <h4 class="text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-8">Tóm tắt đơn hàng</h4>
+                    <div class="space-y-5 mb-8 text-on-surface-variant">
+                        Vui lòng chọn giờ để xem giá
+                    </div>
+                    <button disabled class="opacity-50 w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-lg font-bold text-lg transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                        Xác nhận đặt sân
+                    </button>
+                `;
+                return;
+            }
+
+            const basePrice = selectedSlot.price;
+
+            summary.innerHTML = `
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+                <h4 class="text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-8">Tóm tắt đơn hàng</h4>
+                <div class="space-y-5 mb-8">
+                    <div class="flex justify-between items-center">
+                        <span class="text-on-surface-variant">Giờ này (${selectedCourtInfo.name})</span>
+                        <span class="font-medium">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(basePrice)}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-on-surface-variant">Giờ đặt</span>
+                        <span class="font-medium">${formatTime(selectedSlot.startTime)} - ${formatTime(selectedSlot.endTime)}</span>
+                    </div>
+                    <div class="pt-5 border-t border-slate-100 flex justify-between items-end">
+                        <div>
+                            <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tổng thanh toán</p>
+                            <p class="text-4xl font-black text-on-surface tracking-tighter mt-1 font-headline">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(basePrice)}</p>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="submitBooking()" id="submitBtn" class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-lg font-bold text-lg shadow-xl shadow-orange-500/20 active:scale-[0.98] hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                    Xác nhận đặt sân
+                </button>
+            `;
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr) return "--:--";
+            // If it's a timestamp
+            if (timeStr.includes('T')) {
+                const date = new Date(timeStr);
+                return date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+            }
+            // If it's just a time string
+            const parts = timeStr.split(':');
+            if (parts.length >= 2) {
+                return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+            }
+            return timeStr;
+        }
+
+        function buildLocalDateTimeStr(dateStr, timeStr) {
+            if (!timeStr) return null;
+            if (timeStr.includes('T')) return timeStr;
+            if (!dateStr) {
+                const today = new Date();
+                dateStr = today.toISOString().split('T')[0];
+            }
+            const parts = timeStr.split(':');
+            let h = parts[0].padStart(2, '0');
+            let m = parts.length > 1 ? parts[1].padStart(2, '0') : '00';
+            let s = parts.length > 2 ? parts[2].padStart(2, '0') : '00';
+            return `${dateStr}T${h}:${m}:${s}`;
+        }
+
+        async function submitBooking() {
+            if(!selectedSlot || !selectedCourtInfo) return;
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Đang xử lý...';
+
+            try {
+                const user = OwnerAuth.getUser();
+                if(!user) throw new Error("Chưa đăng nhập");
+
+                let bookingStaffId = null;
+
+                if (user.roles && user.roles.includes('STAFF')) {
+                    bookingStaffId = user.id;
+                } else {
+                    // If owner, fetch first staff of chosen court's venue or any staff
+                    const ownerId = OwnerAuth.getOwnerId();
+                    const staffRes = await OwnerAuth.authFetch(`/api/staff/owner/${ownerId}`);
+                    if (staffRes.ok) {
+                        const staffJson = await staffRes.json();
+                        const staffs = staffJson.data || [];
+                        if (staffs.length > 0) {
+                            // Find first staff that can create block
+                            const capableStaff = staffs.find(s => s.permissions && s.permissions.includes('CAN_CREATE_BOOKING'));
+                            bookingStaffId = capableStaff ? capableStaff.id : staffs[0].id;
+                        }
+                    }
+                    if (!bookingStaffId) {
+                        throw new Error("Không tìm thấy nhân viên nào để thực hiện thao tác này. Vui lòng tạo ít nhất 1 nhân viên.");
+                    }
+                }
+
+                const dateStr = document.getElementById('bookingDate').value;
+                const startLDT = buildLocalDateTimeStr(dateStr, selectedSlot.startTime);
+                const endLDT = buildLocalDateTimeStr(dateStr, selectedSlot.endTime);
+
+                const payload = {
+                    courtId: selectedCourtInfo.id,
+                    startTime: startLDT,
+                    endTime: endLDT,
+                    customerName: document.getElementById('customerName').value,
+                    customerPhone: document.getElementById('customerPhone').value,
+                    paymentMethod: document.getElementById('selectedPaymentMethod').value,
+                    notes: document.getElementById('bookingNotes').value
+                };
+
+                const res = await OwnerAuth.authFetch(`/api/staff/walk-in-booking?staffId=${bookingStaffId}`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                const json = await res.json();
+                if(res.ok && json.success) {
+                    document.getElementById('bookingSummary').classList.add('hidden');
+                    document.getElementById('successPanel').classList.remove('hidden');
+                } else {
+                    throw new Error(json.message || "Lỗi tạo booking");
+                }
+
+            } catch(e) {
+                alert(e.message);
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                    Xác nhận đặt sân
+                `;
+            }
+        }
+    </script>
 </body></html>

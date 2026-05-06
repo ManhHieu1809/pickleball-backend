@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 public class BookingDTO {
     private Long id;
     private Long courtId;
-    private String courtName;        // For response enrichment
-    private Long venueId;            // For response enrichment
-    private String venueName;        // For response enrichment
+    private String courtName;
+    private Long venueId;
+    private String venueName;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -24,13 +24,11 @@ public class BookingDTO {
     private Long createdByPlayerId;
     private Long createdByStaffId;
 
-    // Walk-in booking customer info
     private String customerName;
     private String customerPhone;
     private String paymentMethod;
     private String notes;
 
-    // Cost breakdown
     private BigDecimal venueFee;
     private BigDecimal refereeFee;
     private BigDecimal platformFee;
@@ -38,6 +36,5 @@ public class BookingDTO {
 
     private LocalDateTime createdAt;
 
-    // Payment information (for booking creation response)
     private PaymentDTO payment;
 }

@@ -14,10 +14,15 @@ import com.pickleball.application.usecases.booking.ResolveDisputeUseCase;
 import com.pickleball.application.usecases.booking.SubmitDisputeUseCase;
 import com.pickleball.application.usecases.booking.SubmitMatchResultUseCase;
 import com.pickleball.application.usecases.booking.UpdateEloUseCase;
+import com.pickleball.application.usecases.booking.AcceptMatchUseCase;
+import com.pickleball.application.usecases.matchmaking.JoinMatchmakingQueueUseCase;
+import com.pickleball.application.usecases.matchmaking.LeaveMatchmakingQueueUseCase;
+import com.pickleball.application.usecases.matchmaking.ProcessMatchmakingQueueUseCase;
 import com.pickleball.application.usecases.referee.*;
 import com.pickleball.application.usecases.timeslot.*;
 import com.pickleball.application.usecases.user.*;
 import com.pickleball.application.usecases.venue.ApproveVenueUseCase;
+import com.pickleball.application.usecases.GetGlobalLeaderboardUseCase;
 import com.pickleball.application.usecases.venue.CreateCourtUseCase;
 import com.pickleball.application.usecases.venue.CreateVenueUseCase;
 import com.pickleball.application.usecases.venue.GetActiveCourtsUseCase;
@@ -63,6 +68,32 @@ public class UseCaseConfiguration {
     }
 
     @Bean
+    public UpdateUserProfileUseCase updateUserProfileUseCase(UserRepository userRepository) {
+        return new UpdateUserProfileUseCase(userRepository);
+    }
+
+    @Bean
+    public ChangePasswordUseCase changePasswordUseCase(UserRepository userRepository,
+                                                       PasswordEncoder passwordEncoder) {
+        return new ChangePasswordUseCase(userRepository, passwordEncoder);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.player.UpdatePlayerLocationUseCase updatePlayerLocationUseCase(PlayerRepository playerRepository) {
+        return new com.pickleball.application.usecases.player.UpdatePlayerLocationUseCase(playerRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.player.GetEloHistoryUseCase getEloHistoryUseCase(EloHistoryRepository eloHistoryRepository) {
+        return new com.pickleball.application.usecases.player.GetEloHistoryUseCase(eloHistoryRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.player.GetPlayerProfileUseCase getPlayerProfileUseCase(PlayerRepository playerRepository) {
+        return new com.pickleball.application.usecases.player.GetPlayerProfileUseCase(playerRepository);
+    }
+
+    @Bean
     public CreateVenueUseCase createVenueUseCase(VenueRepository venueRepository) {
         return new CreateVenueUseCase(venueRepository);
     }
@@ -104,13 +135,13 @@ public class UseCaseConfiguration {
             CourtRepository courtRepository,
             CourtPricingRepository courtPricingRepository,
             PriceCalculationService priceCalculationService,
-            PaymentService paymentService) {
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase) {
         return new CreatePrivateBookingUseCase(
                 bookingRepository,
                 courtRepository,
                 courtPricingRepository,
                 priceCalculationService,
-                paymentService);
+                payWithWalletUseCase);
     }
 
     @Bean
@@ -141,7 +172,7 @@ public class UseCaseConfiguration {
             PlayerRepository playerRepository,
             VenueRepository venueRepository,
             PriceCalculationService priceCalculationService,
-            PaymentService paymentService,
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
             MatchmakingService matchmakingService) {
         return new CreateCasualMatchUseCase(
                 bookingRepository,
@@ -150,7 +181,7 @@ public class UseCaseConfiguration {
                 playerRepository,
                 venueRepository,
                 priceCalculationService,
-                paymentService,
+                payWithWalletUseCase,
                 matchmakingService);
     }
 
@@ -182,16 +213,54 @@ public class UseCaseConfiguration {
     }
 
     @Bean
+    public JoinMatchmakingQueueUseCase joinMatchmakingQueueUseCase(
+            MatchmakingTicketRepository matchmakingTicketRepository,
+            PlayerRepository playerRepository,
+            RefereeRepository refereeRepository) {
+        return new JoinMatchmakingQueueUseCase(matchmakingTicketRepository, playerRepository, refereeRepository);
+    }
+
+    @Bean
+    public LeaveMatchmakingQueueUseCase leaveMatchmakingQueueUseCase(
+            MatchmakingTicketRepository matchmakingTicketRepository) {
+        return new LeaveMatchmakingQueueUseCase(matchmakingTicketRepository);
+    }
+
+    @Bean
+    public ProcessMatchmakingQueueUseCase processMatchmakingQueueUseCase(
+            MatchmakingTicketRepository ticketRepository,
+            BookingRepository bookingRepository,
+            CourtRepository courtRepository,
+            VenueRepository venueRepository,
+            RankedMatchRepository rankedMatchRepository,
+            MatchmakingService matchmakingService) {
+        return new ProcessMatchmakingQueueUseCase(
+                ticketRepository, bookingRepository, courtRepository, venueRepository,
+                rankedMatchRepository, matchmakingService);
+    }
+
+    @Bean
     public JoinBookingUseCase joinBookingUseCase(
             BookingRepository bookingRepository,
             PlayerRepository playerRepository,
             RefereeRepository refereeRepository,
             RankedMatchRepository rankedMatchRepository,
-            PaymentService paymentService,
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
             MatchmakingService matchmakingService,
             TeamBalancingService teamBalancingService) {
         return new JoinBookingUseCase(bookingRepository, playerRepository, refereeRepository,
-                rankedMatchRepository, paymentService, matchmakingService, teamBalancingService);
+                rankedMatchRepository, payWithWalletUseCase, matchmakingService, teamBalancingService);
+    }
+
+    @Bean
+    public AcceptMatchUseCase acceptMatchUseCase(
+            BookingRepository bookingRepository,
+            RankedMatchRepository rankedMatchRepository,
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
+            MatchmakingService matchmakingService,
+            TeamBalancingService teamBalancingService) {
+        return new AcceptMatchUseCase(bookingRepository, rankedMatchRepository,
+                payWithWalletUseCase, matchmakingService, teamBalancingService);
     }
 
     @Bean
@@ -214,7 +283,7 @@ public class UseCaseConfiguration {
             RefereeRepository refereeRepository,
             RankedMatchRepository rankedMatchRepository,
             PriceCalculationService priceCalculationService,
-            PaymentService paymentService,
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
             MatchmakingService matchmakingService) {
         return new CreateRankedMatchUseCase(
                 bookingRepository,
@@ -225,7 +294,7 @@ public class UseCaseConfiguration {
                 refereeRepository,
                 rankedMatchRepository,
                 priceCalculationService,
-                paymentService,
+                payWithWalletUseCase,
                 matchmakingService);
     }
 
@@ -315,7 +384,6 @@ public class UseCaseConfiguration {
                 priceCalculationService);
     }
 
-    // ==================== Referee Use Cases ====================
 
     @Bean
     public RefereeMatchService refereeMatchService() {
@@ -417,5 +485,55 @@ public class UseCaseConfiguration {
             MatchDisputeRepository matchDisputeRepository,
             RankedMatchRepository rankedMatchRepository) {
         return new SubmitRefereeEvidenceUseCase(matchDisputeRepository, rankedMatchRepository);
+    }
+
+    @Bean
+    public GetPendingRefereeRequestsUseCase getPendingRefereeRequestsUseCase(
+            RoleRequestRepository roleRequestRepository) {
+        return new GetPendingRefereeRequestsUseCase(roleRequestRepository);
+    }
+
+
+
+    @Bean
+    public GetGlobalLeaderboardUseCase getGlobalLeaderboardUseCase(PlayerRepository playerRepository) {
+        return new GetGlobalLeaderboardUseCase(playerRepository);
+    }
+
+    @Bean
+    public GetRefereeMatchesUseCase getRefereeMatchesUseCase(RankedMatchRepository rankedMatchRepository, BookingRepository bookingRepository) {
+        return new GetRefereeMatchesUseCase(rankedMatchRepository, bookingRepository);
+    }
+
+    // Wallet Use Cases
+    @Bean
+    public com.pickleball.application.usecases.wallet.GetWalletBalanceUseCase getWalletBalanceUseCase(WalletRepository walletRepository) {
+        return new com.pickleball.application.usecases.wallet.GetWalletBalanceUseCase(walletRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.wallet.GetWalletTransactionsUseCase getWalletTransactionsUseCase(TransactionRepository transactionRepository) {
+        return new com.pickleball.application.usecases.wallet.GetWalletTransactionsUseCase(transactionRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.wallet.TopUpWalletUseCase topUpWalletUseCase(
+            WalletRepository walletRepository,
+            TransactionRepository transactionRepository) {
+        return new com.pickleball.application.usecases.wallet.TopUpWalletUseCase(walletRepository, transactionRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.wallet.WithdrawWalletUseCase withdrawWalletUseCase(
+            WalletRepository walletRepository,
+            TransactionRepository transactionRepository) {
+        return new com.pickleball.application.usecases.wallet.WithdrawWalletUseCase(walletRepository, transactionRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase(
+            WalletRepository walletRepository,
+            TransactionRepository transactionRepository) {
+        return new com.pickleball.application.usecases.wallet.PayWithWalletUseCase(walletRepository, transactionRepository);
     }
 }

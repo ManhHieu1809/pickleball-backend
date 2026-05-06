@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Scheduled task to auto-resolve disputes when referee misses evidence deadline (24h).
- * Auto-OVERTURN: referee didn't submit evidence → considered wrong.
- */
+
 @Component
 public class DisputeDeadlineScheduler {
 
@@ -42,9 +39,6 @@ public class DisputeDeadlineScheduler {
         this.refereeMatchService = refereeMatchService;
     }
 
-    /**
-     * Run every 10 minutes to check for expired evidence deadlines.
-     */
     @Scheduled(fixedRate = 600000) // 10 minutes
     @Transactional
     public void checkExpiredDisputes() {
@@ -52,12 +46,10 @@ public class DisputeDeadlineScheduler {
 
         for (MatchDispute dispute : expiredDisputes) {
             try {
-                // Auto-OVERTURN since referee didn't submit evidence
                 dispute.resolve(null, "Auto-resolved: Referee failed to submit evidence within 24h deadline",
                         DisputeDecision.OVERTURN);
                 matchDisputeRepository.save(dispute);
 
-                // Apply missed evidence penalty to referee
                 RankedMatch match = rankedMatchRepository.findById(dispute.getRankedMatchId()).orElse(null);
                 if (match != null) {
                     Referee referee = refereeRepository.findByUserId(match.getRefereeId()).orElse(null);

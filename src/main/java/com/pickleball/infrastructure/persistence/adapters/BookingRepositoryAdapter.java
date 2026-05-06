@@ -35,12 +35,15 @@ public class BookingRepositoryAdapter implements BookingRepository {
     public Booking save(Booking booking) {
         BookingEntity entity = bookingMapper.toEntity(booking);
         BookingEntity saved = bookingJpaRepository.save(entity);
-        return bookingMapper.toDomain(saved);
+
+        return bookingJpaRepository.findByIdWithParticipants(saved.getId())
+                .map(bookingMapper::toDomain)
+                .orElseGet(() -> bookingMapper.toDomain(saved));
     }
 
     @Override
     public Optional<Booking> findById(Long id) {
-        return bookingJpaRepository.findById(id)
+        return bookingJpaRepository.findByIdWithParticipants(id)
                 .map(bookingMapper::toDomain);
     }
 
@@ -51,6 +54,26 @@ public class BookingRepositoryAdapter implements BookingRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Booking> findByOwnerId(Long ownerId) {
+        return bookingJpaRepository.findByOwnerId(ownerId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking> findByVenueId(Long venueId) {
+        return bookingJpaRepository.findByVenueId(venueId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking> findByStaffId(Long staffId) {
+        return bookingJpaRepository.findByCreatedByStaffIdOrderByStartTimeDesc(staffId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<Booking> findByCourtIdAndStartTimeBetween(Long courtId, LocalDateTime start, LocalDateTime end) {
@@ -77,7 +100,7 @@ public class BookingRepositoryAdapter implements BookingRepository {
 
     @Override
     public List<Booking> findByBookingTypeAndStatus(BookingType bookingType, BookingStatus status) {
-        return bookingJpaRepository.findByBookingTypeAndStatus(bookingType, status).stream()
+        return bookingJpaRepository.findByBookingTypeAndStatusWithParticipants(bookingType, status).stream()
                 .map(bookingMapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -99,6 +122,13 @@ public class BookingRepositoryAdapter implements BookingRepository {
     @Override
     public List<Booking> findExpiredPendingCasual(LocalDateTime now) {
         return bookingJpaRepository.findExpiredPendingCasual(now).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking> findExpiredRankedNoShows(LocalDateTime timeThreshold) {
+        return bookingJpaRepository.findExpiredRankedNoShows(timeThreshold).stream()
                 .map(bookingMapper::toDomain)
                 .collect(Collectors.toList());
     }
