@@ -91,8 +91,8 @@ public class RankedMatchCheckInScheduler {
             }
         }
 
-        // 2. Mark Booking as COMPLETED (time slot used as Free Play) and RankedMatch as CANCELLED
-        booking.setStatus(BookingStatus.COMPLETED);
+        // 2. Mark Booking as CANCELLED and RankedMatch as CANCELLED
+        booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
 
         RankedMatch rankedMatch = rankedMatchRepository.findByBookingId(booking.getId()).orElse(null);
@@ -110,7 +110,7 @@ public class RankedMatchCheckInScheduler {
         if (booking.getRefereeFee() != null && booking.getRefereeFee().getAmount().compareTo(BigDecimal.ZERO) > 0) {
             refereeCompensation = booking.getRefereeFee().getAmount().multiply(new BigDecimal("0.5")).setScale(2, RoundingMode.HALF_UP);
             if (referee != null) {
-                creditWalletAndLog(referee.getUserId(), booking.getId(), refereeCompensation, "PAYOUT", "Phí bồi thường trọng tài (Ranked Cancelled)");
+                creditWalletAndLog(referee.getUserId(), booking.getId(), refereeCompensation, "REFUND", "Phí bồi thường trọng tài (Ranked Cancelled)");
             }
         }
 
@@ -151,7 +151,7 @@ public class RankedMatchCheckInScheduler {
         BigDecimal platformFee = grossAmount.multiply(new BigDecimal("0.20"));
         BigDecimal netAmount = grossAmount.subtract(platformFee);
 
-        creditWalletAndLog(ownerId, booking.getId(), netAmount, "PAYOUT", "Thanh toán sân " + venue.getName() + " (Đã huỷ Rank, chuyển Free Play)");
+        creditWalletAndLog(ownerId, booking.getId(), netAmount, "REFUND", "Thanh toán sân " + venue.getName() + " (Đã huỷ Rank, chuyển Free Play)");
     }
 
     private void creditWalletAndLog(Long userId, Long bookingId, BigDecimal amount, String type, String description) {

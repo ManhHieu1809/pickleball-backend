@@ -84,6 +84,34 @@
             },
         }
     </script>
+    <style>
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 9999;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body class="font-sans text-slate-800 antialiased overflow-hidden">
     <div class="flex h-screen w-full bg-[#f2f6f9] overflow-hidden">
@@ -111,7 +139,7 @@
 
             <!-- Island 3: System & Finance -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Finance">
+                <a href="/owner/finance" class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group" data-tooltip="Finance">
                     <i data-lucide="wallet" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/settings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Settings">
@@ -149,7 +177,7 @@
                     </div>
                 </div>
             </header>
-<div class="p-8 max-w-7xl mx-auto space-y-12">
+            <div class="px-8 pt-2 pb-8 max-w-7xl mx-auto space-y-12">
 <!-- SECTION 1: TÀI CHÍNH -->
 <section>
 <div class="flex items-end justify-between mb-6">
@@ -318,9 +346,9 @@
 <!-- Court Comparison Bar Chart -->
 <div class="bg-surface-container-lowest p-8 rounded-xl space-y-8">
 <h3 class="font-black text-sm uppercase tracking-widest">Hiệu suất theo sân</h3>
-<div class="space-y-6" id="courtPerformanceContainer">
-    <div class="text-center text-sm text-slate-400 py-4">Đang tải dữ liệu...</div>
-</div>
+    <div class="space-y-6 bg-gradient-to-br from-primary to-primary-container rounded-lg p-6" id="courtPerformanceContainer">
+        <div class="text-center text-sm text-white/80 py-4">Đang tải dữ liệu...</div>
+    </div>
 </div>
 <!-- Smart Insight & Stats -->
 <div class="space-y-6">

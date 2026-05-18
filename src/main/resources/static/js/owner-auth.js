@@ -145,17 +145,13 @@ const OwnerAuth = (() => {
             container.innerHTML = `
                 <img src="${avatarSrc}" alt="${displayName}"
                     class="h-8 w-8 rounded-full border border-slate-100 object-cover">
-                <div class="hidden lg:block text-left leading-tight">
-                    <p class="text-sm font-bold text-slate-900">${displayName}</p>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">${roleLabel}</p>
+                <div class="px-4 py-3 border-b border-slate-100">
+                        <p class="text-sm font-bold text-slate-900 truncate">${displayName}</p>
+                        <p class="text-xs text-slate-400 truncate">${user.email || ''}</p>
                 </div>
                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
                 <!-- Dropdown -->
                 <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                    <div class="px-4 py-3 border-b border-slate-100">
-                        <p class="text-sm font-bold text-slate-900 truncate">${displayName}</p>
-                        <p class="text-xs text-slate-400 truncate">${user.email || ''}</p>
-                    </div>
                     <button id="owner-logout-btn"
                         class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-b-xl transition-colors">
                         <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất

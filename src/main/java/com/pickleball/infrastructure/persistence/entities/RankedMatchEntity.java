@@ -54,6 +54,9 @@ public class RankedMatchEntity {
     @Column(name = "winning_team")
     private String winningTeam;
 
+    @Column(name = "evidence_url")
+    private String evidenceUrl;
+
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 

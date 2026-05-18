@@ -80,6 +80,32 @@
         .glass-nav { backdrop-filter: blur(24px); }
         .architectural-gradient { background: linear-gradient(135deg, #9d4300 0%, #f97316 100%); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 9999;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="font-sans text-slate-800 antialiased overflow-hidden">
@@ -91,7 +117,7 @@
                 <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
+                <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group" data-tooltip="Venues">
                     <i data-lucide="map-pin-house" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>

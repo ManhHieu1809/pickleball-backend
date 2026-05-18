@@ -16,6 +16,8 @@ import com.pickleball.domain.repositories.BookingRepository;
 import com.pickleball.domain.repositories.MatchDisputeRepository;
 import com.pickleball.domain.repositories.RankedMatchRepository;
 import com.pickleball.domain.repositories.RefereeRepository;
+import com.pickleball.domain.repositories.TrustScoreHistoryRepository;
+import com.pickleball.domain.entities.TrustScoreHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class ResolveDisputeUseCase {
     private final UpdateEloUseCase updateEloUseCase;
     private final SettlementService settlementService;
     private final PaymentService paymentService;
+    private final TrustScoreHistoryRepository trustScoreHistoryRepository;
 
     @Transactional
     public MatchDispute execute(Long disputeId, Long adminId, DisputeDecision decision, String adminDecisionText) {
@@ -56,7 +59,7 @@ public class ResolveDisputeUseCase {
             bookingRepository.save(booking);
             settlementService.processSettlement(match.getBookingId());
 
-            updateRefereeTrust(match.getRefereeId(), true);
+            updateRefereeTrust(match.getRefereeId(), true, disputeId, match.getId());
 
         } else if (decision == DisputeDecision.OVERTURN) {
             match.setStatus(MatchStatus.CANCELLED);
@@ -75,7 +78,7 @@ public class ResolveDisputeUseCase {
                  }
             }
 
-            updateRefereeTrust(match.getRefereeId(), false);
+            updateRefereeTrust(match.getRefereeId(), false, disputeId, match.getId());
         }
 
         dispute.setStatus(DisputeStatus.RESOLVED);
@@ -87,15 +90,30 @@ public class ResolveDisputeUseCase {
         return matchDisputeRepository.save(dispute);
     }
 
-    private void updateRefereeTrust(Long refereeId, boolean positive) {
+    private void updateRefereeTrust(Long refereeId, boolean positive, Long disputeId, Long matchId) {
         if (refereeId == null) return;
         refereeRepository.findByUserId(refereeId).ifPresent(referee -> {
+            BigDecimal oldScore = referee.getTrustScore();
             if (positive) {
                  referee.incrementTrustScore();
             } else {
                  referee.decrementTrustScore(new BigDecimal("5.00"));
             }
-            refereeRepository.save(referee);
+            BigDecimal newScore = referee.getTrustScore();
+
+            if (oldScore.compareTo(newScore) != 0) {
+                refereeRepository.save(referee);
+
+                TrustScoreHistory history = TrustScoreHistory.builder()
+                        .refereeId(referee.getUserId())
+                        .oldScore(oldScore)
+                        .newScore(newScore)
+                        .reason("Resolved Dispute #" + disputeId + (positive ? " (Uphold)" : " (Overturn)"))
+                        .changedAt(LocalDateTime.now())
+                        .associatedMatchId(matchId)
+                        .build();
+                trustScoreHistoryRepository.save(history);
+            }
         });
     }
 }

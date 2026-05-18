@@ -27,7 +27,8 @@ public class RankedMatchDTO {
 
     private Integer currentPlayerCount;
     private Integer requiredPlayerCount;
-    private List<PlayerMatchDTO> playerCandidates;
+    private List<PlayerMatchDTO> teamACandidates;
+    private List<PlayerMatchDTO> teamBCandidates;
 
     // Referee info
     private boolean refereeAssigned;

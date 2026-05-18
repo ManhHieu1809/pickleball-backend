@@ -85,6 +85,33 @@
       .kinetic-gradient {
         background: linear-gradient(135deg, #9d4300 0%, #f97316 100%);
       }
+
+      [data-tooltip] {
+          position: relative;
+      }
+
+      [data-tooltip]::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          left: calc(100% + 10px);
+          top: 50%;
+          transform: translateY(-50%);
+          background: #1e293b;
+          color: #fff;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+          padding: 4px 10px;
+          border-radius: 6px;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.15s ease;
+          z-index: 9999;
+      }
+
+      [data-tooltip]:hover::after {
+          opacity: 1;
+      }
     </style>
 </head>
 <body class="font-sans text-slate-800 antialiased overflow-hidden">
@@ -93,7 +120,7 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group" data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
@@ -156,11 +183,7 @@
 <section>
 <div class="flex justify-between items-end mb-6">
 <div>
-<h2 class="text-2xl font-black tracking-tight text-on-surface">Tổng quan hôm nay</h2>
-<p class="text-on-surface-variant font-medium">Cập nhật lúc 14:30, 24 Tháng 5, 2024</p>
-</div>
-<div class="flex gap-2">
-<button class="px-4 py-2 bg-surface-container-high text-on-surface font-semibold rounded-lg text-sm hover:bg-surface-container-highest transition-colors">Tải báo cáo</button>
+<h2 class="text-2xl font-black tracking-tight text-on-surface">Tổng quan</h2>
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -170,7 +193,6 @@
 <span class="p-2 bg-primary/10 text-primary rounded-lg">
 <span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
 </span>
-<span class="text-xs font-bold text-tertiary uppercase tracking-wider">+12% vs yesterday</span>
 </div>
 <h3 class="text-on-surface-variant text-sm font-bold uppercase tracking-wider">Booking hôm nay</h3>
 <p class="text-4xl font-black tracking-tighter mt-1">42</p>

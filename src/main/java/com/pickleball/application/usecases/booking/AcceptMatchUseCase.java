@@ -3,14 +3,15 @@ package com.pickleball.application.usecases.booking;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.entities.BookingParticipant;
 import com.pickleball.domain.entities.RankedMatch;
+import com.pickleball.domain.entities.Referee;
 import com.pickleball.domain.enums.BookingStatus;
 import com.pickleball.domain.enums.BookingType;
 import com.pickleball.domain.enums.JoinStatus;
 import com.pickleball.domain.enums.ParticipantRole;
 import com.pickleball.domain.repositories.BookingRepository;
 import com.pickleball.domain.repositories.RankedMatchRepository;
+import com.pickleball.domain.repositories.RefereeRepository;
 import com.pickleball.domain.services.MatchmakingService;
-import com.pickleball.domain.services.PaymentService;
 import com.pickleball.domain.services.PaymentService.PaymentResult;
 import com.pickleball.domain.services.TeamBalancingService;
 import com.pickleball.application.usecases.wallet.PayWithWalletUseCase;
@@ -25,6 +26,7 @@ public class AcceptMatchUseCase {
     private final PayWithWalletUseCase payWithWalletUseCase;
     private final MatchmakingService matchmakingService;
     private final TeamBalancingService teamBalancingService;
+    private final RefereeRepository refereeRepository;
 
     private static final BigDecimal DEPOSIT_PERCENTAGE = new BigDecimal("0.25");
 
@@ -32,12 +34,14 @@ public class AcceptMatchUseCase {
                               RankedMatchRepository rankedMatchRepository,
                               PayWithWalletUseCase payWithWalletUseCase,
                               MatchmakingService matchmakingService,
-                              TeamBalancingService teamBalancingService) {
+                              TeamBalancingService teamBalancingService,
+                              RefereeRepository refereeRepository) {
         this.bookingRepository = bookingRepository;
         this.rankedMatchRepository = rankedMatchRepository;
         this.payWithWalletUseCase = payWithWalletUseCase;
         this.matchmakingService = matchmakingService;
         this.teamBalancingService = teamBalancingService;
+        this.refereeRepository = refereeRepository;
     }
 
     public PaymentResult execute(Long bookingId, Long userId) {
@@ -126,13 +130,64 @@ public class AcceptMatchUseCase {
                 booking.confirm();
             }
         } else if (booking.getBookingType() == BookingType.RANKED) {
-            boolean refereePaid = booking.getParticipants().stream()
-                    .filter(p -> p.getRole() == ParticipantRole.REFEREE)
-                    .anyMatch(p -> p.getJoinStatus() == JoinStatus.PAID);
+            boolean hasReferee = booking.getParticipants().stream()
+                    .anyMatch(p -> p.getRole() == ParticipantRole.REFEREE);
 
-            if (matchmakingService.isMatchFull((int) paidPlayerCount) && refereePaid) {
-                booking.confirm();
-                teamBalancingService.balanceTeams(booking);
+            if (matchmakingService.isMatchFull((int) paidPlayerCount)) {
+                if (!hasReferee) {
+                    autoAssignReferee(booking);
+                }
+
+                boolean refereePaid = booking.getParticipants().stream()
+                        .filter(p -> p.getRole() == ParticipantRole.REFEREE)
+                        .anyMatch(p -> p.getJoinStatus() == JoinStatus.PAID);
+
+                if (refereePaid) {
+                    booking.confirm();
+                    teamBalancingService.balanceTeams(booking);
+                }
+            }
+        }
+    }
+
+    private void autoAssignReferee(Booking booking) {
+        java.util.List<Referee> readyReferees = refereeRepository.findEligibleReferees().stream()
+                .filter(Referee::getIsReady)
+                .collect(java.util.stream.Collectors.toList());
+
+        if (readyReferees.isEmpty()) {
+            return; // No referee available right now, match stays pending
+        }
+
+        BigDecimal depositAmount = booking.getTotalCost().getAmount()
+                .multiply(DEPOSIT_PERCENTAGE)
+                .setScale(0, RoundingMode.HALF_UP);
+        Money requiredDeposit = new Money(depositAmount, "VND");
+
+        for (Referee ref : readyReferees) {
+            try {
+                String description = "Referee deposit - Auto Assigned Booking #" + booking.getId();
+                payWithWalletUseCase.execute(
+                        ref.getUserId(),
+                        depositAmount,
+                        booking.getId(),
+                        description
+                );
+
+                BookingParticipant refBp = BookingParticipant.builder()
+                        .bookingId(booking.getId())
+                        .userId(ref.getUserId())
+                        .role(ParticipantRole.REFEREE)
+                        .joinStatus(JoinStatus.PAID)
+                        .depositAmount(requiredDeposit)
+                        .refundAmount(new Money(BigDecimal.ZERO, "VND"))
+                        .isMatchHost(false)
+                        .build();
+                booking.addParticipant(refBp);
+                assignRefereeToRankedMatch(booking.getId(), ref.getUserId());
+                break; // Successfully assigned
+            } catch (Exception e) {
+                // Insufficient balance, try next
             }
         }
     }

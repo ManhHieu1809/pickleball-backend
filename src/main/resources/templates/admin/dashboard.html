@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Finexy Dashboard - Overview</title>
+    <title>Pickleball Admin - Tổng quan Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -260,50 +260,30 @@
                         </div>
                         Finexy
                     </div>
-                    <nav
-                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
-                        <a href="#"
-                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
-                    </nav>
                 </div>
+
+                <!-- Right Actions -->
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="search" class="w-4 h-4"></i></button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
-                            <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span
-                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="info" class="w-4 h-4"></i></button>
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
                     </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                            class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
                         <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
-                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
                             <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
                             <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
-                        <div
-                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <button data-logout
-                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
                             </button>
                         </div>
@@ -314,13 +294,7 @@
             <!-- Dashboard Content -->
             <div class="flex h-full w-full flex-col gap-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard Overview</h2>
-                    <div class="flex gap-3">
-                        <button
-                            class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-surface-dark dark:text-slate-200 dark:hover:bg-white/5">
-                            <span class="material-symbols-outlined text-[20px]">cloud_download</span> Export
-                        </button>
-                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Tổng quan Dashboard</h2>
                 </div>
 
                 <!-- Alert Banners (Pending Actions) -->
@@ -349,7 +323,7 @@
                         </div>
                         <h3 id="stat-totalBookings"
                             class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Total Bookings</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Tổng đơn đặt</p>
                     </div>
                     <div
                         class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -361,7 +335,7 @@
                         </div>
                         <h3 id="stat-todayBookings"
                             class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Today's Bookings</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Đơn đặt hôm nay</p>
                     </div>
                     <div
                         class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -373,7 +347,7 @@
                         </div>
                         <h3 id="stat-activeVenues" class="text-3xl font-bold text-slate-900 dark:text-white stat-value">
                             --</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Active Venues</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Sân đang hoạt động</p>
                     </div>
                     <div
                         class="flex flex-col rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
@@ -385,7 +359,7 @@
                         </div>
                         <h3 id="stat-newUsers" class="text-3xl font-bold text-slate-900 dark:text-white stat-value">--
                         </h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">New Users (This Month)</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Người dùng mới (Tháng này)</p>
                     </div>
                 </div>
 
@@ -396,8 +370,8 @@
                         class="lg:col-span-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex flex-col">
-                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Booking Activity</h3>
-                                <p class="text-sm text-slate-500">Daily booking comparison</p>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hoạt động đặt sân</h3>
+                                <p class="text-sm text-slate-500">So sánh lượng đặt sân theo ngày</p>
                             </div>
                         </div>
                         <div class="relative w-full h-64 overflow-hidden">
@@ -410,8 +384,8 @@
                         class="rounded-lg bg-surface-light dark:bg-surface-dark p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-full relative overflow-hidden">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Booking Types</h3>
-                                <p class="text-sm text-slate-500">Distribution by category</p>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Loại đặt sân</h3>
+                                <p class="text-sm text-slate-500">Phân bổ theo danh mục</p>
                             </div>
                         </div>
                         <div class="flex-1 flex flex-col items-center justify-center relative -mt-4">
@@ -420,7 +394,7 @@
                                 class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-4">
                                 <span id="donutTotalLabel"
                                     class="text-4xl font-extrabold text-slate-800 dark:text-white">--</span>
-                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tổng cộng</span>
                             </div>
                         </div>
                         <!-- Custom Legend -->
@@ -438,19 +412,19 @@
                         class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
                         <div
                             class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Bookings</h3>
-                            <a class="text-sm font-medium text-primary hover:underline" href="/admin/bookings">View
-                                All</a>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Đơn đặt gần đây</h3>
+                            <a class="text-sm font-medium text-primary hover:underline" href="/admin/bookings">Xem
+                                tất cả</a>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
                                 <thead class="bg-slate-50 dark:bg-slate-800/50 uppercase text-slate-500">
                                     <tr>
                                         <th class="px-3 py-2">ID</th>
-                                        <th class="px-3 py-2">Court</th>
-                                        <th class="px-3 py-2">Type</th>
-                                        <th class="px-3 py-2">Status</th>
-                                        <th class="px-3 py-2 text-right">Amount</th>
+                                        <th class="px-3 py-2">Sân</th>
+                                        <th class="px-3 py-2">Loại</th>
+                                        <th class="px-3 py-2">Trạng thái</th>
+                                        <th class="px-3 py-2 text-right">Số tiền</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recentBookingsBody" class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -479,10 +453,10 @@
                         class="rounded-lg bg-surface-light dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col">
                         <div
                             class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Pending Actions</h3>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hành động chờ xử lý</h3>
                             <span id="pendingPriorityBadge"
-                                class="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400 hidden">High
-                                Priority</span>
+                                class="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400 hidden">Ưu tiên
+                                cao</span>
                         </div>
                         <div class="flex-1 overflow-x-auto">
                             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
@@ -513,31 +487,31 @@
                     <a href="/admin/users"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-gradient-to-br from-primary to-primary-container group-hover:text-slate-900 transition-colors text-slate-500">
                             <span class="material-symbols-outlined text-[20px]">add_circle</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Manage
-                            Users</span>
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Quản lý
+                            User</span>
                     </a>
                     <a href="/admin/disputes"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-gradient-to-br from-primary to-primary-container group-hover:text-slate-900 transition-colors text-slate-500">
                             <span class="material-symbols-outlined text-[20px]">flag</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Report
-                            Issue</span>
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Báo cáo
+                            lỗi</span>
                     </a>
                     <a href="/admin/approvals"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-slate-900 transition-colors text-slate-500">
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-gradient-to-br from-primary to-primary-container group-hover:text-slate-900 transition-colors text-slate-500">
                             <span class="material-symbols-outlined text-[20px]">campaign</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Approvals</span>
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Phê duyệt</span>
                     </a>
                     <a href="/admin/system"
                         class="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/50 hover:bg-primary/5 transition-all group">
@@ -546,8 +520,8 @@
                             <span class="material-symbols-outlined text-[20px]">settings_suggest</span>
                         </div>
                         <span
-                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Quick
-                            Config</span>
+                            class="font-medium text-xs text-slate-900 dark:text-white group-hover:text-primary transition-colors">Cấu hình
+                            nhanh</span>
                     </a>
                 </div>
             </div>
@@ -564,10 +538,10 @@
             // Revenue/Booking Activity Chart (static mock for now — no daily breakdown API yet)
             const revenueOptions = {
                 series: [{
-                    name: 'This Week',
+                    name: 'Tuần này',
                     data: [0, 0, 0, 0, 0, 0, 0]
                 }, {
-                    name: 'Last Week',
+                    name: 'Tuần trước',
                     data: [0, 0, 0, 0, 0, 0, 0]
                 }],
                 chart: {
@@ -593,7 +567,7 @@
                     dashArray: [0, 5]
                 },
                 xaxis: {
-                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    categories: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
                     axisBorder: { show: false },
                     axisTicks: { show: false },
                     tooltip: { enabled: false }
@@ -618,7 +592,7 @@
                     height: 220,
                     fontFamily: 'Inter, sans-serif',
                 },
-                labels: ['Private', 'Casual', 'Ranked', 'Walk-in'],
+                labels: ['Riêng tư', 'Thường', 'Xếp hạng', 'Vãng lai'],
                 colors: ['#F97316', '#3B82F6', '#A855F7', '#10B981'],
                 plotOptions: {
                     pie: {
@@ -635,7 +609,7 @@
                     enabled: true,
                     theme: 'dark',
                     y: {
-                        formatter: function (val) { return val + " bookings" }
+                        formatter: function (val) { return val + " đơn" }
                     }
                 },
             };
@@ -705,7 +679,7 @@
                             <span class="material-symbols-outlined text-[20px]">person_add</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingOwnerRequests} Role Request${data.pendingOwnerRequests > 1 ? 's' : ''}</span>
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingOwnerRequests} Yêu cầu cấp quyền</span>
                             <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ duyệt</span>
                         </div>
                         <button class="ml-auto text-yellow-600 hover:text-yellow-700 dark:text-yellow-400">
@@ -722,7 +696,7 @@
                             <span class="material-symbols-outlined text-[20px]">stadium</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingVenues} Venue${data.pendingVenues > 1 ? 's' : ''}</span>
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">${data.pendingVenues} Sân đấu</span>
                             <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Chờ duyệt</span>
                         </div>
                         <button class="ml-auto text-blue-600 hover:text-blue-700 dark:text-blue-400">
@@ -739,8 +713,8 @@
                             <span class="material-symbols-outlined text-[20px]">check_circle</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">All clear!</span>
-                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">No pending approvals</span>
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-100">Đã hoàn thành!</span>
+                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Không có yêu cầu chờ duyệt</span>
                         </div>
                     </div>
                 `);
@@ -753,10 +727,10 @@
         function populateBookingTypesChart(data) {
             const dist = data.bookingTypeDistribution || {};
             const typeMap = {
-                'PRIVATE': { label: 'Private', color: '#F97316' },
-                'CASUAL': { label: 'Casual', color: '#3B82F6' },
-                'RANKED': { label: 'Ranked', color: '#A855F7' },
-                'WALK_IN': { label: 'Walk-in', color: '#10B981' },
+                'PRIVATE': { label: 'Riêng tư', color: '#F97316' },
+                'CASUAL': { label: 'Thường', color: '#3B82F6' },
+                'RANKED': { label: 'Xếp hạng', color: '#A855F7' },
+                'WALK_IN': { label: 'Vãng lai', color: '#10B981' },
             };
 
             const labels = [];
@@ -812,7 +786,7 @@
             if (!revenueChart || !data.revenueLast7Days || data.revenueLast7Days.length !== 7) return;
 
             // X-axis labels for the last 7 days
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
             const today = new Date();
             const categories = [];
             for (let i = 6; i >= 0; i--) {
@@ -828,7 +802,7 @@
             });
 
             revenueChart.updateSeries([{
-                name: 'Revenue',
+                name: 'Doanh thu',
                 data: data.revenueLast7Days
             }]);
         }
@@ -837,7 +811,7 @@
         function populateRecentBookings(recentList) {
             const tbody = document.getElementById('recentBookingsBody');
             if (!recentList || recentList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-3 py-6 text-center text-slate-400">No recent bookings</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-3 py-6 text-center text-slate-400">Không có đơn đặt gần đây</td></tr>`;
                 return;
             }
 
@@ -880,7 +854,7 @@
             const badge = document.getElementById('pendingPriorityBadge');
 
             if (!actions || actions.length === 0) {
-                tbody.innerHTML = `<tr><td class="px-3 py-6 text-center text-slate-400">No pending actions 🎉</td></tr>`;
+                tbody.innerHTML = `<tr><td class="px-3 py-6 text-center text-slate-400">Không có hành động chờ 🎉</td></tr>`;
                 badge.classList.add('hidden');
                 return;
             }
@@ -888,8 +862,8 @@
             badge.classList.remove('hidden');
 
             const iconMap = {
-                'OWNER_REQUEST': { icon: 'person', bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-600 dark:text-yellow-400', action: 'Review' },
-                'VENUE_PENDING': { icon: 'domain_add', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', action: 'Approve' },
+                'OWNER_REQUEST': { icon: 'person', bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-600 dark:text-yellow-400', action: 'Xem' },
+                'VENUE_PENDING': { icon: 'domain_add', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', action: 'Duyệt' },
             };
 
             tbody.innerHTML = actions.map(a => {

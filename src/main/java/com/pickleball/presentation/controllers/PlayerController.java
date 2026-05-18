@@ -22,6 +22,8 @@ public class PlayerController {
     private final UpdatePlayerLocationUseCase updatePlayerLocationUseCase;
     private final GetEloHistoryUseCase getEloHistoryUseCase;
     private final GetPlayerProfileUseCase getPlayerProfileUseCase;
+    private final com.pickleball.application.usecases.player.GetPlayerWeeklyStatsUseCase getPlayerWeeklyStatsUseCase;
+    private final com.pickleball.application.usecases.player.GetPlayerRankedStatsUseCase getPlayerRankedStatsUseCase;
 
     @PutMapping("/location")
     public ResponseEntity<ApiResponse<String>> updateLocation(
@@ -39,5 +41,15 @@ public class PlayerController {
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<com.pickleball.application.dtos.PlayerMatchDTO>> getPlayerProfile(@PathVariable Long userId) {
         return ResponseHelper.ok(getPlayerProfileUseCase.execute(userId));
+    }
+
+    @GetMapping("/{userId}/stats/weekly")
+    public ResponseEntity<ApiResponse<com.pickleball.application.dtos.PlayerWeeklyStatsDTO>> getPlayerWeeklyStats(@PathVariable Long userId) {
+        return ResponseHelper.ok(getPlayerWeeklyStatsUseCase.execute(userId));
+    }
+
+    @GetMapping("/{userId}/stats/ranked")
+    public ResponseEntity<ApiResponse<com.pickleball.application.dtos.PlayerRankedStatsDTO>> getPlayerRankedStats(@PathVariable Long userId) {
+        return ResponseHelper.ok(getPlayerRankedStatsUseCase.execute(userId));
     }
 }

@@ -94,6 +94,16 @@ public class UseCaseConfiguration {
     }
 
     @Bean
+    public com.pickleball.application.usecases.player.GetPlayerWeeklyStatsUseCase getPlayerWeeklyStatsUseCase(BookingRepository bookingRepository) {
+        return new com.pickleball.application.usecases.player.GetPlayerWeeklyStatsUseCase(bookingRepository);
+    }
+
+    @Bean
+    public com.pickleball.application.usecases.player.GetPlayerRankedStatsUseCase getPlayerRankedStatsUseCase(BookingRepository bookingRepository, RankedMatchRepository rankedMatchRepository) {
+        return new com.pickleball.application.usecases.player.GetPlayerRankedStatsUseCase(bookingRepository, rankedMatchRepository);
+    }
+
+    @Bean
     public CreateVenueUseCase createVenueUseCase(VenueRepository venueRepository) {
         return new CreateVenueUseCase(venueRepository);
     }
@@ -233,10 +243,15 @@ public class UseCaseConfiguration {
             CourtRepository courtRepository,
             VenueRepository venueRepository,
             RankedMatchRepository rankedMatchRepository,
-            MatchmakingService matchmakingService) {
+            MatchmakingService matchmakingService,
+            CourtPricingRepository courtPricingRepository,
+            PriceCalculationService priceCalculationService,
+            RefereeRepository refereeRepository,
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase) {
         return new ProcessMatchmakingQueueUseCase(
                 ticketRepository, bookingRepository, courtRepository, venueRepository,
-                rankedMatchRepository, matchmakingService);
+                rankedMatchRepository, matchmakingService, courtPricingRepository, priceCalculationService,
+                refereeRepository, payWithWalletUseCase);
     }
 
     @Bean
@@ -258,9 +273,10 @@ public class UseCaseConfiguration {
             RankedMatchRepository rankedMatchRepository,
             com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
             MatchmakingService matchmakingService,
-            TeamBalancingService teamBalancingService) {
+            TeamBalancingService teamBalancingService,
+            RefereeRepository refereeRepository) {
         return new AcceptMatchUseCase(bookingRepository, rankedMatchRepository,
-                payWithWalletUseCase, matchmakingService, teamBalancingService);
+                payWithWalletUseCase, matchmakingService, teamBalancingService, refereeRepository);
     }
 
     @Bean
@@ -449,9 +465,10 @@ public class UseCaseConfiguration {
     public ConfirmMatchResultUseCase confirmMatchResultUseCase(
             RankedMatchRepository rankedMatchRepository,
             BookingRepository bookingRepository,
+            MatchDisputeRepository matchDisputeRepository,
             UpdateEloUseCase updateEloUseCase,
             SettlementService settlementService) {
-        return new ConfirmMatchResultUseCase(rankedMatchRepository, bookingRepository, updateEloUseCase, settlementService);
+        return new ConfirmMatchResultUseCase(rankedMatchRepository, bookingRepository, matchDisputeRepository, updateEloUseCase, settlementService);
     }
 
     @Bean
@@ -469,7 +486,8 @@ public class UseCaseConfiguration {
             RefereeRepository refereeRepository,
             UpdateEloUseCase updateEloUseCase,
             SettlementService settlementService,
-            PaymentService paymentService) {
+            PaymentService paymentService,
+            TrustScoreHistoryRepository trustScoreHistoryRepository) {
         return new ResolveDisputeUseCase(
                 matchDisputeRepository, 
                 rankedMatchRepository, 
@@ -477,7 +495,8 @@ public class UseCaseConfiguration {
                 refereeRepository, 
                 updateEloUseCase, 
                 settlementService,
-                paymentService);
+                paymentService,
+                trustScoreHistoryRepository);
     }
 
     @Bean
@@ -491,6 +510,12 @@ public class UseCaseConfiguration {
     public GetPendingRefereeRequestsUseCase getPendingRefereeRequestsUseCase(
             RoleRequestRepository roleRequestRepository) {
         return new GetPendingRefereeRequestsUseCase(roleRequestRepository);
+    }
+
+    @Bean
+    public GetRefereeTrustHistoryUseCase getRefereeTrustHistoryUseCase(
+            TrustScoreHistoryRepository trustScoreHistoryRepository) {
+        return new GetRefereeTrustHistoryUseCase(trustScoreHistoryRepository);
     }
 
 

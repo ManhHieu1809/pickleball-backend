@@ -65,6 +65,13 @@ public class BookingController {
         return ResponseHelper.ok(candidates, "Ranked match candidates retrieved");
     }
 
+    @GetMapping("/{bookingId}/result")
+    public ResponseEntity<ApiResponse<MatchResultDTO>> getMatchResultInfo(
+            @PathVariable Long bookingId) {
+        MatchResultDTO resultInfo = bookingService.getMatchResultInfo(bookingId);
+        return ResponseHelper.ok(resultInfo, "Match result retrieved successfully");
+    }
+
     @GetMapping("/{bookingId}/candidates")
     public ResponseEntity<ApiResponse<List<PlayerMatchDTO>>> getCandidates(
             @PathVariable Long bookingId) {

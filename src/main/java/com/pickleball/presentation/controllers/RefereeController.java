@@ -7,9 +7,11 @@ import com.pickleball.presentation.helpers.ResponseHelper;
 import com.pickleball.presentation.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -57,9 +59,27 @@ public class RefereeController {
     @GetMapping("/{refereeId}/matches")
     public ResponseEntity<ApiResponse<List<RankedMatchDTO>>> getRefereeMatches(
             @PathVariable Long refereeId,
-            @RequestParam(required = false) String status) {
-        List<RankedMatchDTO> matches = refereeApplicationService.getRefereeMatches(refereeId, status);
-        return ResponseHelper.ok(matches);
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        
+        List<RankedMatchDTO> matches = refereeApplicationService.getRefereeMatches(refereeId, status, date);
+        return ResponseEntity.ok(ApiResponse.<List<RankedMatchDTO>>builder()
+                .success(true)
+                .message("Fetched referee matches successfully")
+                .data(matches)
+                .build());
+    }
+
+    @GetMapping("/{refereeId}/trust-history")
+    public ResponseEntity<ApiResponse<List<TrustScoreHistoryDTO>>> getTrustHistory(
+            @PathVariable Long refereeId) {
+        
+        List<TrustScoreHistoryDTO> history = refereeApplicationService.getRefereeTrustHistory(refereeId);
+        return ResponseEntity.ok(ApiResponse.<List<TrustScoreHistoryDTO>>builder()
+                .success(true)
+                .message("Fetched referee trust score history")
+                .data(history)
+                .build());
     }
 
     @PostMapping("/matches/{matchId}/result")

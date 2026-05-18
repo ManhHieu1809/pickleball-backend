@@ -22,6 +22,7 @@ public class RankedMatch {
     private Integer teamAScore;
     private Integer teamBScore;
     private String winningTeam;
+    private String evidenceUrl;
     private LocalDateTime submittedAt;
     private LocalDateTime confirmedAt;
 
@@ -39,7 +40,7 @@ public class RankedMatch {
         return this.refereeId != null;
     }
 
-    public void submitResult(Long refereeId, int teamAScore, int teamBScore, String winningTeam) {
+    public void submitResult(Long refereeId, int teamAScore, int teamBScore, String winningTeam, String evidenceUrl) {
         if (this.refereeId == null || !this.refereeId.equals(refereeId)) {
             throw new IllegalStateException("Only the assigned referee can submit results");
         }
@@ -49,6 +50,7 @@ public class RankedMatch {
         this.teamAScore = teamAScore;
         this.teamBScore = teamBScore;
         this.winningTeam = winningTeam;
+        this.evidenceUrl = evidenceUrl;
         this.status = MatchStatus.SUBMITTED;
         this.submittedAt = LocalDateTime.now();
         this.confirmedPlayerIds.clear();

@@ -22,5 +22,7 @@ public class SubmitResultRequest {
     @NotNull(message = "Team B score is required")
     @PositiveOrZero(message = "Score must be non-negative")
     private Integer teamBScore;
+
+    private String evidenceUrl;
 }
 

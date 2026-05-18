@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Pickleball Admin Dashboard - Venue Management</title>
+    <title>Pickleball Admin Dashboard - Quản lý sân đấu</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
@@ -183,8 +183,8 @@
                         <span class="material-symbols-outlined text-[18px]">lock</span>
                         Khóa
                     </button>
-                    <button onclick="toggleEditMode(this)"
-                        class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold text-slate-900 bg-primary rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
+                    <button onclick="toggleSửaMode(this)"
+                        class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold text-slate-900 bg-gradient-to-br from-primary to-primary-container rounded-lg hover:bg-primary-dark transition-colors shadow-sm">
                         <span class="material-symbols-outlined text-[18px]">edit</span>
                         Sửa
                     </button>
@@ -445,7 +445,7 @@
                 <button
                     class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700">Đóng</button>
                 <button
-                    class="px-4 py-2 text-sm font-bold text-slate-900 bg-primary rounded-lg hover:bg-primary-dark shadow-sm">Lưu
+                    class="px-4 py-2 text-sm font-bold text-slate-900 bg-gradient-to-br from-primary to-primary-container rounded-lg hover:bg-primary-dark shadow-sm">Lưu
                     thay đổi</button>
             </div>
         </div>
@@ -540,53 +540,30 @@
                     </div>
 
                     <!-- Central Navigation Tabs (Floating) -->
-                    <nav
-                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
-                        <a href="#"
-                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
-                    </nav>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="search" class="w-4 h-4"></i></button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
-                            <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span
-                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="info" class="w-4 h-4"></i></button>
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
                     </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
 
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                            class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
                         <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
-                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
                             <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
                             <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
-                        <div
-                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <button data-logout
-                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
                             </button>
                         </div>
@@ -722,18 +699,6 @@
                                     <option>Hoạt động</option>
                                     <option>Tạm đóng</option>
                                 </select>
-                            </div>
-                            <div class="flex items-center gap-3 w-full md:w-auto">
-                                <button
-                                    class="flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
-                                    <span class="material-symbols-outlined text-[20px]">download</span>
-                                    Xuất Excel
-                                </button>
-                                <button
-                                    class="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-slate-900 hover:bg-primary/90 transition-colors shadow-sm">
-                                    <span class="material-symbols-outlined text-[20px]">add</span>
-                                    + Thêm Venue
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -1001,7 +966,7 @@
                                                     title="Đèn chiếu sáng">💡</span>
                                                 <span
                                                     class="inline-flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-[10px] text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-                                                    title="Cafe">☕</span>
+                                                    title="Căn tin">☕</span>
                                             </div>
                                         </div>
                                     </td>
@@ -1259,27 +1224,17 @@
                     <div
                         class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3 sm:px-6">
                         <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                            <div>
-                                <p class="text-sm text-slate-700 dark:text-slate-400">
-                                    Showing
-                                    <span class="font-medium text-slate-900 dark:text-white">1</span>
-                                    to
-                                    <span class="font-medium text-slate-900 dark:text-white">5</span>
-                                    of
-                                    <span class="font-medium text-slate-900 dark:text-white">128</span>
-                                    results
-                                </p>
-                            </div>
+
                             <div>
                                 <nav aria-label="Pagination"
                                     class="isolate inline-flex -space-x-px rounded-md shadow-sm">
                                     <a class="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:ring-slate-700 dark:hover:bg-slate-800"
                                         href="#">
-                                        <span class="sr-only">Previous</span>
+                                        <span class="sr-only">Trước</span>
                                         <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                                     </a>
                                     <a aria-current="page"
-                                        class="relative z-10 inline-flex items-center bg-primary px-4 py-2 text-sm font-semibold text-slate-900 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                        class="relative z-10 inline-flex items-center bg-gradient-to-br from-primary to-primary-container px-4 py-2 text-sm font-semibold text-slate-900 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                                         href="#">1</a>
                                     <a class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-800"
                                         href="#">2</a>
@@ -1291,7 +1246,7 @@
                                         href="#">8</a>
                                     <a class="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 dark:ring-slate-700 dark:hover:bg-slate-800"
                                         href="#">
-                                        <span class="sr-only">Next</span>
+                                        <span class="sr-only">Tiếp</span>
                                         <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                                     </a>
                                 </nav>
@@ -1351,18 +1306,18 @@
             }
         }
 
-        function toggleEditMode(btn) {
+        function toggleSửaMode(btn) {
             const icon = btn.querySelector('.material-symbols-outlined');
-            const isEditing = btn.getAttribute('data-editing') === 'true';
+            const isSửaing = btn.getAttribute('data-editing') === 'true';
 
-            if (isEditing) {
+            if (isSửaing) {
                 // Save
                 btn.setAttribute('data-editing', 'false');
                 btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
                 btn.classList.add('bg-primary', 'hover:bg-primary-dark', 'text-slate-900');
                 btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">edit</span> Sửa';
             } else {
-                // Edit
+                // Sửa
                 btn.setAttribute('data-editing', 'true');
                 btn.classList.remove('bg-primary', 'hover:bg-primary-dark', 'text-slate-900');
                 btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');

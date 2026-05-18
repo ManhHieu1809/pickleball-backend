@@ -21,4 +21,6 @@ public class SubmitMatchResultRequest {
 
     @NotBlank(message = "Winning team is required (A or B)")
     private String winningTeam;
+
+    private String evidenceUrl;
 }

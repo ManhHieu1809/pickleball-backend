@@ -6,6 +6,7 @@ import com.pickleball.domain.enums.BookingType;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,8 +34,11 @@ public class BookingDTO {
     private BigDecimal refereeFee;
     private BigDecimal platformFee;
     private BigDecimal totalCost;
+    private BigDecimal requiredDeposit;
 
     private LocalDateTime createdAt;
 
     private PaymentDTO payment;
+    
+    private List<BookingParticipantDTO> participants;
 }

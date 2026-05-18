@@ -88,6 +88,34 @@
       }
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      [data-tooltip] {
+          position: relative;
+      }
+
+      [data-tooltip]::after {
+          content: attr(data-tooltip);
+          position: absolute;
+          left: calc(100% + 10px);
+          top: 50%;
+          transform: translateY(-50%);
+          background: #1e293b;
+          color: #fff;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+          padding: 4px 10px;
+          border-radius: 6px;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.15s ease;
+          z-index: 9999;
+      }
+
+      [data-tooltip]:hover::after {
+          opacity: 1;
+      }
+
     </style>
 </head>
 <body class="font-sans text-slate-800 antialiased overflow-hidden">
@@ -96,7 +124,8 @@
         <aside class="flex w-16 flex-col items-center py-2 z-20 flex-shrink-0 h-screen sticky top-0 gap-2 justify-center">
             <!-- Island 1: Management -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="/owner/dashboard" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Dashboard">
+                <a href="/owner/dashboard"
+                   class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"                   data-tooltip="Dashboard">
                     <i data-lucide="layout-grid" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
                 <a href="/owner/venues" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Venues">
@@ -106,10 +135,11 @@
 
             <!-- Island 2: Core Entities -->
             <div class="flex flex-col items-center bg-white rounded-[1.5rem] py-1.5 shadow-lg shadow-slate-200/50 gap-0.5 w-10 shrink-0">
-                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Bookings">
+                <a href="/owner/bookings" class="flex items-center justify-center h-8 w-8 bg-slate-900 rounded-full shadow-md text-white transition-all hover:scale-110 group" data-tooltip="Bookings">
                     <i data-lucide="calendar" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
-                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group" data-tooltip="Staff">
+                <a href="/owner/staff" class="flex items-center justify-center h-8 w-8 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all group"
+                   data-tooltip="Staff">
                     <i data-lucide="users" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                 </a>
             </div>
@@ -154,7 +184,7 @@
                     </div>
                 </div>
             </header>
-<div class="p-8 max-w-7xl mx-auto space-y-12">
+            <div class="px-8 pt-2 pb-8 max-w-7xl mx-auto space-y-12">
 <!-- Filter Bar -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-surface-container-low p-4 rounded-xl">
 <div class="flex flex-wrap gap-4 items-center">

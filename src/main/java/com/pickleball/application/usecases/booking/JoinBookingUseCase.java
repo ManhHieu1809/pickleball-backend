@@ -209,13 +209,66 @@ public class JoinBookingUseCase {
                 booking.confirm();
             }
         } else if (booking.getBookingType() == BookingType.RANKED) {
-            boolean refereePaid = booking.getParticipants().stream()
-                    .filter(p -> p.getRole() == ParticipantRole.REFEREE)
-                    .anyMatch(p -> p.getJoinStatus() == JoinStatus.PAID);
+            boolean hasReferee = booking.getParticipants().stream()
+                    .anyMatch(p -> p.getRole() == ParticipantRole.REFEREE);
 
-            if (matchmakingService.isMatchFull((int) paidPlayerCount) && refereePaid) {
-                booking.confirm();
-                teamBalancingService.balanceTeams(booking);
+            if (matchmakingService.isMatchFull((int) paidPlayerCount)) {
+                if (!hasReferee) {
+                    autoAssignReferee(booking);
+                }
+                
+                boolean refereePaid = booking.getParticipants().stream()
+                        .filter(p -> p.getRole() == ParticipantRole.REFEREE)
+                        .anyMatch(p -> p.getJoinStatus() == JoinStatus.PAID);
+                        
+                if (refereePaid) {
+                    booking.confirm();
+                    teamBalancingService.balanceTeams(booking);
+                }
+            }
+        }
+    }
+
+    private void autoAssignReferee(Booking booking) {
+        java.util.List<Referee> readyReferees = refereeRepository.findEligibleReferees().stream()
+                .filter(Referee::getIsReady)
+                .collect(java.util.stream.Collectors.toList());
+                
+        if (readyReferees.isEmpty()) {
+            System.out.println("AutoAssignReferee: No eligible and ready referees found.");
+            return; // No referee available right now, match stays pending
+        }
+
+        BigDecimal depositAmount = booking.getTotalCost().getAmount()
+                .multiply(DEPOSIT_PERCENTAGE)
+                .setScale(0, RoundingMode.HALF_UP);
+        Money requiredDeposit = new Money(depositAmount, "VND");
+
+        for (Referee ref : readyReferees) {
+            try {
+                String description = "Referee deposit - Auto Assigned Booking #" + booking.getId();
+                payWithWalletUseCase.execute(
+                        ref.getUserId(),
+                        depositAmount,
+                        booking.getId(),
+                        description
+                );
+                
+                BookingParticipant refBp = BookingParticipant.builder()
+                        .bookingId(booking.getId())
+                        .userId(ref.getUserId())
+                        .role(ParticipantRole.REFEREE)
+                        .joinStatus(JoinStatus.PAID)
+                        .depositAmount(requiredDeposit)
+                        .refundAmount(new Money(BigDecimal.ZERO, "VND"))
+                        .isMatchHost(false)
+                        .build();
+                booking.addParticipant(refBp);
+                assignRefereeToRankedMatch(booking.getId(), ref.getUserId());
+                System.out.println("AutoAssignReferee: Successfully assigned referee " + ref.getUserId());
+                break; // Successfully assigned
+            } catch (Exception e) {
+                System.out.println("AutoAssignReferee: Failed to assign referee " + ref.getUserId() + ". Reason: " + e.getMessage());
             }
         }
     }

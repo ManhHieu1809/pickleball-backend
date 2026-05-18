@@ -17,5 +17,7 @@ public class MatchmakingTicketDTO {
     private Integer elo;
     private LocalDateTime joinedAt;
     private Boolean isActive;
+    private String matchStatus;
+    private Long matchedBookingId;
 }
 

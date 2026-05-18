@@ -1,6 +1,7 @@
 package com.pickleball.application.services;
 
 import com.pickleball.application.dtos.BookingDTO;
+import com.pickleball.application.dtos.BookingParticipantDTO;
 import com.pickleball.application.dtos.CasualMatchDTO;
 import com.pickleball.application.dtos.PaymentDTO;
 import com.pickleball.application.dtos.PlayerMatchDTO;
@@ -31,15 +32,21 @@ import com.pickleball.application.usecases.booking.UpdateEloUseCase;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.entities.MatchDispute;
 import com.pickleball.domain.entities.Player;
+import com.pickleball.domain.entities.RankedMatch;
 import com.pickleball.domain.entities.Referee;
+import com.pickleball.domain.entities.User;
 import com.pickleball.domain.enums.BookingStatus;
 import com.pickleball.domain.enums.BookingType;
 import com.pickleball.domain.enums.JoinStatus;
 import com.pickleball.domain.repositories.BookingRepository;
 import com.pickleball.domain.repositories.CourtRepository;
+import com.pickleball.domain.repositories.EloHistoryRepository;
 import com.pickleball.domain.repositories.PlayerRepository;
+import com.pickleball.domain.repositories.RankedMatchRepository;
 import com.pickleball.domain.repositories.RefereeRepository;
+import com.pickleball.domain.repositories.UserRepository;
 import com.pickleball.domain.repositories.VenueRepository;
+import com.pickleball.domain.services.EloCalculationService;
 import com.pickleball.domain.services.PaymentService;
 import com.pickleball.domain.services.PaymentService.PaymentResult;
 import com.pickleball.domain.valueobjects.Money;
@@ -47,8 +54,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pickleball.application.dtos.MatchResultDTO;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,8 +67,8 @@ import java.util.stream.Collectors;
 public class BookingApplicationService {
 
     private final CreateBookingUseCase createBookingUseCase;
-    private final CreatePrivateBookingUseCase createPrivateBookingUseCase;
     private final CreateCasualMatchUseCase createCasualMatchUseCase;
+    private final CreatePrivateBookingUseCase createPrivateBookingUseCase;
     private final CreateRankedMatchUseCase createRankedMatchUseCase;
     private final JoinBookingUseCase joinBookingUseCase;
     private final AcceptMatchUseCase acceptMatchUseCase;
@@ -67,12 +77,15 @@ public class BookingApplicationService {
     private final ConfirmMatchResultUseCase confirmMatchResultUseCase;
     private final SubmitDisputeUseCase submitDisputeUseCase;
     private final UpdateEloUseCase updateEloUseCase;
-    private final CourtRepository courtRepository;
     private final BookingRepository bookingRepository;
     private final PlayerRepository playerRepository;
     private final RefereeRepository refereeRepository;
-    private final VenueRepository venueRepository;
+    private final UserRepository userRepository;
+    private final RankedMatchRepository rankedMatchRepository;
+    private final EloHistoryRepository eloHistoryRepository;
     private final PaymentService paymentService;
+    private final CourtRepository courtRepository;
+    private final VenueRepository venueRepository;
 
     public BookingDTO createBooking(CreateBookingRequest request) {
         courtRepository.findById(request.getCourtId())
@@ -188,6 +201,16 @@ public class BookingApplicationService {
             playerCandidateDTOs.add(bot);
         }
 
+        List<PlayerMatchDTO> teamA = new ArrayList<>();
+        List<PlayerMatchDTO> teamB = new ArrayList<>();
+        for (int i = 0; i < playerCandidateDTOs.size(); i++) {
+            if (i % 2 == 0) {
+                teamA.add(playerCandidateDTOs.get(i));
+            } else {
+                teamB.add(playerCandidateDTOs.get(i));
+            }
+        }
+
         List<RefereeMatchDTO> refereeCandidateDTOs = result.refereeCandidates().stream()
                 .map(this::convertRefereeToMatchDTO)
                 .collect(Collectors.toList());
@@ -213,7 +236,8 @@ public class BookingApplicationService {
                 .totalCost(result.booking().getTotalCost() != null ? result.booking().getTotalCost().getAmount() : null)
                 .currentPlayerCount((int) paidCount)
                 .requiredPlayerCount(4)
-                .playerCandidates(playerCandidateDTOs)
+                .teamACandidates(teamA)
+                .teamBCandidates(teamB)
                 .refereeAssigned(false)
                 .refereeCandidates(refereeCandidateDTOs)
                 .rankedMatchId(result.rankedMatch() != null ? result.rankedMatch().getId() : null)
@@ -262,52 +286,71 @@ public class BookingApplicationService {
         if (booking.getBookingType() != BookingType.RANKED) {
             throw new IllegalArgumentException("Booking is not a ranked match");
         }
-        if (booking.getStatus() != BookingStatus.PENDING) {
+        if (booking.getStatus() != BookingStatus.PENDING && booking.getStatus() != BookingStatus.CONFIRMED) {
             throw new IllegalArgumentException("Ranked match is no longer accepting players");
         }
 
-        Player hostPlayer = playerRepository.findByUserId(booking.getCreatedByPlayerId())
-                .orElseThrow(() -> new IllegalArgumentException("Host player not found"));
+        List<PlayerMatchDTO> teamA = new ArrayList<>();
+        List<PlayerMatchDTO> teamB = new ArrayList<>();
+        List<RefereeMatchDTO> refereeDTOs = new ArrayList<>();
 
-        List<Player> playerCandidates = createRankedMatchUseCase.findPlayerCandidates(hostPlayer, bookingId);
+        if (booking.getParticipants() != null && booking.getParticipants().size() > 1) {
+            // Auto-matchmaking or already has participants stored
+            for (com.pickleball.domain.entities.BookingParticipant p : booking.getParticipants()) {
+                if (p.getRole() == com.pickleball.domain.enums.ParticipantRole.REFEREE) {
+                    refereeRepository.findByUserId(p.getUserId()).ifPresent(ref -> {
+                        refereeDTOs.add(convertRefereeToMatchDTO(ref));
+                    });
+                } else if (p.getRole() == com.pickleball.domain.enums.ParticipantRole.PLAYER) {
+                    playerRepository.findByUserId(p.getUserId()).ifPresent(player -> {
+                        PlayerMatchDTO dto = convertPlayerToMatchDTO(player);
+                        if ("A".equals(p.getTeam())) {
+                            teamA.add(dto);
+                        } else if ("B".equals(p.getTeam())) {
+                            teamB.add(dto);
+                        } else {
+                            // Default to A if team is not set
+                            if (teamA.size() <= teamB.size()) teamA.add(dto);
+                            else teamB.add(dto);
+                        }
+                    });
+                }
+            }
+        } else {
+            // Manual matchmaking scenario
+            Player hostPlayer = playerRepository.findByUserId(booking.getCreatedByPlayerId())
+                    .orElseThrow(() -> new IllegalArgumentException("Host player not found"));
 
-        List<Referee> allEligible = refereeRepository.findEligibleReferees();
-        List<Referee> eligibleReferees = createRankedMatchUseCase.findRefereeCandidates(
-                allEligible, hostPlayer.getUserId());
+            List<Player> playerCandidates = createRankedMatchUseCase.findPlayerCandidates(hostPlayer, bookingId);
 
-        List<PlayerMatchDTO> playerDTOs = playerCandidates.stream()
-                .map(this::convertPlayerToMatchDTO)
-                .collect(Collectors.toList());
+            List<Referee> allEligible = refereeRepository.findEligibleReferees();
+            List<Referee> eligibleReferees = createRankedMatchUseCase.findRefereeCandidates(
+                    allEligible, hostPlayer.getUserId());
 
-        int botsNeeded = 3 - playerDTOs.size();
-        for (int i = 0; i < botsNeeded; i++) {
-            PlayerMatchDTO bot = PlayerMatchDTO.builder()
-                .userId((long) (9000 + i)) // Fake ID
-                .fullName("Autobot_" + (i + 1))
-                .currentElo(1250 + (i * 15)) // Arbitrary Elo
-                .loyaltyTier("SILVER")
-                .build();
-            playerDTOs.add(bot);
+            for (int i = 0; i < playerCandidates.size(); i++) {
+                PlayerMatchDTO dto = convertPlayerToMatchDTO(playerCandidates.get(i));
+                if (i % 2 == 0) {
+                    teamA.add(dto);
+                } else {
+                    teamB.add(dto);
+                }
+            }
+
+            refereeDTOs.addAll(eligibleReferees.stream()
+                    .map(this::convertRefereeToMatchDTO)
+                    .collect(Collectors.toList()));
         }
 
-        List<RefereeMatchDTO> refereeDTOs = eligibleReferees.stream()
-                .map(this::convertRefereeToMatchDTO)
-                .collect(Collectors.toList());
-
-        if (refereeDTOs.isEmpty()) {
-            RefereeMatchDTO botRef = RefereeMatchDTO.builder()
-                .userId(8888L) // Fake ID
-                .fullName("RefBot_Supreme")
-                .trustScore(new java.math.BigDecimal("9.8"))
-                .totalMatchesRefereed(150)
-                .isEligible(true)
-                .build();
-            refereeDTOs.add(botRef);
-        }
+        boolean hasAssignedRef = booking.getParticipants() != null && booking.getParticipants().stream()
+                .anyMatch(p -> p.getRole() == com.pickleball.domain.enums.ParticipantRole.REFEREE);
+        RefereeMatchDTO assignedRef = hasAssignedRef && !refereeDTOs.isEmpty() ? refereeDTOs.get(0) : null;
 
         return RankedMatchDTO.builder()
                 .booking(convertToDTO(booking))
-                .playerCandidates(playerDTOs)
+                .teamACandidates(teamA)
+                .teamBCandidates(teamB)
+                .refereeAssigned(hasAssignedRef)
+                .assignedReferee(assignedRef)
                 .refereeCandidates(refereeDTOs)
                 .build();
     }
@@ -431,7 +474,7 @@ public class BookingApplicationService {
 
     public void submitMatchResult(Long bookingId, SubmitResultRequest request) {
         submitMatchResultUseCase.execute(bookingId, request.getRefereeUserId(),
-                request.getTeamAScore(), request.getTeamBScore());
+                request.getTeamAScore(), request.getTeamBScore(), request.getEvidenceUrl());
     }
 
     public void confirmMatchResult(Long bookingId, ConfirmResultRequest request) {
@@ -458,19 +501,75 @@ public class BookingApplicationService {
                 .build();
     }
 
+    public MatchResultDTO getMatchResultInfo(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+        
+        if (booking.getBookingType() != BookingType.RANKED) {
+            throw new IllegalArgumentException("Booking is not a ranked match");
+        }
+
+        RankedMatch rankedMatch = rankedMatchRepository.findByBookingId(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Ranked match not found"));
+
+        List<MatchResultDTO.PlayerEloChangeDTO> eloChanges = new ArrayList<>();
+
+        if (rankedMatch.getStatus() == com.pickleball.domain.enums.MatchStatus.CONFIRMED ||
+            rankedMatch.getStatus() == com.pickleball.domain.enums.MatchStatus.RESOLVED) {
+
+            List<com.pickleball.domain.entities.EloHistory> histories = eloHistoryRepository.findByRankedMatchId(rankedMatch.getId());
+
+            for (com.pickleball.domain.entities.EloHistory history : histories) {
+                for (com.pickleball.domain.entities.BookingParticipant p : booking.getParticipants()) {
+                    if (p.getRole() == com.pickleball.domain.enums.ParticipantRole.PLAYER && p.getUserId().equals(history.getUserId())) {
+                        String fullName = userRepository.findById(p.getUserId())
+                            .map(User::getFullName)
+                            .orElse("Player " + p.getUserId());
+
+                        eloChanges.add(MatchResultDTO.PlayerEloChangeDTO.builder()
+                                .userId(p.getUserId())
+                                .fullName(fullName)
+                                .team(p.getTeam())
+                                .eloBefore(history.getEloBefore())
+                                .eloChange(history.getEloChange())
+                                .eloAfter(history.getEloAfter())
+                                .build());
+                    }
+                }
+            }
+        }
+
+        return MatchResultDTO.builder()
+                .rankedMatchId(rankedMatch.getId())
+                .teamAScore(rankedMatch.getTeamAScore())
+                .teamBScore(rankedMatch.getTeamBScore())
+                .winningTeam(rankedMatch.getWinningTeam())
+                .matchStatus(rankedMatch.getStatus().name())
+                .eloChanges(eloChanges)
+                .build();
+    }
+
     private PlayerMatchDTO convertPlayerToMatchDTO(Player player) {
+        String fullName = userRepository.findById(player.getUserId())
+                .map(com.pickleball.domain.entities.User::getFullName)
+                .orElse("Player " + player.getUserId());
+
         return PlayerMatchDTO.builder()
                 .userId(player.getUserId())
-                .fullName("Player " + player.getUserId())
+                .fullName(fullName)
                 .currentElo(player.getCurrentElo())
                 .loyaltyTier(player.getLoyaltyTier() != null ? player.getLoyaltyTier().name() : null)
                 .build();
     }
 
     private RefereeMatchDTO convertRefereeToMatchDTO(Referee referee) {
+        String fullName = userRepository.findById(referee.getUserId())
+                .map(com.pickleball.domain.entities.User::getFullName)
+                .orElse("Referee " + referee.getUserId());
+
         return RefereeMatchDTO.builder()
                 .userId(referee.getUserId())
-                .fullName("Referee " + referee.getUserId())
+                .fullName(fullName)
                 .trustScore(referee.getTrustScore())
                 .totalMatchesRefereed(referee.getTotalMatchesRefereed())
                 .isEligible(referee.isEligibleForMatch())
@@ -501,25 +600,15 @@ public class BookingApplicationService {
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
         dto.setCourtId(booking.getCourtId());
+
         dto.setStartTime(booking.getStartTime());
         dto.setEndTime(booking.getEndTime());
         dto.setBookingType(booking.getBookingType());
         dto.setStatus(booking.getStatus());
-        dto.setCreatedByPlayerId(booking.getCreatedByPlayerId());
-        dto.setCreatedByStaffId(booking.getCreatedByStaffId());
         dto.setNotes(booking.getNotes());
 
-        if (booking.getCourtId() != null) {
-            courtRepository.findById(booking.getCourtId()).ifPresent(court -> {
-                dto.setCourtName(court.getCourtName());
-                if (court.getVenueId() != null) {
-                    dto.setVenueId(court.getVenueId());
-                    venueRepository.findById(court.getVenueId()).ifPresent(venue -> {
-                        dto.setVenueName(venue.getName());
-                    });
-                }
-            });
-        }
+        dto.setCreatedByPlayerId(booking.getCreatedByPlayerId());
+        dto.setCreatedByStaffId(booking.getCreatedByStaffId());
 
         if (booking.getVenueFee() != null) {
             dto.setVenueFee(booking.getVenueFee().getAmount());
@@ -532,9 +621,42 @@ public class BookingApplicationService {
         }
         if (booking.getTotalCost() != null) {
             dto.setTotalCost(booking.getTotalCost().getAmount());
+            if (booking.getBookingType() == BookingType.RANKED) {
+                dto.setRequiredDeposit(booking.getTotalCost().getAmount().multiply(new BigDecimal("0.25")));
+            }
+        }
+        if (booking.getBookingType() == BookingType.CASUAL && booking.getVenueFee() != null) {
+            dto.setRequiredDeposit(booking.getVenueFee().getAmount().multiply(new BigDecimal("0.25")));
         }
 
         dto.setCreatedAt(booking.getCreatedAt());
+
+        if (booking.getParticipants() != null && !booking.getParticipants().isEmpty()) {
+            List<BookingParticipantDTO> participantDTOs = booking.getParticipants().stream().map(p -> {
+                return BookingParticipantDTO.builder()
+                        .id(p.getId())
+                        .userId(p.getUserId())
+                        .role(p.getRole())
+                        .team(p.getTeam())
+                        .joinStatus(p.getJoinStatus())
+                        .matchHost(p.isMatchHost())
+                        .depositAmount(p.getDepositAmount() != null ? p.getDepositAmount().getAmount() : null)
+                        .actualPaymentAmount(p.getActualPaymentAmount() != null ? p.getActualPaymentAmount().getAmount() : null)
+                        .refundAmount(p.getRefundAmount() != null ? p.getRefundAmount().getAmount() : null)
+                        .build();
+            }).collect(Collectors.toList());
+            dto.setParticipants(participantDTOs);
+        }
+
+        courtRepository.findById(booking.getCourtId()).ifPresent(court -> {
+            dto.setCourtName(court.getCourtName());
+            if (court.getVenueId() != null) {
+                dto.setVenueId(court.getVenueId());
+                venueRepository.findById(court.getVenueId()).ifPresent(venue -> {
+                    dto.setVenueName(venue.getName());
+                });
+            }
+        });
 
         return dto;
     }

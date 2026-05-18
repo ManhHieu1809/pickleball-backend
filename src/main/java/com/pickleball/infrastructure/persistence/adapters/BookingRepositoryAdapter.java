@@ -55,6 +55,13 @@ public class BookingRepositoryAdapter implements BookingRepository {
     }
 
     @Override
+    public List<Booking> findByParticipantUserId(Long userId) {
+        return bookingJpaRepository.findByParticipantUserId(userId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Booking> findByOwnerId(Long ownerId) {
         return bookingJpaRepository.findByOwnerId(ownerId).stream()
                 .map(bookingMapper::toDomain)
@@ -127,6 +134,13 @@ public class BookingRepositoryAdapter implements BookingRepository {
     }
 
     @Override
+    public List<Booking> findExpiredPendingRanked(LocalDateTime timeThreshold) {
+        return bookingJpaRepository.findExpiredPendingRanked(timeThreshold).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Booking> findExpiredRankedNoShows(LocalDateTime timeThreshold) {
         return bookingJpaRepository.findExpiredRankedNoShows(timeThreshold).stream()
                 .map(bookingMapper::toDomain)
@@ -136,5 +150,12 @@ public class BookingRepositoryAdapter implements BookingRepository {
     @Override
     public List<Long> findRecentOpponentUserIds(Long userId, int lastNMatches) {
         return bookingParticipantJpaRepository.findRecentOpponentUserIds(userId, lastNMatches);
+    }
+
+    @Override
+    public List<Booking> findActiveRankedMatchesByUserId(Long userId) {
+        return bookingJpaRepository.findActiveRankedMatchesByParticipantUserId(userId).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Pickleball Admin - Venue Approvals</title>
+    <title>Pickleball Admin - Phê duyệt Sân đấu</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -281,53 +281,30 @@
                     </div>
 
                     <!-- Central Navigation Tabs (Floating) -->
-                    <nav
-                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
-                        <a href="#"
-                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
-                    </nav>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="search" class="w-4 h-4"></i></button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
-                            <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span
-                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="info" class="w-4 h-4"></i></button>
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
                     </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
 
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                            class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
                         <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
-                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
                             <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
                             <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
-                        <div
-                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <button data-logout
-                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
                             </button>
                         </div>
@@ -351,30 +328,12 @@
                     <div class="mx-auto flex h-full max-w-7xl flex-col gap-4">
                         <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                             <div class="flex items-center gap-2">
-                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Venue Approvals</h2>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Phê duyệt Sân đấu</h2>
                                 <span id="venue-pending-count"
                                     class="rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2 py-0.5 text-xs font-bold text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-900/50">—
-                                    Pending</span>
+                                    Chờ duyệt</span>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-2 flex-1 xl:justify-end">
-                                <div class="relative flex-1 sm:max-w-xs group">
-                                    <span
-                                        class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-400 group-focus-within:text-primary transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">search</span>
-                                    </span>
-                                    <input
-                                        class="pl-8 pr-3 py-1.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-full text-sm text-slate-900 dark:text-white focus:ring-1 focus:ring-primary focus:border-primary w-full shadow-sm placeholder:text-sm"
-                                        placeholder="Search venues..." type="text" />
-                                </div>
-                                <div
-                                    class="bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-0.5 rounded-lg flex gap-0.5">
-                                    <button
-                                        class="px-2.5 py-1 rounded-md text-sm font-bold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all">Pending</button>
-                                    <button
-                                        class="px-2.5 py-1 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5 transition-all">Approved</button>
-                                    <button
-                                        class="px-2.5 py-1 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5 transition-all">Rejected</button>
-                                </div>
                                 <div
                                     class="bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-0.5 rounded-lg flex gap-0.5">
                                     <button onclick="switchView('grid')" id="btn-grid"
@@ -399,7 +358,7 @@
                                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0kIFedNJaBHmGiOYUs8PU8w7MyH94uGL_SC3kNIWLZxM7a56NTPp6pyhueiH_zT66YunuTL8rNSfNfm6WtjtwhwHx07G0N0P1KxFzG1nWypV0p-bZJIXakcNRDCVAPFw1wCWbYQ9gQmtZ60J0Jt1et3S3GlcFxI3KLlm9cMxFGnMo0yiTCLzT9c4mAfIedeeoROmtmCWpKh_66PwSNwn87cbJTwNTKMVzflB9S9ruzUMwmB49-j1xOVdTFFWMNWMYrHcMMKVepI0" />
                                     <div
                                         class="absolute top-2 right-2 bg-yellow-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                                        Pending</div>
+                                        Chờ duyệt</div>
                                 </div>
                                 <div class="p-4 flex flex-col gap-3 flex-1">
                                     <div class="flex-1">
@@ -420,7 +379,7 @@
                                                 class="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-bold">
                                                 MR</div>
                                             <div class="flex flex-col">
-                                                <span class="text-xs text-slate-500 dark:text-slate-400">Owner</span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-400">Chủ sân</span>
                                                 <span class="text-sm font-semibold text-slate-900 dark:text-white">Mike
                                                     Ross</span>
                                             </div>
@@ -434,7 +393,7 @@
                                         </div>
                                     </div>
                                     <button onclick="openModal()"
-                                        class="w-full py-2 bg-primary hover:bg-[#00d672] text-slate-900 rounded-lg text-sm font-bold transition-colors shadow-sm mt-1">Review
+                                        class="w-full py-2 bg-gradient-to-br from-primary to-primary-container hover:bg-[#00d672] text-slate-900 rounded-lg text-sm font-bold transition-colors shadow-sm mt-1">Review
                                         Details</button>
                                 </div>
                             </div>
@@ -500,10 +459,10 @@
                                         <td class="px-4 py-3 text-slate-600 dark:text-slate-300">Oct 24, 2023</td>
                                         <td class="px-4 py-3"><span
                                                 class="inline-flex items-center gap-1.5 rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2 py-0.5 text-xs font-bold text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-900/50"><span
-                                                    class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span>Pending</span>
+                                                    class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span>Chờ duyệt</span>
                                         </td>
                                         <td class="px-4 py-3 text-right"><button onclick="openModal()"
-                                                class="px-3 py-1.5 rounded-lg bg-primary hover:bg-[#00d672] text-slate-900 text-sm font-bold transition-colors shadow-sm">Review</button>
+                                                class="px-3 py-1.5 rounded-lg bg-gradient-to-br from-primary to-primary-container hover:bg-[#00d672] text-slate-900 text-sm font-bold transition-colors shadow-sm">Review</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -516,74 +475,12 @@
             <div id="appr-content-owner" class="hidden flex-col gap-4 animate-zoom-in mt-4"><!-- Header & Stats -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Owner Approval Requests</h1>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Manage and approve new venue owner
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Yêu cầu duyệt Chủ sân</h1>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Quản lý và duyệt chủ sân mới
                             registrations.</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors shadow-sm text-slate-700 dark:text-slate-300">
-                            <i data-lucide="download" class="w-4 h-4"></i> Export List
-                        </button>
-                        <button
-                            class="flex items-center gap-2 px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity shadow-lg shadow-slate-200/50">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Data
-                        </button>
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div
-                        class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Requests</p>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span id="owner-pending-count-num"
-                                    class="text-2xl font-black text-slate-900 dark:text-white">—</span>
-                                <span
-                                    class="text-xs font-medium text-yellow-600 dark:text-yellow-400 flex items-center gap-0.5"><i
-                                        data-lucide="alert-circle" class="w-3 h-3"></i> Action Needed</span>
-                            </div>
-                        </div>
-                        <div
-                            class="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 rounded-lg group-hover:bg-yellow-100 transition-colors">
-                            <i data-lucide="user-plus" class="w-6 h-6"></i>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Approved This Week</p>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span class="text-2xl font-black text-slate-900 dark:text-white">24</span>
-                                <span
-                                    class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5"><i
-                                        data-lucide="trending-up" class="w-3 h-3"></i> +18%</span>
-                            </div>
-                        </div>
-                        <div
-                            class="p-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg group-hover:bg-green-100 transition-colors">
-                            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Avg Processing Time</p>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span class="text-2xl font-black text-slate-900 dark:text-white">1.5d</span>
-                                <span
-                                    class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-0.5"><i
-                                        data-lucide="clock" class="w-3 h-3"></i> Fast</span>
-                            </div>
-                        </div>
-                        <div
-                            class="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg group-hover:bg-blue-100 transition-colors">
-                            <i data-lucide="timer" class="w-6 h-6"></i>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Main Content Card -->
                 <div
@@ -596,11 +493,11 @@
                             <button
                                 class="px-4 py-1.5 rounded-md bg-white dark:bg-surface-dark text-slate-900 dark:text-white text-sm font-bold shadow-sm ring-1 ring-black/5 dark:ring-white/10">All</button>
                             <button
-                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Pending</button>
+                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Chờ duyệt</button>
                             <button
-                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Approved</button>
+                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Đã duyệt</button>
                             <button
-                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Rejected</button>
+                                class="px-4 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-medium transition-all">Từ chối</button>
                         </div>
 
                         <!-- Search & Filter -->
@@ -608,7 +505,7 @@
                             <div class="relative max-w-xs w-full group">
                                 <i data-lucide="search"
                                     class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors"></i>
-                                <input type="text" placeholder="Search requests..."
+                                <input type="text" placeholder="Tìm kiếm yêu cầu..."
                                     class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white dark:focus:bg-surface-dark transition-all placeholder:text-slate-500 dark:text-white">
                             </div>
                             <button
@@ -671,7 +568,7 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Chờ duyệt
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
@@ -709,7 +606,7 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Chờ duyệt
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-right">
@@ -740,7 +637,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Referee Approvals</h1>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">Manage and approve new referee
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Quản lý và duyệt trọng tài mới
                                 applications.</p>
                         </div>
                         <div class="flex items-center gap-3">
@@ -757,7 +654,7 @@
                         <div
                             class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
                             <div>
-                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Requests
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Yêu cầu chờ duyệt
                                 </p>
                                 <div class="flex items-baseline gap-2 mt-1">
                                     <span id="referee-pending-count-num"
@@ -783,7 +680,7 @@
                             <div
                                 class="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 gap-1 shrink-0 overflow-x-auto">
                                 <button
-                                    class="px-4 py-1.5 rounded-md bg-white dark:bg-surface-dark text-slate-900 dark:text-white text-sm font-bold shadow-sm ring-1 ring-black/5 dark:ring-white/10">Pending</button>
+                                    class="px-4 py-1.5 rounded-md bg-white dark:bg-surface-dark text-slate-900 dark:text-white text-sm font-bold shadow-sm ring-1 ring-black/5 dark:ring-white/10">Chờ duyệt</button>
                             </div>
                         </div>
 
@@ -830,10 +727,10 @@
             <div
                 class="flex items-center justify-between px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark z-20 shrink-0">
                 <div class="flex items-center gap-4">
-                    <span class="text-slate-500 dark:text-slate-400 font-medium">Venue Application <span
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Đơn đăng ký sân <span
                             class="text-slate-900 dark:text-white font-bold">#V-2024</span></span>
                     <span
-                        class="px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold uppercase tracking-wide border border-yellow-200 dark:border-yellow-700/50">Pending</span>
+                        class="px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold uppercase tracking-wide border border-yellow-200 dark:border-yellow-700/50">Chờ duyệt</span>
                 </div>
                 <button onclick="closeModal()"
                     class="p-2 -mr-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-white/5">
@@ -921,7 +818,7 @@
                                 </p>
                             </div>
                             <div>
-                                <h4 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-3">Amenities
+                                <h4 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-3">Tiện ích
                                 </h4>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     <div
@@ -935,7 +832,7 @@
                                         class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                                         <span
                                             class="material-symbols-outlined text-slate-400 text-[18px]">local_parking</span><span
-                                            class="text-xs font-medium text-slate-700 dark:text-slate-200">Parking</span>
+                                            class="text-xs font-medium text-slate-700 dark:text-slate-200">Bãi đỗ xe</span>
                                     </div>
                                     <div
                                         class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
@@ -975,7 +872,7 @@
 
                     <div id="content-courts" class="hidden flex-col gap-6 min-h-[300px] animate-zoom-in">
                         <div class="flex items-center justify-between pt-2">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sub-courts Configuration</h3>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Sân con Configuration</h3>
                             <span
                                 class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700">Total:
                                 6 Courts</span>
@@ -996,13 +893,13 @@
                                         <td class="px-6 py-4 font-medium">Sân A1</td>
                                         <td class="px-6 py-4 text-slate-500">Hard Court</td>
                                         <td class="px-6 py-4 text-right"><span
-                                                class="text-green-600 text-xs font-bold">Active</span></td>
+                                                class="text-green-600 text-xs font-bold">Đang hoạt động</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                                         <td class="px-6 py-4 font-medium">Sân A2</td>
                                         <td class="px-6 py-4 text-slate-500">Hard Court</td>
                                         <td class="px-6 py-4 text-right"><span
-                                                class="text-green-600 text-xs font-bold">Active</span></td>
+                                                class="text-green-600 text-xs font-bold">Đang hoạt động</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1027,7 +924,7 @@
                                     <div>
                                         <label
                                             class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Detailed
-                                            Address</label>
+                                            Địa chỉ</label>
                                         <div
                                             class="flex items-start justify-between gap-3 p-3 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-sm">
                                             <p class="text-sm text-slate-900 dark:text-white leading-relaxed">123 Xuan
@@ -1082,7 +979,7 @@
                             class="relative pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-8 ml-2 py-2">
                             <div class="relative pl-8">
                                 <span
-                                    class="absolute -left-[9px] top-1.5 h-4 w-4 rounded-full bg-primary ring-4 ring-white dark:ring-surface-dark shadow-sm"></span>
+                                    class="absolute -left-[9px] top-1.5 h-4 w-4 rounded-full bg-gradient-to-br from-primary to-primary-container ring-4 ring-white dark:ring-surface-dark shadow-sm"></span>
                                 <div class="flex flex-col gap-2">
                                     <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                                         <span class="font-mono font-medium">Oct 20, 2023 • 10:00 AM</span>
@@ -1106,17 +1003,11 @@
                         class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/50 text-sm focus:border-primary focus:ring-primary shadow-sm"
                         placeholder="Reason (optional)..." rows="1"></textarea>
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <input class="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4"
-                                type="checkbox" id="notify-venue" />
-                            <label class="text-xs text-slate-600 dark:text-slate-400 select-none" for="notify-venue">Notify
-                                Owner</label>
-                        </div>
                         <div class="flex gap-3">
                             <button onclick="closeModal()"
-                                class="px-5 py-2 rounded-xl text-red-600 font-medium text-sm hover:bg-red-50 transition-colors">Reject</button>
+                                class="px-5 py-2 rounded-xl text-red-600 font-medium text-sm hover:bg-red-50 transition-colors">Từ chối</button>
                             <button onclick="closeModal()"
-                                class="px-5 py-2 rounded-xl bg-primary text-slate-900 font-bold text-sm shadow-md hover:bg-[#00d672] transition-colors">Approve
+                                class="px-5 py-2 rounded-xl bg-gradient-to-br from-primary to-primary-container text-slate-900 font-bold text-sm shadow-md hover:bg-[#00d672] transition-colors">Duyệt
                                 Venue</button>
                         </div>
                     </div>
@@ -1241,49 +1132,17 @@ function closeDetailModal() {
                                 (Techcombank)</p>
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Registered Address</label>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Registered Địa chỉ</label>
                             <p class="text-sm font-bold text-slate-900 dark:text-white">123 Nguyen Trai, Phuong Ben
                                 Thanh, Quan 1, TP. Ho Chi Minh</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Documents -->
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
-                        <i data-lucide="files" class="w-4 h-4"></i> Submitted Documents
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div
-                            class="flex items-center p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
-                                <i data-lucide="file-text" class="w-5 h-5"></i>
-                            </div>
-                            <div class="ml-3 flex-1 overflow-hidden">
-                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">
-                                    Business_License.pdf</p>
-                                <p class="text-xs text-slate-500">2.4 MB • PDF</p>
-                            </div>
-                        </div>
-                        <div
-                            class="flex items-center p-3 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm group">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                                <i data-lucide="image" class="w-5 h-5"></i>
-                            </div>
-                            <div class="ml-3 flex-1 overflow-hidden">
-                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">ID_Card_Front.jpg
-                                </p>
-                                <p class="text-xs text-slate-500">1.8 MB • JPG</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Action Area -->
                 <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-6">
-                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Rejection Reason</label>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Từ chốiion Reason</label>
                     <textarea
                         class="w-full rounded-xl border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-sm focus:border-primary focus:ring-primary shadow-sm"
                         placeholder="Reason (optional)..." rows="3"></textarea>
@@ -1297,9 +1156,9 @@ function closeDetailModal() {
                         </div>
                         <div class="flex gap-3">
                             <button onclick="closeModal()"
-                                class="px-5 py-2 rounded-xl text-red-600 font-medium text-sm hover:bg-red-50 transition-colors">Reject</button>
+                                class="px-5 py-2 rounded-xl text-red-600 font-medium text-sm hover:bg-red-50 transition-colors">Từ chối</button>
                             <button onclick="closeModal()"
-                                class="px-5 py-2 rounded-xl bg-primary text-slate-900 font-bold text-sm shadow-md hover:bg-[#00d672] transition-colors">Approve
+                                class="px-5 py-2 rounded-xl bg-gradient-to-br from-primary to-primary-container text-slate-900 font-bold text-sm shadow-md hover:bg-[#00d672] transition-colors">Duyệt
                                 Venue</button>
                         </div>
                     </div>
@@ -1347,18 +1206,18 @@ function closeDetailModal() {
         AdminAuth.checkAuth().then(ok => {
             if (!ok) return;
             AdminAuth.populateUserInfo();
-            loadPendingVenues();
+            loadChờ duyệtVenues();
             loadOwnerRequests();
         });
 
-        async function loadPendingVenues() {
+        async function loadChờ duyệtVenues() {
             try {
                 const res = await AdminAuth.authFetch('/api/venues/pending');
                 const json = await res.json();
                 pendingVenues = json.data || [];
                 renderVenueGrid(pendingVenues);
                 renderVenueList(pendingVenues);
-                updatePendingCount('venue-pending-count', pendingVenues.length);
+                updateChờ duyệtCount('venue-pending-count', pendingVenues.length);
             } catch (e) {
                 console.error('Failed to load pending venues', e);
             }
@@ -1377,16 +1236,16 @@ function closeDetailModal() {
                 renderOwnerTable(pendingOwnerRequests);
                 renderRefereeTable(pendingRefereeRequests);
 
-                updatePendingCount('owner-pending-count', pendingOwnerRequests.length);
-                updatePendingCount('referee-pending-count', pendingRefereeRequests.length);
+                updateChờ duyệtCount('owner-pending-count', pendingOwnerRequests.length);
+                updateChờ duyệtCount('referee-pending-count', pendingRefereeRequests.length);
             } catch (e) {
                 console.error('Failed to load role requests', e);
             }
         }
 
-        function updatePendingCount(elId, count) {
+        function updateChờ duyệtCount(elId, count) {
             const el = document.getElementById(elId);
-            if (el) el.textContent = count + ' Pending';
+            if (el) el.textContent = count + ' Chờ duyệt';
             if (elId === 'owner-pending-count') {
                 const num = document.getElementById('owner-pending-count-num');
                 if (num) num.textContent = count;
@@ -1416,7 +1275,7 @@ function closeDetailModal() {
                 <div class="group bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all flex flex-col">
                     <div class="h-40 w-full bg-slate-200 relative overflow-hidden flex items-center justify-center">
                         <i data-lucide="map-pin-house" class="w-16 h-16 text-slate-300"></i>
-                        <div class="absolute top-2 right-2 bg-yellow-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Pending</div>
+                        <div class="absolute top-2 right-2 bg-yellow-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Chờ duyệt</div>
                     </div>
                     <div class="p-4 flex flex-col gap-3 flex-1">
                         <div class="flex-1">
@@ -1432,7 +1291,7 @@ function closeDetailModal() {
                             </div>
                         </div>
                         <button onclick="openVenueReview(${v.id})"
-                            class="w-full py-2 bg-primary hover:bg-[#00d672] text-slate-900 rounded-lg text-sm font-bold transition-colors shadow-sm mt-1">
+                            class="w-full py-2 bg-gradient-to-br from-primary to-primary-container hover:bg-[#00d672] text-slate-900 rounded-lg text-sm font-bold transition-colors shadow-sm mt-1">
                             Review Details
                         </button>
                     </div>
@@ -1465,7 +1324,7 @@ function closeDetailModal() {
                     <td class="px-4 py-3 text-sm text-slate-600">${formatDate(v.createdAt)}</td>
                     <td class="px-4 py-3">
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Chờ duyệt
                         </span>
                     </td>
                     <td class="px-4 py-3 text-right">
@@ -1505,7 +1364,7 @@ function closeDetailModal() {
                     <td class="px-6 py-4"><span class="text-sm text-slate-600">${formatDate(r.submittedAt)}</span></td>
                     <td class="px-6 py-4">
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Chờ duyệt
                         </span>
                     </td>
                     <td class="px-6 py-4 text-right">
@@ -1545,7 +1404,7 @@ function closeDetailModal() {
                     <td class="px-6 py-4"><span class="text-sm text-slate-600">${formatDate(r.submittedAt)}</span></td>
                     <td class="px-6 py-4">
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
-                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Chờ duyệt
                         </span>
                     </td>
                     <td class="px-6 py-4 text-right">
@@ -1685,7 +1544,7 @@ function closeDetailModal() {
             const actionAreaHtml = `
                 <!-- Action Area -->
                 <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-6">
-                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Rejection Reason / Notes</label>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Từ chốiion Reason / Notes</label>
                     <textarea id="rejection-reason-input"
                         class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-black/20 p-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-slate-400 resize-none transition-all"
                         rows="3" placeholder="Enter reason if rejecting request..."></textarea>
@@ -1697,10 +1556,10 @@ function closeDetailModal() {
                             <span class="text-sm font-medium text-slate-600 dark:text-slate-400">Notify User</span>
                         </label>
                         <div class="flex gap-3">
-                            <button onclick="confirmRejectAction()"
-                                class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors">Reject</button>
-                            <button onclick="confirmApproveAction()"
-                                class="px-6 py-2 bg-primary text-slate-900 font-bold rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Approve Request</button>
+                            <button onclick="confirmTừ chốiAction()"
+                                class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors">Từ chối</button>
+                            <button onclick="confirmDuyệtAction()"
+                                class="px-6 py-2 bg-gradient-to-br from-primary to-primary-container text-slate-900 font-bold rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">Duyệt Request</button>
                         </div>
                     </div>
                 </div>
@@ -1716,37 +1575,37 @@ function closeDetailModal() {
             openDetailModal();
         }
 
-        // ─── Approve action ────────────────────────────────────────────────────
-        async function confirmApproveAction() {
+        // ─── Duyệt action ────────────────────────────────────────────────────
+        async function confirmDuyệtAction() {
             try {
                 if (currentVenueId) {
                     await AdminAuth.authFetch(`/api/venues/${currentVenueId}/approve`, { method: 'POST' });
                     pendingVenues = pendingVenues.filter(v => v.id !== currentVenueId);
                     renderVenueGrid(pendingVenues);
                     renderVenueList(pendingVenues);
-                    updatePendingCount('venue-pending-count', pendingVenues.length);
+                    updateChờ duyệtCount('venue-pending-count', pendingVenues.length);
                 } else if (currentRequestId && currentRequestType === 'OWNER') {
                     await AdminAuth.authFetch(`/api/admin/role-requests/${currentRequestId}/approve?adminId=${adminId}`, { method: 'POST' });
                     pendingOwnerRequests = pendingOwnerRequests.filter(r => r.id !== currentRequestId);
                     renderOwnerTable(pendingOwnerRequests);
-                    updatePendingCount('owner-pending-count', pendingOwnerRequests.length);
+                    updateChờ duyệtCount('owner-pending-count', pendingOwnerRequests.length);
                 } else if (currentRequestId && currentRequestType === 'REFEREE') {
                     await AdminAuth.authFetch(`/api/admin/referee-requests/${currentRequestId}/approve?adminId=${adminId}`, { method: 'POST' });
                     pendingRefereeRequests = pendingRefereeRequests.filter(r => r.id !== currentRequestId);
                     renderRefereeTable(pendingRefereeRequests);
-                    updatePendingCount('referee-pending-count', pendingRefereeRequests.length);
+                    updateChờ duyệtCount('referee-pending-count', pendingRefereeRequests.length);
                 }
                 closeDetailModal();
                 showToast('toast-success');
                 lucide.createIcons();
             } catch (e) {
-                console.error('Approve failed', e);
+                console.error('Duyệt failed', e);
                 alert('Duyệt thất bại: ' + e.message);
             }
         }
 
-        // ─── Reject action ─────────────────────────────────────────────────────
-        async function confirmRejectAction() {
+        // ─── Từ chối action ─────────────────────────────────────────────────────
+        async function confirmTừ chốiAction() {
             try {
                 const notesInput = document.getElementById('rejection-reason-input');
                 const notes = notesInput && notesInput.value.trim() !== '' ? notesInput.value.trim() : 'T ch‘i bŸi Admin';
@@ -1756,7 +1615,7 @@ function closeDetailModal() {
                     pendingVenues = pendingVenues.filter(v => v.id !== currentVenueId);
                     renderVenueGrid(pendingVenues);
                     renderVenueList(pendingVenues);
-                    updatePendingCount('venue-pending-count', pendingVenues.length);
+                    updateChờ duyệtCount('venue-pending-count', pendingVenues.length);
                 } else if (currentRequestId && currentRequestType === 'OWNER') {
                     await AdminAuth.authFetch(`/api/admin/role-requests/${currentRequestId}/reject?adminId=${adminId}`, {
                         method: 'POST',
@@ -1764,7 +1623,7 @@ function closeDetailModal() {
                     });
                     pendingOwnerRequests = pendingOwnerRequests.filter(r => r.id !== currentRequestId);
                     renderOwnerTable(pendingOwnerRequests);
-                    updatePendingCount('owner-pending-count', pendingOwnerRequests.length);
+                    updateChờ duyệtCount('owner-pending-count', pendingOwnerRequests.length);
                 } else if (currentRequestId && currentRequestType === 'REFEREE') {
                     await AdminAuth.authFetch(`/api/admin/referee-requests/${currentRequestId}/reject?adminId=${adminId}`, {
                         method: 'POST',
@@ -1772,13 +1631,13 @@ function closeDetailModal() {
                     });
                     pendingRefereeRequests = pendingRefereeRequests.filter(r => r.id !== currentRequestId);
                     renderRefereeTable(pendingRefereeRequests);
-                    updatePendingCount('referee-pending-count', pendingRefereeRequests.length);
+                    updateChờ duyệtCount('referee-pending-count', pendingRefereeRequests.length);
                 }
                 closeDetailModal();
                 showToast('toast-reject');
                 lucide.createIcons();
             } catch (e) {
-                console.error('Reject failed', e);
+                console.error('Từ chối failed', e);
                 alert('T ch‘i tht bi: ' + e.message);
             }
         }

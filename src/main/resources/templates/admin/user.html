@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Pickleball Admin Dashboard - User Management</title>
+    <title>Pickleball Admin - Quản lý User</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -263,53 +263,30 @@
                     </div>
 
                     <!-- Central Navigation Tabs (Floating) -->
-                    <nav
-                        class="hidden xl:flex items-center bg-white rounded-full p-1.5 shadow-sm border border-slate-100 gap-1">
-                        <a href="#"
-                            class="px-5 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold shadow-lg shadow-slate-200 transition-all hover:scale-105">Overview</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Activity</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Manage</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Program</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Account</a>
-                        <a href="#"
-                            class="px-5 py-2 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-50 text-sm font-semibold transition-colors">Reports</a>
-                    </nav>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 bg-white rounded-full p-1.5 border border-slate-100 shadow-sm">
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="search" class="w-4 h-4"></i></button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors relative">
-                            <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span
-                                class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                        <button
-                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors"><i
-                                data-lucide="info" class="w-4 h-4"></i></button>
+                    <div class="relative hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 shadow-sm shadow-slate-200/50 placeholder:text-slate-400">
                     </div>
+                    <button class="relative p-2 text-slate-400 hover:text-slate-900 bg-white rounded-xl shadow-sm shadow-slate-200/50 transition-all hover:scale-105 active:scale-95">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
 
                     <div
-                        class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
+                            class="flex items-center gap-3 bg-white pl-1.5 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow group relative">
                         <img data-admin-avatar src="https://i.pravatar.cc/150?u=admin" alt="Profile"
-                            class="h-8 w-8 rounded-full border border-slate-100 object-cover">
+                             class="h-8 w-8 rounded-full border border-slate-100 object-cover">
                         <div class="hidden lg:block text-left leading-tight">
                             <p class="text-sm font-bold text-slate-900" data-admin-name>Admin</p>
                             <p class="text-xs text-slate-400" data-admin-email></p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300"></i>
-                        <div
-                            class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <button data-logout
-                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <div class="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <button data-logout class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất
                             </button>
                         </div>
@@ -320,15 +297,8 @@
             <!-- Page Header & Actions -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">User Management</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">View, manage and moderate user accounts.</p>
-                </div>
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-3">
-                    <button
-                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors shadow-sm text-slate-700 dark:text-slate-300">
-                        <i data-lucide="download" class="w-4 h-4"></i> Export
-                    </button>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý User</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Xem, quản lý và điều hành tài khoản người dùng.</p>
                 </div>
             </div>
 
@@ -337,7 +307,7 @@
                 <div
                     class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
                     <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Users</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng số User</p>
                         <div class="flex items-baseline gap-2 mt-1">
                             <span id="stat-total" class="text-2xl font-black text-slate-900 dark:text-white">--</span>
                         </div>
@@ -351,11 +321,11 @@
                 <div
                     class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
                     <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">New Today</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mới hôm nay</p>
                         <div class="flex items-baseline gap-2 mt-1">
                             <span id="stat-today" class="text-2xl font-black text-slate-900 dark:text-white">--</span>
                             <span
-                                class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-0.5">signups</span>
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-0.5">đăng ký mới</span>
                         </div>
                     </div>
                     <div
@@ -367,12 +337,11 @@
                 <div
                     class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-primary/50 transition-colors">
                     <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">This Month</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tháng này</p>
                         <div class="flex items-baseline gap-2 mt-1">
                             <span id="stat-month" class="text-2xl font-black text-slate-900 dark:text-white">--</span>
                             <span
-                                class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-0.5">new
-                                users</span>
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-0.5">user mới</span>
                         </div>
                     </div>
                     <div
@@ -394,7 +363,7 @@
                         <div class="relative max-w-sm w-full group">
                             <i data-lucide="search"
                                 class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors"></i>
-                            <input id="searchInput" type="text" placeholder="Search users..."
+                            <input id="searchInput" type="text" placeholder="Tìm kiếm user..."
                                 class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white dark:focus:bg-surface-dark transition-all placeholder:text-slate-500 dark:text-white">
                         </div>
 
@@ -403,11 +372,11 @@
                             <div class="relative">
                                 <select id="roleFilter"
                                     class="appearance-none bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm pl-4 pr-10 py-2 focus:ring-2 focus:ring-primary/20 cursor-pointer text-slate-700 dark:text-slate-200 font-medium">
-                                    <option value="ALL">All Roles</option>
-                                    <option value="PLAYER">Player</option>
-                                    <option value="VENUE_OWNER">Owner</option>
-                                    <option value="REFEREE">Referee</option>
-                                    <option value="ADMIN">Admin</option>
+                                    <option value="ALL">Tất cả vai trò</option>
+                                    <option value="PLAYER">Người chơi</option>
+                                    <option value="VENUE_OWNER">Chủ sân</option>
+                                    <option value="REFEREE">Trọng tài</option>
+                                    <option value="ADMIN">Quản trị viên</option>
                                 </select>
                                 <i data-lucide="chevron-down"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
@@ -423,19 +392,19 @@
                                     class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
                                     <th
                                         class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-                                        User</th>
+                                        Người dùng</th>
                                     <th
                                         class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
                                         Email</th>
                                     <th
                                         class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-                                        Role</th>
+                                        Vai trò</th>
                                     <th
                                         class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
                                         Elo</th>
                                     <th
                                         class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-                                        Joined</th>
+                                        Ngày tham gia</th>
                                 </tr>
                             </thead>
                             <tbody id="userTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -471,12 +440,12 @@
 
                     <!-- Footer / Pagination -->
                     <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                        <span id="paginationInfo" class="text-sm text-slate-500 dark:text-slate-400">Loading...</span>
+                        <span id="paginationInfo" class="text-sm text-slate-500 dark:text-slate-400">Đang tải...</span>
                         <div class="flex items-center gap-1">
                             <button id="btnPrev" onclick="changePage(-1)" disabled
-                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Previous</button>
+                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Trước</button>
                             <button id="btnNext" onclick="changePage(1)"
-                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Next</button>
+                                class="px-3 py-1 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Tiếp</button>
                         </div>
                     </div>
                 </div>
@@ -490,9 +459,8 @@
                             class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4 text-slate-400">
                             <i data-lucide="user" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Select a User</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Click on any user from the list to view
-                            their full profile details.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Chọn một User</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Nhấn vào bất kỳ người dùng nào trong danh sách để xem chi tiết hồ sơ của họ.</p>
                     </div>
 
                     <!-- Details Card -->
@@ -517,24 +485,21 @@
                         <div class="space-y-8">
                             <!-- Profile Details -->
                             <div>
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Profile
-                                    Details</h3>
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Chi tiết hồ sơ</h3>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-center group">
-                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Full
-                                            Name</span>
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Họ và tên</span>
                                         <span id="detail-full-name"
                                             class="text-sm font-bold text-slate-900 dark:text-white"></span>
                                     </div>
                                     <div class="flex justify-between items-center group">
                                         <span
-                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Phone</span>
+                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Số điện thoại</span>
                                         <span id="detail-phone"
                                             class="text-sm font-bold text-slate-900 dark:text-white"></span>
                                     </div>
                                     <div class="flex justify-between items-center group">
-                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">User
-                                            ID</span>
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">ID người dùng</span>
                                         <span id="detail-user-id"
                                             class="text-sm font-bold text-slate-900 dark:text-white font-mono"></span>
                                     </div>
@@ -555,18 +520,16 @@
 
                             <!-- System Details -->
                             <div>
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">System
-                                    Information</h3>
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Thông tin hệ thống</h3>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-center group">
                                         <span
-                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Roles</span>
+                                            class="text-sm font-medium text-slate-500 dark:text-slate-400">Vai trò</span>
                                         <span id="detail-roles"
                                             class="text-sm font-bold text-slate-900 dark:text-white"></span>
                                     </div>
                                     <div class="flex justify-between items-center group">
-                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Join
-                                            Date</span>
+                                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Ngày tham gia</span>
                                         <span id="detail-join-date"
                                             class="text-sm font-bold text-slate-900 dark:text-white"></span>
                                     </div>
@@ -656,13 +619,13 @@
 
                 const res = await AdminAuth.authFetch(url);
                 if (!res || !res.ok) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Failed to load users</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Lỗi tải dữ liệu người dùng</td></tr>`;
                     return;
                 }
 
                 const json = await res.json();
                 if (!json.success || !json.data) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No data returned</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Không có dữ liệu trả về</td></tr>`;
                     return;
                 }
 
@@ -679,8 +642,8 @@
                     tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">
                         <div class="flex flex-col items-center gap-2">
                             <i data-lucide="users" class="w-10 h-10 text-slate-300"></i>
-                            <p class="font-medium">No users found</p>
-                            <p class="text-xs">Try adjusting your search or filters</p>
+                            <p class="font-medium">Không tìm thấy người dùng</p>
+                            <p class="text-xs">Thử thay đổi tìm kiếm hoặc bộ lọc</p>
                         </div>
                     </td></tr>`;
                     lucide.createIcons();
@@ -699,7 +662,7 @@
 
             } catch (err) {
                 console.error('Failed to load users:', err);
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Error loading users</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Lỗi tải người dùng</td></tr>`;
             }
         }
 
@@ -779,10 +742,10 @@
 
             if (user.roles && user.roles.includes('PLAYER') && user.currentElo != null) {
                 hasSpecific = true;
-                specificTitle.textContent = 'Player Statistics';
+                specificTitle.textContent = 'Thống kê người chơi';
                 specificDetails.innerHTML += `
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Elo Rating</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Điểm Elo</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${user.currentElo.toLocaleString()}</span>
                     </div>
 
@@ -794,22 +757,22 @@
                 if (specificDetails.innerHTML) {
                     specificDetails.innerHTML += `<div class="w-full h-px bg-slate-100 dark:bg-slate-800 my-2"></div>`;
                 }
-                specificTitle.textContent = hasSpecific && user.roles.includes('PLAYER') ? 'Role Details' : 'Owner Details';
+                specificTitle.textContent = hasSpecific && user.roles.includes('PLAYER') ? 'Chi tiết vai trò' : 'Chi tiết chủ sân';
                 specificDetails.innerHTML += `
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Tax Code</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Mã số thuế</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white">${user.taxCode || '-'}</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Bank</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Ngân hàng</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white">${user.bankName || '-'}</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Bank Account</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Số tài khoản</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${user.bankAccountNumber || '-'}</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Venues Owned</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Số sân sở hữu</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white font-mono">${user.venueCount || 0}</span>
                     </div>
                 `;
@@ -820,19 +783,19 @@
                 if (specificDetails.innerHTML) {
                     specificDetails.innerHTML += `<div class="w-full h-px bg-slate-100 dark:bg-slate-800 my-2"></div>`;
                 }
-                specificTitle.textContent = 'Referee Details';
+                specificTitle.textContent = 'Chi tiết trọng tài';
                 specificDetails.innerHTML += `
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Referee Type</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Loại trọng tài</span>
                         <span class="text-sm font-bold text-slate-900 dark:text-white">${user.refereeType || '-'}</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Test Passed</span>
-                        <span class="text-sm font-bold ${user.testPassed ? 'text-green-600' : 'text-red-500'}">${user.testPassed ? 'Yes' : 'No'}</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Đã vượt qua bài kiểm tra</span>
+                        <span class="text-sm font-bold ${user.testPassed ? 'text-green-600' : 'text-red-500'}">${user.testPassed ? 'Có' : 'Không'}</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Active</span>
-                        <span class="text-sm font-bold ${user.refereeActive ? 'text-green-600' : 'text-red-500'}">${user.refereeActive ? 'Yes' : 'No'}</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Đang hoạt động</span>
+                        <span class="text-sm font-bold ${user.refereeActive ? 'text-green-600' : 'text-red-500'}">${user.refereeActive ? 'Có' : 'Không'}</span>
                     </div>
                 `;
             }
@@ -840,7 +803,7 @@
             if (hasSpecific) {
                 specificContainer.classList.remove('hidden');
                 if (user.roles && user.roles.length > 1) {
-                    specificTitle.textContent = 'Role Details';
+                    specificTitle.textContent = 'Chi tiết vai trò';
                 }
             } else {
                 specificContainer.classList.add('hidden');
@@ -859,7 +822,7 @@
         function updatePaginationInfo(page, size, total) {
             const start = total === 0 ? 0 : page * size + 1;
             const end = Math.min((page + 1) * size, total);
-            document.getElementById('paginationInfo').textContent = `Showing ${start}-${end} of ${total.toLocaleString()}`;
+            document.getElementById('paginationInfo').textContent = `Đang hiển thị ${start}-${end} trong số ${total.toLocaleString()}`;
         }
 
         // ==================== Helpers ====================
@@ -889,7 +852,7 @@
         function formatDate(dateStr) {
             if (!dateStr) return '-';
             const d = new Date(dateStr);
-            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            return d.toLocaleDateString('vi-VN', { month: 'numeric', day: 'numeric', year: 'numeric' });
         }
 
         function escapeHtml(str) {

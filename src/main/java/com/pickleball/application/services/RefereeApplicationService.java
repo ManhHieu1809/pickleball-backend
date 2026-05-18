@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ public class RefereeApplicationService {
     private final ResolveDisputeUseCase resolveDisputeUseCase;
     private final GetPendingRefereeRequestsUseCase getPendingRefereeRequestsUseCase;
     private final GetRefereeMatchesUseCase getRefereeMatchesUseCase;
+    private final GetRefereeTrustHistoryUseCase getRefereeTrustHistoryUseCase;
     private final RefereeRepository refereeRepository;
     private final MatchDisputeRepository matchDisputeRepository;
 
@@ -98,7 +100,8 @@ public class RefereeApplicationService {
                 bookingId,
                 request.getRefereeUserId(),
                 request.getTeamAScore(),
-                request.getTeamBScore());
+                request.getTeamBScore(),
+                request.getEvidenceUrl());
     }
 
     @Transactional
@@ -144,8 +147,8 @@ public class RefereeApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public List<RankedMatchDTO> getRefereeMatches(Long refereeId, String status) {
-        List<RefereeMatchInfo> infoList = getRefereeMatchesUseCase.execute(refereeId, status);
+    public List<RankedMatchDTO> getRefereeMatches(Long refereeId, String status, LocalDate date) {
+        List<RefereeMatchInfo> infoList = getRefereeMatchesUseCase.execute(refereeId, status, date);
         return infoList.stream().map(info -> {
             RankedMatchDTO dto = new RankedMatchDTO();
             dto.setRankedMatchId(info.match().getId());
@@ -176,6 +179,20 @@ public class RefereeApplicationService {
             dto.setRefereeAssigned(true);
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public List<TrustScoreHistoryDTO> getRefereeTrustHistory(Long refereeId) {
+        return getRefereeTrustHistoryUseCase.execute(refereeId).stream()
+                .map(history -> TrustScoreHistoryDTO.builder()
+                        .id(history.getId())
+                        .refereeId(history.getRefereeId())
+                        .oldScore(history.getOldScore())
+                        .newScore(history.getNewScore())
+                        .reason(history.getReason())
+                        .changedAt(history.getChangedAt())
+                        .associatedMatchId(history.getAssociatedMatchId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private TestQuestionDTO toQuestionDTO(TestQuestion question) {

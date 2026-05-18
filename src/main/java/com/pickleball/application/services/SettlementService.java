@@ -80,7 +80,7 @@ public class SettlementService {
                 .userId(ownerId)
                 .bookingId(booking.getId())
                 .amount(netAmount)
-                .type("PAYOUT") 
+                .type("PAYOUT")
                 .status("SUCCESS")
                 .description("Payout for booking " + booking.getId() + " at " + venue.getName())
                 .createdAt(LocalDateTime.now())

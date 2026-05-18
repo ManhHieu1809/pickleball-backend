@@ -33,9 +33,15 @@ public interface BookingRepository {
 
     List<Long> findParticipantUserIdsByBookingId(Long bookingId);
 
+    List<Booking> findByParticipantUserId(Long userId);
+
     List<Booking> findExpiredPendingCasual(LocalDateTime now);
+
+    List<Booking> findExpiredPendingRanked(LocalDateTime timeThreshold);
 
     List<Booking> findExpiredRankedNoShows(LocalDateTime timeThreshold);
 
     List<Long> findRecentOpponentUserIds(Long userId, int lastNMatches);
+
+    List<Booking> findActiveRankedMatchesByUserId(Long userId);
 }

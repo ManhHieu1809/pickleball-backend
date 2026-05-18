@@ -6,9 +6,22 @@
 # Sau khi chạy các request Đăng nhập (login), các biến token sẽ tự động được lưu để dùng cho các request bên dưới!
 
 ### Admin/Staff Account (Điền tài khoản Admin của bạn vào đây)
-@adminEmail = admin@pickleball.com
-@adminPassword = password
-@adminToken = {adminToken_here}
+@adminEmail = trungductran@gmail.com
+@adminPassword = hieu1809
+
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "trungductran@gmail.com",
+  "password": "hieu1809"
+}
+
+> {%
+    client.global.set("adminToken", response.body.data.accessToken);
+    client.global.set("adminId", response.body.data.user.id);
+%}
 
 ### Thông tin Court dùng chung
 @courtId = 1
@@ -25,7 +38,7 @@ Content-Type: application/json
   "fullName": "Rank Host Player",
   "phoneNumber": "0987654301"
 }
-###
+####
 ### Đăng nhập Player 1
 # @name loginPlayer1
 POST {{baseUrl}}/auth/login
@@ -271,7 +284,6 @@ Content-Type: application/json
 }
 
 
-
 ### 5. Referee TÌM TRẬN Ranked (Xếp hàng)
 # @name joinQueueRef
 POST {{baseUrl}}/matchmaking/join
@@ -289,18 +301,22 @@ Content-Type: application/json
 ### (Kiểm tra Log Console của Spring Boot backend để thấy chữ: "Successfully grouped 4 players...")
 
 ### KIỂM TRA TRẠNG THÁI HIỆN TẠI CỦA PLAYER 1 TRONG HÀNG CHỜ
-GET {{baseUrl}}/matchmaking/status?userId={{player1Id}}
-Authorization: Bearer {{player1Token}}
+GET {{baseUrl}}/matchmaking/status?userId={{player4Id}}
+Authorization: Bearer {{player4Token}}
 
+### leave rank
+POST {{baseUrl}}/matchmaking/leave?userId={{player4Id}}
+Authorization: Bearer {{player4Token}}
+Content-Type: application/json
 ### ================= LUỒNG CHƠI RANKED (Sau khi Cronjob tự ghép thành công) =================
-
+GET {{baseUrl}}/bookings/62/ranked-candidates
 ### Lấy danh sách My Bookings của Player 1 để lấy ra ID booking vừa được tạo
-GET {{baseUrl}}/bookings/my?userId={{player1Id}}
-Authorization: Bearer {{player1Token}}
+GET {{baseUrl}}/bookings/my?userId={{player4Id}}
+Authorization: Bearer {{player4Token}}
 
 ### ================= CÁC THÀNH VIÊN XÁC NHẬN VÀ ĐÓNG CỌC =================
 ### (Lưu ý: Thay đổi {{rankedBookingId}} thành ID vừa lấy được ở bước trên)
-@rankedBookingId =35
+@rankedBookingId =64
 
 ### Player 1 chấp nhận và thanh toán
 POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player1Id}}
@@ -324,7 +340,7 @@ Authorization: Bearer {{refereeToken}}
 
 ### Kiểm tra lại trạng thái trận đấu (Lúc này sẽ thấy status = CONFIRMED)
 GET {{baseUrl}}/bookings/{{rankedBookingId}}
-Authorization: Bearer {{player1Token}}
+Authorization: Bearer {{player4Token}}
 > {%
     // Assuming the response is a list and we want the most recent booking ID
     // You might need to adjust the json path depending on your actual API response structure
@@ -343,8 +359,8 @@ Content-Type: application/json
 
 {
   "userId": {{player1Id}},
-  "latitude": 21.028511,
-  "longitude": 105.795182,
+  "latitude": 20.978890,
+  "longitude": 105.802197,
   "checkInMethod": "GPS"
 }
 
@@ -356,8 +372,8 @@ Content-Type: application/json
 
 {
   "userId": {{player2Id}},
-  "latitude": 21.028511,
-  "longitude": 105.795182,
+  "latitude": 20.978890,
+  "longitude": 105.802197,
   "checkInMethod": "GPS"
 }
 
@@ -368,8 +384,8 @@ Content-Type: application/json
 
 {
   "userId": {{player3Id}},
-  "latitude": 21.028511,
-  "longitude": 105.795182,
+  "latitude": 20.978890,
+  "longitude": 105.802197,
   "checkInMethod": "GPS"
 }
 
@@ -380,8 +396,8 @@ Content-Type: application/json
 
 {
   "userId": {{player4Id}},
-  "latitude": 21.028511,
-  "longitude": 105.795182,
+  "latitude": 20.978890,
+  "longitude": 105.802197,
   "checkInMethod": "GPS"
 }
 
@@ -392,23 +408,29 @@ Content-Type: application/json
 
 {
   "userId": {{refereeId}},
-  "latitude": 21.028511,
-  "longitude": 105.795182,
+  "latitude": 21.03009,
+  "longitude": 105.78300,
   "checkInMethod": "GPS"
 }
 
 ########
-### 7. Trọng tài Submit Kết Quả trận đấu
-POST {{baseUrl}}/referee/matches/{{rankedBookingId}}/result
+### 7. Trọng tài Submit Kết Quả trận đấu cùng Bằng chứng (Video/Ảnh)
+### Cập nhật API: Đã bao gồm evidenceUrl như bạn yêu cầu (áp dụng cho trường hợp Trọng tài nộp điểm kèm bằng chứng luôn)
+POST {{baseUrl}}/referee/matches/62/result
 Authorization: Bearer {{refereeToken}}
 Content-Type: application/json
 
 {
   "refereeUserId": {{refereeId}},
   "teamAScore": 11,
-  "teamBScore": 8,
-  "winningTeam": "A"
+  "teamBScore": 9,
+  "winningTeam": "A",
+  "evidenceUrl": "https://res.cloudinary.com/demo/video/upload/sample.mp4"
 }
+
+### Lấy danh sách lịch sử trận đấu của Trọng Tài (Có lọc theo ngày)
+GET {{baseUrl}}/referee/{{refereeId}}/matches?status=UPCOMING&date=2026-05-15
+Authorization: Bearer {{refereeToken}}
 
 ### 8. Player 1 Confirm Kết quả
 POST {{baseUrl}}/bookings/{{rankedBookingId}}/confirm-result
@@ -450,15 +472,108 @@ Content-Type: application/json
   "accepted": true
 }
 
-
 ### (Làm tương tự để các player còn lại Confirm kết quả)
 
+### KIỂM TRA ĐIỂM SỐ VÀ DỰ KIẾN THAY ĐỔI ELO CHO TRẬN RANKED
+### Dành cho UI lấy ra hiển thị trước khi confirm hoặc sau khi confirm
+GET {{baseUrl}}/bookings/{{rankedBookingId}}/result
+Authorization: Bearer {{player4Token}}
+
 ### rút tiền
-POST /api/wallet/withdraw
+POST {{baseUrl}}/wallet/withdraw
 Authorization: Bearer {token}
 Content-Type: application/json
 
 {
   "amount": 50000,
   "description": "Rút tiền về tài khoản ngân hàng"
+}
+### nạp tiền player 1
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{player1Token}}
+Content-Type: application/json
+
+{
+    "amount": 1000000,
+    "description": "Nạp tiền vào ví"
+}
+
+### nạp tiền player 2
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{player2Token}}
+Content-Type: application/json
+
+{
+  "amount": 1000000,
+  "description": "Nạp tiền vào ví"
+}
+
+### nạp tiền player 3
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{player3Token}}
+Content-Type: application/json
+
+{
+  "amount": 1000000,
+  "description": "Nạp tiền vào ví"
+}
+
+### nạp tiền referee
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "amount": 1000000,
+  "description": "Nạp tiền vào ví"
+}
+
+
+### xếp hạng
+GET {{baseUrl}}/leaderboard/global
+
+### lich su giao dich
+GET {{baseUrl}}/wallet/transactions
+Authorization: Bearer {{player4Token}}
+
+
+### ================= KIỂM TRA THÔNG TIN NGƯỜI CHƠI ĐÃ THANH TOÁN =================
+### 9. Lấy thông tin Booking (Bao gồm danh sách Participants và trạng thái JoinStatus = PAID hay PENDING)
+GET {{baseUrl}}/bookings/{{rankedBookingId}}
+Authorization: Bearer {{player4Token}}
+
+### thông tin booking cứng bằng ID (Dành cho test)
+GET {{baseUrl}}/bookings/55
+Authorization: Bearer {{player4Token}}
+
+### xem điểm số
+GET {{baseUrl}}/bookings/55/result
+
+### lấy trận trong tuần
+GET  {{baseUrl}}/players/2/stats/weekly
+
+### lấy trận rank
+GET {{baseUrl}}/players/2/stats/ranked
+
+### đăng tải bằng chứng
+ POST {{baseUrl}}/media/upload
+
+###
+GET {{baseUrl}}/admin/disputes
+###
+GET {{baseUrl}}/referee/{{refereeId}}/disputes
+
+###
+GET {{baseUrl}}/referee/3/trust-history
+
+
+### thay doi ket qua
+POST {{baseUrl}}/admin/disputes/3/resolve?adminId=1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+    "adminId" : 1,
+    "decision" : "Kết quả trận đấu bị thay đổi: Team B thắng với tỉ số 11-9",
+    "decisionType" : "OVERTURN"
 }

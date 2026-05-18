@@ -81,8 +81,17 @@ public interface BookingJpaRepository extends JpaRepository<BookingEntity, Long>
         @Query("SELECT b FROM BookingEntity b WHERE b.bookingType = 'CASUAL' AND b.status = 'PENDING' AND b.startTime < :now")
         List<BookingEntity> findExpiredPendingCasual(@Param("now") LocalDateTime now);
 
-        // Tìm ranked bookings CONFIRMED (đã chốt người) nhưng quá giờ start 10 phút để xử lý check-in
-        @Query("SELECT b FROM BookingEntity b WHERE b.bookingType = 'RANKED' AND b.status = 'CONFIRMED' AND b.startTime < :timeThreshold")
-        List<BookingEntity> findExpiredRankedNoShows(@Param("timeThreshold") LocalDateTime timeThreshold);
-}
+        // Tìm ranked bookings PENDING quá hạn thanh toán (2 phút)
+        @Query("SELECT b FROM BookingEntity b WHERE b.bookingType = 'RANKED' AND b.status = 'PENDING' AND b.createdAt < :timeout")
+        List<BookingEntity> findExpiredPendingRanked(@Param("timeout") LocalDateTime timeout);
 
+        // Tìm ranked bookings CONFIRMED (đã chốt người) nhưng quá giờ start 10 phút để xử lý check-in
+        @Query("SELECT DISTINCT b FROM BookingEntity b LEFT JOIN FETCH b.participants WHERE b.bookingType = 'RANKED' AND b.status = 'CONFIRMED' AND b.startTime < :timeThreshold")
+        List<BookingEntity> findExpiredRankedNoShows(@Param("timeThreshold") LocalDateTime timeThreshold);
+
+        @Query("SELECT b FROM BookingEntity b JOIN b.participants bp WHERE bp.userId = :userId AND b.status IN ('PENDING', 'CONFIRMED') AND b.bookingType = 'RANKED' ORDER BY b.createdAt DESC")
+        List<BookingEntity> findActiveRankedMatchesByParticipantUserId(@Param("userId") Long userId);
+
+        @Query("SELECT DISTINCT b FROM BookingEntity b JOIN b.participants bp WHERE bp.userId = :userId ORDER BY b.startTime DESC")
+        List<BookingEntity> findByParticipantUserId(@Param("userId") Long userId);
+}

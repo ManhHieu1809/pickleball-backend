@@ -38,7 +38,7 @@ public class WithdrawWalletUseCase {
                 .userId(userId)
                 .bookingId(null)
                 .amount(amount)
-                .type("WITHDRAW")
+                .type("WITHDRAWAL")
                 .status("SUCCESS")
                 .description(description != null ? description : "Rút tiền từ ví")
                 .createdAt(LocalDateTime.now())
