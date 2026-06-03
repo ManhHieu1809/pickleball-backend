@@ -10,6 +10,7 @@ import com.pickleball.application.services.DashboardService;
 import com.pickleball.application.services.RefereeApplicationService;
 import com.pickleball.application.services.UserManagementService;
 import com.pickleball.application.services.FinanceManagementService;
+import com.pickleball.application.services.WithdrawalManagementService;
 import com.pickleball.presentation.helpers.ResponseHelper;
 import com.pickleball.presentation.responses.ApiResponse;
 import com.pickleball.presentation.responses.PaginatedResponse;
@@ -33,6 +34,7 @@ public class AdminController {
     private final com.pickleball.application.services.VenueManagementService venueManagementService;
     private final RefereeApplicationService refereeApplicationService;
     private final FinanceManagementService financeManagementService;
+    private final WithdrawalManagementService withdrawalManagementService;
 
     @GetMapping("/dashboard/stats")
     public ResponseEntity<ApiResponse<DashboardStatsDTO>> getDashboardStats() {
@@ -221,5 +223,27 @@ public class AdminController {
             @RequestParam(required = false) String status) {
         PaginatedResponse<AdminTransactionDTO> transactions = financeManagementService.getAllTransactions(page, size, search, type, status);
         return ResponseHelper.ok(transactions);
+    }
+
+    @GetMapping("/withdrawals/pending")
+    public ResponseEntity<ApiResponse<List<TransactionDTO>>> getPendingWithdrawals() {
+        return ResponseHelper.ok(withdrawalManagementService.getPendingWithdrawals());
+    }
+
+    @PostMapping("/withdrawals/{transactionId}/approve")
+    public ResponseEntity<ApiResponse<TransactionDTO>> approveWithdrawal(
+            @PathVariable Long transactionId,
+            @RequestParam Long adminId) {
+        TransactionDTO transaction = withdrawalManagementService.approveWithdrawal(transactionId, adminId);
+        return ResponseHelper.ok(transaction, "Withdrawal approved successfully");
+    }
+
+    @PostMapping("/withdrawals/{transactionId}/reject")
+    public ResponseEntity<ApiResponse<TransactionDTO>> rejectWithdrawal(
+            @PathVariable Long transactionId,
+            @RequestParam Long adminId,
+            @Valid @RequestBody RejectRequestRequest request) {
+        TransactionDTO transaction = withdrawalManagementService.rejectWithdrawal(transactionId, adminId, request.getNotes());
+        return ResponseHelper.ok(transaction, "Withdrawal rejected and refunded successfully");
     }
 }

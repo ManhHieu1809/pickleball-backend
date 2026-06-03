@@ -220,70 +220,48 @@
 <p class="mt-4 text-on-surface-variant/60 text-[10px] uppercase font-bold tracking-wider">Khấu trừ tự động từ hệ thống</p>
 </div>
 <!-- Net Revenue -->
-<div class="bg-gradient-to-br from-primary to-primary-container p-8 rounded-xl relative overflow-hidden shadow-xl shadow-orange-500/20">
+<div class="bg-gradient-to-br from-primary to-primary-container p-8 rounded-xl relative overflow-hidden shadow-xl shadow-orange-500/20 flex flex-col justify-between">
 <div class="absolute top-0 right-0 p-4 opacity-20">
 <span class="material-symbols-outlined text-6xl text-white">receipt_long</span>
 </div>
-<p class="text-[11px] font-bold text-white/80 uppercase tracking-widest mb-4">Thực nhận (Net)</p>
-<div class="flex items-baseline gap-1">
+<div>
+<p class="text-[11px] font-bold text-white/80 uppercase tracking-widest mb-2">Thực nhận (Net)</p>
+<div class="flex items-baseline gap-1 mb-4">
 <span id="netRevenue" class="text-4xl font-black tracking-tighter text-white">0</span>
 <span class="text-sm font-bold text-white/90 uppercase">VNĐ</span>
 </div>
-<div class="mt-4 inline-flex items-center px-2 py-1 bg-white/20 rounded-md text-white text-[10px] font-bold uppercase tracking-wider">
-                            Sẵn sàng rút tiền
-                        </div>
+</div>
+<div class="mt-auto pt-2 border-t border-white/10 flex items-center justify-between gap-4">
+<div class="text-white text-xs font-bold leading-tight">
+    <p class="text-[10px] text-white/60 uppercase tracking-wider">Số dư ví khả dụng</p>
+    <p class="text-base font-black"><span id="walletBalance">0</span> ₫</p>
+</div>
+<button onclick="openWithdrawModal()" class="px-3.5 py-1.5 bg-white text-orange-600 hover:bg-orange-50 active:scale-95 transition-all font-bold text-xs rounded-lg uppercase tracking-wider shadow-md">
+    Rút tiền
+</button>
+</div>
 </div>
 </div>
 <!-- Table: Payout History -->
 <div class="mt-8 bg-surface-container-low rounded-xl overflow-hidden">
 <div class="px-8 py-6 flex items-center justify-between bg-surface-container-high/30">
-<h3 class="font-black text-sm uppercase tracking-widest">Lịch sử thanh toán</h3>
+<h3 class="font-black text-sm uppercase tracking-widest">Lịch sử giao dịch & Rút tiền</h3>
 <button class="text-primary font-bold text-xs uppercase hover:underline">Xem tất cả</button>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant border-b border-outline-variant/10">
-<th class="px-8 py-4 font-black">Ngày nhận</th>
-<th class="px-8 py-4 font-black">Kỳ thanh toán</th>
+<th class="px-8 py-4 font-black">Ngày tạo</th>
+<th class="px-8 py-4 font-black">Nội dung</th>
 <th class="px-8 py-4 font-black">Số tiền</th>
 <th class="px-8 py-4 font-black">Trạng thái</th>
-<th class="px-8 py-4 font-black"></th>
+<th class="px-8 py-4 font-black">Mã giao dịch</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/5">
-<tr class="hover:bg-surface-container-high/20 transition-colors">
-<td class="px-8 py-5 text-sm font-medium">15/10/2023</td>
-<td class="px-8 py-5 text-sm text-on-surface-variant">Tháng 09/2023</td>
-<td class="px-8 py-5 text-sm font-bold">116.224.000 VNĐ</td>
-<td class="px-8 py-5">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-tertiary/10 text-tertiary">Thành công</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">download</button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-high/20 transition-colors">
-<td class="px-8 py-5 text-sm font-medium">15/09/2023</td>
-<td class="px-8 py-5 text-sm text-on-surface-variant">Tháng 08/2023</td>
-<td class="px-8 py-5 text-sm font-bold">102.450.000 VNĐ</td>
-<td class="px-8 py-5">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-tertiary/10 text-tertiary">Thành công</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">download</button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-high/20 transition-colors bg-white/50">
-<td class="px-8 py-5 text-sm font-medium">01/11/2023</td>
-<td class="px-8 py-5 text-sm text-on-surface-variant">Kỳ 1 - Tháng 10</td>
-<td class="px-8 py-5 text-sm font-bold">45.800.000 VNĐ</td>
-<td class="px-8 py-5">
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-orange-100 text-orange-600">Đang xử lý</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="material-symbols-outlined text-slate-300 cursor-not-allowed">hourglass_top</button>
-</td>
+<tbody id="payout-history-tbody" class="divide-y divide-outline-variant/5">
+<tr>
+<td colspan="5" class="px-8 py-8 text-center text-sm text-slate-400">Đang tải lịch sử giao dịch...</td>
 </tr>
 </tbody>
 </table>
@@ -384,7 +362,48 @@
 </div>
 </section>
         </div>
-    </main>
+        <!-- Withdraw Modal -->
+        <div id="withdraw-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeWithdrawModal()"></div>
+            <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden p-6 space-y-4 transform transition-all scale-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="text-lg font-bold text-slate-900">Yêu cầu rút tiền về ZaloPay</h3>
+                    <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Số dư ví khả dụng</p>
+                        <p class="text-2xl font-black text-slate-900"><span id="modalWalletBalance">0</span> ₫</p>
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500" for="withdraw-amount">Số tiền muốn rút (₫)</label>
+                        <input type="number" id="withdraw-amount" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-orange-500 focus:ring-orange-500/20 shadow-sm font-bold" placeholder="Nhập số tiền rút (ví dụ: 50000)">
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500" for="withdraw-description">Nội dung rút tiền</label>
+                        <input type="text" id="withdraw-description" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-orange-500 focus:ring-orange-500/20 shadow-sm" value="Rut tien ve ZaloPay">
+                    </div>
+                    
+                    <div class="p-3 bg-orange-50 border border-orange-100 rounded-xl flex gap-2 items-start text-xs text-orange-800 leading-relaxed">
+                        <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="font-bold">Lưu ý về quy trình duyệt</p>
+                            <p>Yêu cầu rút tiền của bạn sẽ được chuyển đến Admin hệ thống để phê duyệt. Số dư ví sẽ tạm trừ ngay lập tức.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button onclick="closeWithdrawModal()" class="px-4 py-2 rounded-xl text-slate-600 font-medium text-sm hover:bg-slate-50 transition-colors">Hủy</button>
+                    <button onclick="submitWithdrawal()" class="px-5 py-2 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm shadow-md hover:opacity-90 active:scale-95 transition-all">Gửi yêu cầu</button>
+                </div>
+            </div>
+        </div>
+
+        </main>
     </div>
     <script src="/js/owner-auth.js"></script>
     <script>
@@ -392,6 +411,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             OwnerAuth.checkAccessAndRenderMenu();
             loadFinanceOverview();
+            loadWalletBalance();
+            loadWithdrawalHistory();
         });
 
         async function loadFinanceOverview() {
@@ -473,6 +494,161 @@
                 document.getElementById("topCustomersContainer").innerHTML = '<div class="text-sm text-error">Lỗi tải dữ liệu</div>';
                 document.getElementById("courtPerformanceContainer").innerHTML = '<div class="text-sm text-error">Lỗi tải dữ liệu</div>';
             }
+        }
+
+        // --- QUẢN LÝ VÍ & RÚT TIỀN (OWNER WALLET & WITHDRAWAL) ---
+        let currentWalletBalance = 0;
+
+        async function loadWalletBalance() {
+            try {
+                const res = await OwnerAuth.authFetch('/api/wallet');
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data) {
+                        currentWalletBalance = json.data.balance || 0;
+                        const formatted = currentWalletBalance.toLocaleString('vi-VN');
+                        if (document.getElementById('walletBalance')) {
+                            document.getElementById('walletBalance').innerText = formatted;
+                        }
+                        if (document.getElementById('modalWalletBalance')) {
+                            document.getElementById('modalWalletBalance').innerText = formatted;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Lỗi tải số dư ví", err);
+            }
+        }
+
+        async function loadWithdrawalHistory() {
+            const tbody = document.getElementById('payout-history-tbody');
+            if (!tbody) return;
+
+            try {
+                const res = await OwnerAuth.authFetch('/api/wallet/transactions');
+                if (res && res.ok) {
+                    const json = await res.json();
+                    const list = json.data || [];
+                    
+                    const withdrawals = list.filter(t => t.type === 'WITHDRAWAL');
+
+                    if (withdrawals.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="px-8 py-8 text-center text-sm text-slate-400">
+                                    Chưa có giao dịch rút tiền nào.
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    tbody.innerHTML = withdrawals.map(w => {
+                        const dateFormatted = w.createdAt ? w.createdAt.replace('T', ' ').substring(0, 16) : '—';
+                        const amountFormatted = Math.abs(w.amount).toLocaleString('vi-VN') + " VNĐ";
+                        
+                        let statusBadge = '';
+                        if (w.status === 'PENDING') {
+                            statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-orange-100 text-orange-600">Chờ duyệt</span>`;
+                        } else if (w.status === 'SUCCESS') {
+                            statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600">Thành công</span>`;
+                        } else {
+                            statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-600">Đã từ chối</span>`;
+                        }
+
+                        return `
+                            <tr class="hover:bg-surface-container-high/20 transition-colors">
+                                <td class="px-8 py-5 text-sm font-medium">${dateFormatted}</td>
+                                <td class="px-8 py-5 text-sm text-on-surface-variant">${escapeHtml(w.description || 'Rút tiền ví')}</td>
+                                <td class="px-8 py-5 text-sm font-bold text-slate-900">${amountFormatted}</td>
+                                <td class="px-8 py-5">${statusBadge}</td>
+                                <td class="px-8 py-5 text-sm font-mono text-slate-500">${escapeHtml(w.transactionCode || '—')}</td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                }
+            } catch (err) {
+                console.error("Lỗi tải lịch sử giao dịch", err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-8 py-8 text-center text-sm text-red-600">
+                            Không thể tải lịch sử giao dịch.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-description').value = 'Rut tien ve ZaloPay';
+            
+            const formatted = currentWalletBalance.toLocaleString('vi-VN');
+            if (document.getElementById('modalWalletBalance')) {
+                document.getElementById('modalWalletBalance').innerText = formatted;
+            }
+
+            const modal = document.getElementById('withdraw-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeWithdrawModal() {
+            const modal = document.getElementById('withdraw-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitWithdrawal() {
+            const amountInput = document.getElementById('withdraw-amount');
+            const descInput = document.getElementById('withdraw-description');
+            
+            const amount = parseInt(amountInput.value);
+            const description = descInput.value.trim();
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Vui lòng nhập số tiền rút hợp lệ!');
+                return;
+            }
+
+            if (amount > currentWalletBalance) {
+                alert('Số dư ví không đủ để thực hiện yêu cầu rút tiền này!');
+                return;
+            }
+
+            if (!description) {
+                alert('Vui lòng nhập nội dung rút tiền!');
+                return;
+            }
+
+            try {
+                const res = await OwnerAuth.authFetch('/api/wallet/withdraw', {
+                    method: 'POST',
+                    body: JSON.stringify({ amount, description })
+                });
+
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    alert('Gửi yêu cầu rút tiền thành công! Yêu cầu đang được chờ Admin phê duyệt.');
+                    closeWithdrawModal();
+                    
+                    loadWalletBalance();
+                    loadWithdrawalHistory();
+                } else {
+                    alert('Lỗi rút tiền: ' + (json.message || 'Không rõ nguyên nhân'));
+                }
+            } catch (err) {
+                console.error("Error creating withdrawal request", err);
+                alert('Lỗi kết nối khi gửi yêu cầu rút tiền!');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         }
     </script>
 </body></html>

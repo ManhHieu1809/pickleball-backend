@@ -7,10 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionJpaRepository extends JpaRepository<TransactionEntity, Long> {
     List<TransactionEntity> findByUserId(Long userId);
     List<TransactionEntity> findByBookingId(Long bookingId);
+    Optional<TransactionEntity> findByTransactionCode(String transactionCode);
+    List<TransactionEntity> findByTypeAndStatusOrderByCreatedAtDesc(String type, String status);
 
     @Query("SELECT t FROM TransactionEntity t " +
             "WHERE (:search IS NULL OR " +

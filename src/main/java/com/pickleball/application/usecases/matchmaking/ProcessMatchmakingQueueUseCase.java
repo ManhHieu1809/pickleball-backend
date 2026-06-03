@@ -11,6 +11,7 @@ import com.pickleball.domain.repositories.*;
 import com.pickleball.domain.services.MatchmakingService;
 import com.pickleball.domain.services.PriceCalculationService;
 import com.pickleball.domain.valueobjects.Money;
+import com.pickleball.infrastructure.persistence.repositories.RankedPartyJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,11 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ProcessMatchmakingQueueUseCase {
@@ -38,6 +43,7 @@ public class ProcessMatchmakingQueueUseCase {
     private final PriceCalculationService priceCalculationService;
     private final RefereeRepository refereeRepository;
     private final PayWithWalletUseCase payWithWalletUseCase;
+    private final RankedPartyJpaRepository rankedPartyRepository;
 
     public ProcessMatchmakingQueueUseCase(
             MatchmakingTicketRepository ticketRepository,
@@ -49,7 +55,8 @@ public class ProcessMatchmakingQueueUseCase {
             CourtPricingRepository courtPricingRepository,
             PriceCalculationService priceCalculationService,
             RefereeRepository refereeRepository,
-            PayWithWalletUseCase payWithWalletUseCase) {
+            PayWithWalletUseCase payWithWalletUseCase,
+            RankedPartyJpaRepository rankedPartyRepository) {
         this.ticketRepository = ticketRepository;
         this.bookingRepository = bookingRepository;
         this.courtRepository = courtRepository;
@@ -60,6 +67,7 @@ public class ProcessMatchmakingQueueUseCase {
         this.priceCalculationService = priceCalculationService;
         this.refereeRepository = refereeRepository;
         this.payWithWalletUseCase = payWithWalletUseCase;
+        this.rankedPartyRepository = rankedPartyRepository;
     }
 
     @Transactional
@@ -87,13 +95,8 @@ public class ProcessMatchmakingQueueUseCase {
                 double centerLat = matchedPlayers.stream().mapToDouble(MatchmakingTicket::getLatitude).average().orElse(0);
                 double centerLng = matchedPlayers.stream().mapToDouble(MatchmakingTicket::getLongitude).average().orElse(0);
 
-                // Find time slot (>= 20 mins from now, rounded up to next hour)
-                LocalDateTime now = LocalDateTime.now();
-                LocalDateTime targetStartTime = now.plusMinutes(20).truncatedTo(ChronoUnit.HOURS).plusHours(1);
-                if (targetStartTime.isBefore(now.plusMinutes(20))) {
-                    targetStartTime = targetStartTime.plusHours(1);
-                }
-                LocalDateTime targetEndTime = targetStartTime.plusHours(1);
+                LocalDateTime targetStartTime = resolveStartTime(matchedPlayers);
+                LocalDateTime targetEndTime = resolveEndTime(matchedPlayers, targetStartTime);
 
                 // Find nearest available court
                 Court selectedCourt = findNearestAvailableCourt(centerLat, centerLng, targetStartTime, targetEndTime);
@@ -123,7 +126,8 @@ public class ProcessMatchmakingQueueUseCase {
                     for (int i = 0; i < readyReferees.size(); i++) {
                         Referee ref = readyReferees.get(i);
                         try {
-                            createMatchWithRefereePayment(selectedCourt, targetStartTime, targetEndTime, matchedPlayers, ref);
+                            Booking booking = createMatchWithRefereePayment(selectedCourt, targetStartTime, targetEndTime, matchedPlayers, ref);
+                            markMatchedParties(matchedPlayers, booking.getId());
                             selectedReferee = ref;
                             matchCreated = true;
                             break;
@@ -158,29 +162,116 @@ public class ProcessMatchmakingQueueUseCase {
     }
 
     private List<MatchmakingTicket> findMatchingPlayers(MatchmakingTicket host, List<MatchmakingTicket> pool) {
-        List<MatchmakingTicket> matched = new ArrayList<>();
-        matched.add(host);
-        
-        int[] eloRange = matchmakingService.calculateEloRange(host.getElo());
-        
-        for (MatchmakingTicket candidate : pool) {
-            if (candidate.getId().equals(host.getId())) continue;
-            
-            // Check Elo
-            if (candidate.getElo() >= eloRange[0] && candidate.getElo() <= eloRange[1]) {
-                // Check distance (approximate Haversine)
-                double distance = matchmakingService.haversine(
-                        host.getLatitude(), host.getLongitude(),
-                        candidate.getLatitude(), candidate.getLongitude()
-                );
-                
-                if (distance <= 15.0) { // 15km radius
-                    matched.add(candidate);
-                    if (matched.size() == 4) break;
-                }
+        List<List<MatchmakingTicket>> groups = groupPlayerTickets(pool);
+        List<MatchmakingTicket> hostGroup = groups.stream()
+                .filter(group -> group.stream().anyMatch(ticket -> ticket.getId().equals(host.getId())))
+                .findFirst()
+                .orElse(List.of(host));
+
+        if (hostGroup.size() > 2) {
+            return List.of();
+        }
+
+        List<MatchmakingTicket> matched = new ArrayList<>(hostGroup);
+        int hostElo = averageElo(hostGroup);
+        double hostLat = averageLatitude(hostGroup);
+        double hostLng = averageLongitude(hostGroup);
+        int[] eloRange = matchmakingService.calculateEloRange(hostElo);
+
+        for (List<MatchmakingTicket> candidateGroup : groups) {
+            if (candidateGroup == hostGroup || candidateGroup.stream().anyMatch(ticket -> ticket.getId().equals(host.getId()))) {
+                continue;
+            }
+            if (candidateGroup.size() > 2 || matched.size() + candidateGroup.size() > 4) {
+                continue;
+            }
+            if (!hasSameRequestedTime(hostGroup, candidateGroup)) {
+                continue;
+            }
+
+            int candidateElo = averageElo(candidateGroup);
+            if (candidateElo < eloRange[0] || candidateElo > eloRange[1]) {
+                continue;
+            }
+
+            double distance = matchmakingService.haversine(
+                    hostLat, hostLng,
+                    averageLatitude(candidateGroup), averageLongitude(candidateGroup)
+            );
+
+            if (distance <= 15.0) {
+                matched.addAll(candidateGroup);
+                if (matched.size() == 4) break;
             }
         }
         return matched;
+    }
+
+    private List<List<MatchmakingTicket>> groupPlayerTickets(List<MatchmakingTicket> tickets) {
+        Map<String, List<MatchmakingTicket>> grouped = new LinkedHashMap<>();
+        for (MatchmakingTicket ticket : tickets) {
+            String key = ticket.getPartyId() != null ? "party-" + ticket.getPartyId() : "solo-" + ticket.getId();
+            grouped.computeIfAbsent(key, ignored -> new ArrayList<>()).add(ticket);
+        }
+
+        return grouped.values().stream()
+                .sorted(Comparator.comparing(group -> group.stream()
+                        .map(MatchmakingTicket::getJoinedAt)
+                        .min(LocalDateTime::compareTo)
+                        .orElse(LocalDateTime.MAX)))
+                .collect(Collectors.toList());
+    }
+
+    private int averageElo(List<MatchmakingTicket> group) {
+        return (int) Math.round(group.stream().mapToInt(MatchmakingTicket::getElo).average().orElse(0));
+    }
+
+    private double averageLatitude(List<MatchmakingTicket> group) {
+        return group.stream().mapToDouble(MatchmakingTicket::getLatitude).average().orElse(0);
+    }
+
+    private double averageLongitude(List<MatchmakingTicket> group) {
+        return group.stream().mapToDouble(MatchmakingTicket::getLongitude).average().orElse(0);
+    }
+
+    private boolean hasSameRequestedTime(List<MatchmakingTicket> firstGroup, List<MatchmakingTicket> secondGroup) {
+        return Objects.equals(requestedStartTime(firstGroup), requestedStartTime(secondGroup))
+                && Objects.equals(requestedEndTime(firstGroup), requestedEndTime(secondGroup));
+    }
+
+    private LocalDateTime requestedStartTime(List<MatchmakingTicket> group) {
+        return group.stream()
+                .map(MatchmakingTicket::getRequestedStartTime)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private LocalDateTime requestedEndTime(List<MatchmakingTicket> group) {
+        return group.stream()
+                .map(MatchmakingTicket::getRequestedEndTime)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private LocalDateTime resolveStartTime(List<MatchmakingTicket> matchedPlayers) {
+        LocalDateTime requestedStart = requestedStartTime(matchedPlayers);
+        if (requestedStart != null) {
+            return requestedStart;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime targetStartTime = now.plusMinutes(20).truncatedTo(ChronoUnit.HOURS).plusHours(1);
+        if (targetStartTime.isBefore(now.plusMinutes(20))) {
+            targetStartTime = targetStartTime.plusHours(1);
+        }
+        return targetStartTime;
+    }
+
+    private LocalDateTime resolveEndTime(List<MatchmakingTicket> matchedPlayers, LocalDateTime startTime) {
+        LocalDateTime requestedEnd = requestedEndTime(matchedPlayers);
+        return requestedEnd != null ? requestedEnd : startTime.plusHours(1);
     }
 
     private Court findNearestAvailableCourt(double lat, double lng, LocalDateTime start, LocalDateTime end) {
@@ -210,7 +301,7 @@ public class ProcessMatchmakingQueueUseCase {
         return null;
     }
 
-    private void createMatchWithRefereePayment(Court court, LocalDateTime start, LocalDateTime end, List<MatchmakingTicket> players, Referee referee) {
+    private Booking createMatchWithRefereePayment(Court court, LocalDateTime start, LocalDateTime end, List<MatchmakingTicket> players, Referee referee) {
         
         List<CourtPricing> pricings = courtPricingRepository.findByCourtId(court.getId());
         
@@ -267,6 +358,7 @@ public class ProcessMatchmakingQueueUseCase {
             BookingParticipant bp = BookingParticipant.builder()
                     .bookingId(booking.getId())
                     .userId(p.getUserId())
+                    .partyId(p.getPartyId())
                     .role(ParticipantRole.PLAYER)
                     .joinStatus(JoinStatus.PENDING)
                     .depositAmount(requiredDeposit)
@@ -287,6 +379,22 @@ public class ProcessMatchmakingQueueUseCase {
                 .build();
         booking.addParticipant(refBp);
         
-        bookingRepository.save(booking);
+        return bookingRepository.save(booking);
+    }
+
+    private void markMatchedParties(List<MatchmakingTicket> players, Long bookingId) {
+        List<Long> partyIds = players.stream()
+                .map(MatchmakingTicket::getPartyId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (Long partyId : partyIds) {
+            rankedPartyRepository.findById(partyId).ifPresent(party -> {
+                party.setStatus("MATCHED");
+                party.setMatchedBookingId(bookingId);
+                rankedPartyRepository.save(party);
+            });
+        }
     }
 }

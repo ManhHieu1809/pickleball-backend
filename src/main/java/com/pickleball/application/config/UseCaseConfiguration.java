@@ -1,6 +1,7 @@
 package com.pickleball.application.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pickleball.application.services.RankedPartyMatchLifecycleService;
 import com.pickleball.application.services.SettlementService;
 import com.pickleball.application.usecases.booking.CreateBookingUseCase;
 import com.pickleball.application.usecases.booking.CreateCasualMatchUseCase;
@@ -42,6 +43,7 @@ import com.pickleball.domain.services.PriceCalculationService;
 import com.pickleball.domain.services.RefereeMatchService;
 import com.pickleball.domain.services.TeamBalancingService;
 import com.pickleball.domain.services.EloCalculationService;
+import com.pickleball.infrastructure.persistence.repositories.RankedPartyJpaRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -247,11 +249,12 @@ public class UseCaseConfiguration {
             CourtPricingRepository courtPricingRepository,
             PriceCalculationService priceCalculationService,
             RefereeRepository refereeRepository,
-            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase) {
+            com.pickleball.application.usecases.wallet.PayWithWalletUseCase payWithWalletUseCase,
+            RankedPartyJpaRepository rankedPartyJpaRepository) {
         return new ProcessMatchmakingQueueUseCase(
                 ticketRepository, bookingRepository, courtRepository, venueRepository,
                 rankedMatchRepository, matchmakingService, courtPricingRepository, priceCalculationService,
-                refereeRepository, payWithWalletUseCase);
+                refereeRepository, payWithWalletUseCase, rankedPartyJpaRepository);
     }
 
     @Bean
@@ -487,7 +490,8 @@ public class UseCaseConfiguration {
             UpdateEloUseCase updateEloUseCase,
             SettlementService settlementService,
             PaymentService paymentService,
-            TrustScoreHistoryRepository trustScoreHistoryRepository) {
+            TrustScoreHistoryRepository trustScoreHistoryRepository,
+            RankedPartyMatchLifecycleService rankedPartyMatchLifecycleService) {
         return new ResolveDisputeUseCase(
                 matchDisputeRepository, 
                 rankedMatchRepository, 
@@ -496,7 +500,8 @@ public class UseCaseConfiguration {
                 updateEloUseCase, 
                 settlementService,
                 paymentService,
-                trustScoreHistoryRepository);
+                trustScoreHistoryRepository,
+                rankedPartyMatchLifecycleService);
     }
 
     @Bean
@@ -551,8 +556,9 @@ public class UseCaseConfiguration {
     @Bean
     public com.pickleball.application.usecases.wallet.WithdrawWalletUseCase withdrawWalletUseCase(
             WalletRepository walletRepository,
-            TransactionRepository transactionRepository) {
-        return new com.pickleball.application.usecases.wallet.WithdrawWalletUseCase(walletRepository, transactionRepository);
+            TransactionRepository transactionRepository,
+            VenueOwnerRepository venueOwnerRepository) {
+        return new com.pickleball.application.usecases.wallet.WithdrawWalletUseCase(walletRepository, transactionRepository, venueOwnerRepository);
     }
 
     @Bean

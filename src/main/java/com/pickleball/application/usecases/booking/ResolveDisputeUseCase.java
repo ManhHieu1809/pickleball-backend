@@ -1,6 +1,7 @@
 package com.pickleball.application.usecases.booking;
 
 import com.pickleball.application.services.SettlementService;
+import com.pickleball.application.services.RankedPartyMatchLifecycleService;
 import com.pickleball.domain.entities.Booking;
 import com.pickleball.domain.services.PaymentService;
 import com.pickleball.domain.services.PaymentService.PaymentResult;
@@ -35,6 +36,7 @@ public class ResolveDisputeUseCase {
     private final SettlementService settlementService;
     private final PaymentService paymentService;
     private final TrustScoreHistoryRepository trustScoreHistoryRepository;
+    private final RankedPartyMatchLifecycleService rankedPartyMatchLifecycleService;
 
     @Transactional
     public MatchDispute execute(Long disputeId, Long adminId, DisputeDecision decision, String adminDecisionText) {
@@ -67,6 +69,7 @@ public class ResolveDisputeUseCase {
 
             booking.setStatus(BookingStatus.CANCELLED);
             bookingRepository.save(booking);
+            rankedPartyMatchLifecycleService.reopenMatchedPartiesForCancelledBooking(booking.getId());
 
             if (booking.getTotalCost() != null && booking.getTotalCost().getAmount().compareTo(BigDecimal.ZERO) > 0) {
                  String transactionId = "BOOKING_" + booking.getId();

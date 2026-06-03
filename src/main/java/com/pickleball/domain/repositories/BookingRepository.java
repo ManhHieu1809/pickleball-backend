@@ -44,4 +44,6 @@ public interface BookingRepository {
     List<Long> findRecentOpponentUserIds(Long userId, int lastNMatches);
 
     List<Booking> findActiveRankedMatchesByUserId(Long userId);
+
+    List<Booking> findActiveRankedMatchesByUserIdOverlapping(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 }

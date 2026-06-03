@@ -29,6 +29,7 @@ public class RankedMatchCheckInScheduler {
     private final TransactionRepository transactionRepository;
     private final CourtRepository courtRepository;
     private final VenueRepository venueRepository;
+    private final RankedPartyMatchLifecycleService rankedPartyMatchLifecycleService;
 
     @Scheduled(fixedDelay = 60_000) // 1 minute
     @Transactional
@@ -70,13 +71,9 @@ public class RankedMatchCheckInScheduler {
             return;
         }
 
-        log.info("Found {} no-show players for Ranked Match bookingId={}", noShowPlayers.size(), booking.getId());
-
-        // 1. Process forfeits
         for (BookingParticipant badPlayer : noShowPlayers) {
             badPlayer.markAsForfeited();
-            
-            // Record Penalty Transaction
+
             if (badPlayer.getDepositAmount() != null && badPlayer.getDepositAmount().getAmount().compareTo(BigDecimal.ZERO) > 0) {
                 Transaction penaltyTx = Transaction.builder()
                         .userId(badPlayer.getUserId())
@@ -91,7 +88,6 @@ public class RankedMatchCheckInScheduler {
             }
         }
 
-        // 2. Mark Booking as CANCELLED and RankedMatch as CANCELLED
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
 
@@ -100,12 +96,10 @@ public class RankedMatchCheckInScheduler {
             rankedMatch.setStatus(MatchStatus.CANCELLED);
             rankedMatchRepository.save(rankedMatch);
         }
+        rankedPartyMatchLifecycleService.reopenMatchedPartiesForCancelledBooking(booking.getId());
 
-        // 3. Distribute Payouts (System already collected 100% implicitly via 4 * 25% deposits)
-        // Venue gets 100% of venue fee
         processVenuePayout(booking);
 
-        // Referee gets 50% of referee fee
         BigDecimal refereeCompensation = BigDecimal.ZERO;
         if (booking.getRefereeFee() != null && booking.getRefereeFee().getAmount().compareTo(BigDecimal.ZERO) > 0) {
             refereeCompensation = booking.getRefereeFee().getAmount().multiply(new BigDecimal("0.5")).setScale(2, RoundingMode.HALF_UP);
@@ -114,15 +108,10 @@ public class RankedMatchCheckInScheduler {
             }
         }
 
-        // 4. Compensation for Checked-in Players
-        // Total Cost collected from all players
         BigDecimal totalCollected = booking.getTotalCost() != null ? booking.getTotalCost().getAmount() : BigDecimal.ZERO;
-        
-        // Calculate what was paid to venue (following SettlementService logic: netAmount = venueFee - 20% platform deduction)
-        BigDecimal venueGross = booking.getVenueFee() != null ? booking.getVenueFee().getAmount() : BigDecimal.ZERO;
+                BigDecimal venueGross = booking.getVenueFee() != null ? booking.getVenueFee().getAmount() : BigDecimal.ZERO;
         BigDecimal venueNetPayout = venueGross.subtract(venueGross.multiply(new BigDecimal("0.20")));
 
-        // Remaining Pool = Total Collected - Venue Payout - Referee Payout
         BigDecimal compensationPool = totalCollected.subtract(venueNetPayout).subtract(refereeCompensation);
 
         if (compensationPool.compareTo(BigDecimal.ZERO) > 0 && !checkedInPlayers.isEmpty()) {
@@ -131,8 +120,6 @@ public class RankedMatchCheckInScheduler {
                 creditWalletAndLog(goodPlayer.getUserId(), booking.getId(), amountPerPlayer, "REFUND", "Đền bù huỷ Rank do có người bùng kèo");
             }
         }
-
-        log.info("Processed No-Show for bookingId={}. Venue paid, Referee compensated {}, Checked-in players compensated", booking.getId(), refereeCompensation);
     }
 
     private void processVenuePayout(Booking booking) {

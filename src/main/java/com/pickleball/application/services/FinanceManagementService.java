@@ -131,7 +131,10 @@ public class FinanceManagementService {
                     .amount(t.getAmount())
                     .type(t.getType() != null ? t.getType() : "N/A")
                     .status(t.getStatus() != null ? t.getStatus() : "N/A")
+                    .paymentMethod(t.getPaymentMethod())
+                    .transactionCode(t.getTransactionCode())
                     .description(t.getDescription())
+                    .metadata(t.getMetadata())
                     .createdAt(t.getCreatedAt() != null ? t.getCreatedAt().format(DATE_FMT) : "")
                     .build();
     }

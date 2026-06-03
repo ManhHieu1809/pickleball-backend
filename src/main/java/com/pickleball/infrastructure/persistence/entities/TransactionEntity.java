@@ -33,7 +33,16 @@ public class TransactionEntity {
     @Column(nullable = false)
     private String status;
 
+    @Column(name = "payment_method")
+    private String paymentMethod;
+
+    @Column(name = "transaction_code")
+    private String transactionCode;
+
     private String description;
+
+    @Column(columnDefinition = "json")
+    private String metadata;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

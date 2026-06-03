@@ -13,7 +13,10 @@ public class TransactionMapper {
                 .amount(entity.getAmount())
                 .type(entity.getType())
                 .status(entity.getStatus())
+                .paymentMethod(entity.getPaymentMethod())
+                .transactionCode(entity.getTransactionCode())
                 .description(entity.getDescription())
+                .metadata(entity.getMetadata())
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
@@ -27,7 +30,10 @@ public class TransactionMapper {
                 .amount(domain.getAmount())
                 .type(domain.getType())
                 .status(domain.getStatus())
+                .paymentMethod(domain.getPaymentMethod())
+                .transactionCode(domain.getTransactionCode())
                 .description(domain.getDescription())
+                .metadata(domain.getMetadata())
                 .build();
     }
 }

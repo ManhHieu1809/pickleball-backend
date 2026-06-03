@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,6 +24,12 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     }
 
     @Override
+    public Optional<Transaction> findById(Long id) {
+        return jpaRepository.findById(id)
+                .map(TransactionMapper::toDomain);
+    }
+
+    @Override
     public List<Transaction> findByUserId(Long userId) {
         return jpaRepository.findByUserId(userId).stream()
                 .map(TransactionMapper::toDomain)
@@ -32,6 +39,19 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     @Override
     public List<Transaction> findByBookingId(Long bookingId) {
         return jpaRepository.findByBookingId(bookingId).stream()
+                .map(TransactionMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Transaction> findByTransactionCode(String transactionCode) {
+        return jpaRepository.findByTransactionCode(transactionCode)
+                .map(TransactionMapper::toDomain);
+    }
+
+    @Override
+    public List<Transaction> findByTypeAndStatus(String type, String status) {
+        return jpaRepository.findByTypeAndStatusOrderByCreatedAtDesc(type, status).stream()
                 .map(TransactionMapper::toDomain)
                 .collect(Collectors.toList());
     }

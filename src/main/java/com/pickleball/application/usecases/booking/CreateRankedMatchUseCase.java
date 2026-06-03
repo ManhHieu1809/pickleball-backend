@@ -77,11 +77,21 @@ public class CreateRankedMatchUseCase {
 
     public RankedMatchResult execute(Long courtId, LocalDateTime startTime, LocalDateTime endTime,
                                       Long hostUserId, String notes) {
+        if (!endTime.isAfter(startTime)) {
+            throw new IllegalArgumentException("End time must be after start time");
+        }
+
         courtRepository.findById(courtId)
                 .orElseThrow(() -> new IllegalArgumentException("Court not found"));
 
         Player hostPlayer = playerRepository.findByUserId(hostUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Player profile not found"));
+
+        List<Booking> overlappingRankedMatches = bookingRepository
+                .findActiveRankedMatchesByUserIdOverlapping(hostUserId, startTime, endTime);
+        if (!overlappingRankedMatches.isEmpty()) {
+            throw new IllegalArgumentException("You already have an active ranked match in this time range");
+        }
 
         List<Booking> conflicts = bookingRepository.findConflictingBookings(courtId, startTime, endTime);
         if (!conflicts.isEmpty()) {

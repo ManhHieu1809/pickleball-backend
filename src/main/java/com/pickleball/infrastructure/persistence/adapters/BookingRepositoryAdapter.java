@@ -158,4 +158,11 @@ public class BookingRepositoryAdapter implements BookingRepository {
                 .map(bookingMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Booking> findActiveRankedMatchesByUserIdOverlapping(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        return bookingJpaRepository.findActiveRankedMatchesByParticipantUserIdOverlapping(userId, startTime, endTime).stream()
+                .map(bookingMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }

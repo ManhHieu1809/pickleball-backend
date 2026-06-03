@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/js/**", "/css/**", "/animations/**", "/images/**", "/favicon.ico").permitAll()
                         // Public endpoints - Authentication
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/payment/callback", "/payment/result", "/api/payments/zalopay/callback").permitAll()
                         // Staff login endpoint
                         .requestMatchers("/api/staff/login").permitAll()
                         // Legacy endpoints (keep for backward compatibility)
@@ -64,6 +65,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/api/venues/**").permitAll()
                         .requestMatchers("/api/bookings/**").permitAll()
+                        .requestMatchers("/api/ranked-parties/**").permitAll()
                         .requestMatchers("/api/courts/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/staff/**").permitAll()

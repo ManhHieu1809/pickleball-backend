@@ -1,0 +1,634 @@
+### Rank Match Flow Test
+### Run requests from top to bottom. Do not use Run All.
+### Base URL points to the Spring Boot API.
+
+@baseUrl = http://localhost:8080/api
+
+### Shared test settings
+### Change these times if they are no longer in the future.
+@lat = 21.028511
+@lng = 105.804817
+@duoStartTime = 2026-05-27T17:00:00
+@duoEndTime = 2026-05-27T18:00:00
+@soloStartTime = 2026-05-27T19:00:00
+@soloEndTime = 2026-05-27T20:00:00
+
+### Existing referee account.
+### This account must already be an approved referee and ready for matchmaking.
+@refereeEmail = anhhoang@gmail.com
+@refereePassword = hieu1809
+
+
+### =========================================================
+### 0. Create test player accounts
+### If an account already exists, this request can fail. Continue with login.
+### =========================================================
+
+### Register Player 1
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rankflow_p1@test.com",
+  "password": "password",
+  "fullName": "Rank Flow Player 1",
+  "phoneNumber": "0900001001"
+}
+
+### Register Player 2
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rankflow_p2@test.com",
+  "password": "password",
+  "fullName": "Rank Flow Player 2",
+  "phoneNumber": "0900001002"
+}
+
+### Register Player 3
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rankflow_p3@test.com",
+  "password": "password",
+  "fullName": "Rank Flow Player 3",
+  "phoneNumber": "0900001003"
+}
+
+### Register Player 4
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "rankflow_p4@test.com",
+  "password": "password",
+  "fullName": "Rank Flow Player 4",
+  "phoneNumber": "0900001004"
+}
+
+
+### =========================================================
+### 1. Login accounts and save tokens/userIds
+### =========================================================
+
+### Login Player 1
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rankflow_p1@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("p1Token", response.body.data.accessToken);
+    client.global.set("p1Id", response.body.data.user.id);
+%}
+
+### Login Player 2
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rankflow_p2@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("p2Token", response.body.data.accessToken);
+    client.global.set("p2Id", response.body.data.user.id);
+%}
+
+### Login Player 3
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rankflow_p3@test.com",
+  "password": "password"
+}
+
+> {%
+    client.global.set("p3Token", response.body.data.accessToken);
+    client.global.set("p3Id", response.body.data.user.id);
+%}
+
+### Login Player 4
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "hieunguyen@gmail.com",
+  "password": "hieu1809"
+}
+
+> {%
+    client.global.set("p4Token", response.body.data.accessToken);
+    client.global.set("p4Id", response.body.data.user.id);
+%}
+
+### Login Referee
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{refereeEmail}}",
+  "password": "{{refereePassword}}"
+}
+
+> {%
+    client.global.set("refereeToken", response.body.data.accessToken);
+    client.global.set("refereeId", response.body.data.user.id);
+%}
+
+
+### =========================================================
+### 2. Prepare wallet balances
+### Players need money to accept/pay deposit. Referee needs money for auto deposit.
+### =========================================================
+
+### Top up Player 1
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{p1Token}}
+Content-Type: application/json
+
+{
+  "amount": 10000000,
+  "description": "Rank flow test topup"
+}
+
+### Top up Player 2
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{p2Token}}
+Content-Type: application/json
+
+{
+  "amount": 10000000,
+  "description": "Rank flow test topup"
+}
+
+### Top up Player 3
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{p3Token}}
+Content-Type: application/json
+
+{
+  "amount": 10000000,
+  "description": "Rank flow test topup"
+}
+
+### Top up Player 4
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{p4Token}}
+Content-Type: application/json
+
+{
+  "amount": 10000000,
+  "description": "Rank flow test topup"
+}
+
+### Top up Referee
+POST {{baseUrl}}/wallet/topup
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "amount": 10000000,
+  "description": "Rank flow referee topup"
+}
+
+### Make referee ready
+PUT {{baseUrl}}/referee/{{refereeId}}/availability?isReady=true
+Authorization: Bearer {{refereeToken}}
+
+
+### =========================================================
+### 3. Optional helper APIs for frontend
+### =========================================================
+
+### Search players for invite UI
+GET {{baseUrl}}/players/search?query=Rank Flow&limit=20
+
+### Pending invite badge for Player 2
+GET {{baseUrl}}/ranked-parties/invites/pending-count?userId={{p2Id}}
+
+### Check availability for duo time before queue
+POST {{baseUrl}}/ranked-parties/check-availability
+Content-Type: application/json
+
+{
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{duoStartTime}}",
+  "endTime": "{{duoEndTime}}"
+}
+
+
+### =========================================================
+### 4. DUO RANK FLOW
+### Two duo parties: P1+P2 and P3+P4.
+### Both queue the same requested time. Scheduler should match 4 players.
+### =========================================================
+
+### Create Duo Party A, host P1
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p1Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}}
+}
+
+> {%
+    client.global.set("duoPartyAId", response.body.data.id);
+%}
+
+### Invite P2 to Party A
+POST {{baseUrl}}/ranked-parties/{{duoPartyAId}}/invites
+Content-Type: application/json
+
+{
+  "inviterUserId": {{p4Id}},
+  "inviteeUserId": {{p2Id}},
+  "message": "Duo ranked test"
+}
+
+### P2 checks pending invites
+GET {{baseUrl}}/ranked-parties/invites/my?userId={{p2Id}}
+
+### P2 accepts Party A invite
+POST {{baseUrl}}/ranked-parties/14/invites/accept?userId={{p2Id}}
+
+### Get Party A
+GET {{baseUrl}}/ranked-parties/{{duoPartyAId}}
+
+### Create Duo Party B, host P3
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p3Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "2026-05-27T17:00:00",
+  "endTime": "2026-05-27T18:00:00"
+}
+
+> {%
+    client.global.set("duoPartyBId", response.body.data.id);
+%}
+
+### Invite P4 to Party B
+POST {{baseUrl}}/ranked-parties/{{duoPartyBId}}/invites
+Content-Type: application/json
+
+{
+  "inviterUserId": {{p3Id}},
+  "inviteeUserId": {{p1Id}},
+  "message": "Duo ranked test"
+}
+
+### P4 accepts Party B invite
+POST {{baseUrl}}/ranked-parties/{{duoPartyBId}}/invites/accept?userId={{p1Id}}
+
+
+### Queue Party A
+POST {{baseUrl}}/ranked-parties/1/queue
+Content-Type: application/json
+
+{
+  "userId": {{p4Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{duoStartTime}}",
+  "endTime": "{{duoEndTime}}"
+}
+
+### Queue Party B
+POST {{baseUrl}}/ranked-parties/{{duoPartyBId}}/queue
+Content-Type: application/json
+
+{
+  "userId": {{p3Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{duoStartTime}}",
+  "endTime": "{{duoEndTime}}"
+}
+
+### Optional: cancel queue while still searching
+### Only run this if you want to test cancel. If run, you must queue again after.
+# POST {{baseUrl}}/ranked-parties/{{duoPartyAId}}/cancel-queue?userId={{p1Id}}
+
+### Wait around 60 seconds for MatchmakingQueueScheduler.
+### Then poll Party A until status is MATCHED and matchedBookingId is not null.
+GET {{baseUrl}}/ranked-parties/14
+
+> {%
+    if (response.body.data && response.body.data.matchedBookingId) {
+        client.global.set("duoBookingId", response.body.data.matchedBookingId);
+    }
+%}
+
+### Poll Party B
+GET {{baseUrl}}/ranked-parties/{{duoPartyBId}}
+
+### Get created duo booking
+GET {{baseUrl}}/bookings/72
+###
+GET {{baseUrl}}/bookings/72/ranked-candidates
+
+### P1 accepts and pays deposit
+POST {{baseUrl}}/bookings/{{duoBookingId}}/accept-match?userId={{p1Id}}
+Authorization: Bearer {{p1Token}}
+
+### P2 accepts and pays deposit
+POST {{baseUrl}}/bookings/{{duoBookingId}}/accept-match?userId={{p2Id}}
+Authorization: Bearer {{p2Token}}
+
+### P3 accepts and pays deposit
+POST {{baseUrl}}/bookings/{{duoBookingId}}/accept-match?userId={{p3Id}}
+Authorization: Bearer {{p3Token}}
+
+### P4 accepts and pays deposit
+POST {{baseUrl}}/bookings/{{duoBookingId}}/accept-match?userId={{p4Id}}
+Authorization: Bearer {{p4Token}}
+
+### Check booking after accepts. Expect CONFIRMED after all players are PAID.
+GET {{baseUrl}}/bookings/{{duoBookingId}}
+
+
+### =========================================================
+### 5. SOLO RANK FLOW
+### Four solo parties, same requested time. Use this after duo flow or with another time.
+### If the same four users already have active overlapping ranked matches, use another time.
+### =========================================================
+
+### Check availability for solo time
+POST {{baseUrl}}/ranked-parties/check-availability
+Content-Type: application/json
+
+{
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+### Create Solo Party P1
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p1Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}}
+}
+
+> {%
+    client.global.set("soloParty1Id", response.body.data.id);
+%}
+
+### Create Solo Party P2
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p2Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+> {%
+    client.global.set("soloParty2Id", response.body.data.id);
+%}
+
+### Create Solo Party P3
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p3Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+> {%
+    client.global.set("soloParty3Id", response.body.data.id);
+%}
+
+### Create Solo Party P4
+POST {{baseUrl}}/ranked-parties
+Content-Type: application/json
+
+{
+  "hostUserId": {{p4Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}}
+}
+
+> {%
+    client.global.set("soloParty4Id", response.body.data.id);
+%}
+
+### Queue Solo Party P1
+POST {{baseUrl}}/ranked-parties/{{soloParty1Id}}/queue
+Content-Type: application/json
+
+{
+  "userId": {{p1Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+### Queue Solo Party P2
+POST {{baseUrl}}/ranked-parties/{{soloParty2Id}}/queue
+Content-Type: application/json
+
+{
+  "userId": {{p2Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+### Queue Solo Party P3
+POST {{baseUrl}}/ranked-parties/{{soloParty3Id}}/queue
+Content-Type: application/json
+
+{
+  "userId": {{p3Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+### Queue Solo Party P4
+POST {{baseUrl}}/ranked-parties/{{soloParty4Id}}/queue
+Content-Type: application/json
+
+{
+  "userId": {{p4Id}},
+  "latitude": {{lat}},
+  "longitude": {{lng}},
+  "startTime": "{{soloStartTime}}",
+  "endTime": "{{soloEndTime}}"
+}
+
+### Wait around 60 seconds for MatchmakingQueueScheduler.
+### Then poll Solo Party P1 until status is MATCHED.
+GET {{baseUrl}}/ranked-parties/{{soloParty1Id}}
+
+> {%
+    if (response.body.data && response.body.data.matchedBookingId) {
+        client.global.set("soloBookingId", response.body.data.matchedBookingId);
+    }
+%}
+
+### Get created solo booking
+GET {{baseUrl}}/bookings/{{soloBookingId}}
+
+### P1 accepts solo match
+POST {{baseUrl}}/bookings/{{soloBookingId}}/accept-match?userId={{p1Id}}
+Authorization: Bearer {{p1Token}}
+
+### P2 accepts solo match
+POST {{baseUrl}}/bookings/{{soloBookingId}}/accept-match?userId={{p2Id}}
+Authorization: Bearer {{p2Token}}
+
+### P3 accepts solo match
+POST {{baseUrl}}/bookings/{{soloBookingId}}/accept-match?userId={{p3Id}}
+Authorization: Bearer {{p3Token}}
+
+### P4 accepts solo match
+POST {{baseUrl}}/bookings/{{soloBookingId}}/accept-match?userId={{p4Id}}
+Authorization: Bearer {{p4Token}}
+
+### Check solo booking after accepts
+GET {{baseUrl}}/bookings/{{soloBookingId}}
+
+
+### =========================================================
+### 6. Optional post-match APIs
+### Replace matchId manually from referee matches response if you want to submit result.
+### =========================================================
+@rankedBookingId = {{duoBookingId}}
+### check in refeeren
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "userId": {{refereeId}},
+  "latitude": 20.978890,
+  "longitude": 105.802197,
+  "checkInMethod": "GPS"
+}
+
+### check in p1
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{p1Token}}
+Content-Type: application/json
+
+{
+  "userId": {{p1Id}},
+  "latitude": 20.978890,
+  "longitude": 105.802197,
+  "checkInMethod": "GPS"
+}
+
+### check in p2
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{p2Token}}
+Content-Type: application/json
+
+{
+  "userId": {{p2Id}},
+  "latitude": 20.978890,
+  "longitude": 105.802197,
+  "checkInMethod": "GPS"
+}
+
+### check in p3
+POST {{baseUrl}}/bookings/{{rankedBookingId}}/check-in
+Authorization: Bearer {{p3Token}}
+Content-Type: application/json
+
+{
+  "userId": {{p3Id}},
+  "latitude": 20.978890,
+  "longitude": 105.802197,
+  "checkInMethod": "GPS"
+}
+
+### Referee matches. Find the match id here.
+GET {{baseUrl}}/referee/{{refereeId}}/matches
+Authorization: Bearer {{refereeToken}}
+
+### Submit result by ranked match id. Replace 0 with matchId from previous response.
+@rankedMatchId = 74
+POST {{baseUrl}}/referee/matches/{{rankedMatchId}}/result
+Authorization: Bearer {{refereeToken}}
+Content-Type: application/json
+
+{
+  "refereeUserId": {{refereeId}},
+  "teamAScore": 11,
+  "teamBScore": 8,
+  "winningTeam": "A",
+  "evidenceUrl": "https://example.com/evidence.mp4"
+}
+
+### Confirm result P1
+POST {{baseUrl}}/bookings/{{rankedMatchId}}/confirm-result
+Authorization: Bearer {{p1Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{p1Id}},
+  "accepted": true
+}
+
+### Confirm result P2
+POST {{baseUrl}}/bookings/{{rankedMatchId}}/confirm-result
+Authorization: Bearer {{p2Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{p2Id}},
+  "accepted": true
+}
+
+### Confirm result P3
+POST {{baseUrl}}/bookings/{{rankedMatchId}}/confirm-result
+Authorization: Bearer {{p3Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{p3Id}},
+  "accepted": true
+}
+
+### Confirm result P4
+POST {{baseUrl}}/bookings/{{duoBookingId}}/confirm-result
+Authorization: Bearer {{p4Token}}
+Content-Type: application/json
+
+{
+  "playerUserId": {{p4Id}},
+  "accepted": true
+}
+
+### Get match result/Elo preview
+GET {{baseUrl}}/bookings/{{rankedMatchId}}/result

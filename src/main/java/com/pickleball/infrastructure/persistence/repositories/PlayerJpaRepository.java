@@ -30,4 +30,11 @@ public interface PlayerJpaRepository extends JpaRepository<PlayerEntity, Long> {
 
     @EntityGraph(attributePaths = {"user"})
     Page<PlayerEntity> findAllByOrderByCurrentEloDesc(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"user"})
+    @Query("SELECT p FROM PlayerEntity p JOIN p.user u WHERE " +
+            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "u.phoneNumber LIKE CONCAT('%', :query, '%')")
+    List<PlayerEntity> searchPlayers(@Param("query") String query, Pageable pageable);
 }

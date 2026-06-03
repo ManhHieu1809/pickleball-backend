@@ -36,7 +36,7 @@ public class MatchmakingController {
             @RequestParam Long userId) {
         MatchmakingTicketDTO status = matchmakingQueueService.getMyStatus(userId);
         if (status == null) {
-            return ResponseHelper.ok(null, "Not in queue or match found");
+            return ResponseHelper.ok(null, "Not in queue");
         }
         return ResponseHelper.ok(status, "In queue");
     }

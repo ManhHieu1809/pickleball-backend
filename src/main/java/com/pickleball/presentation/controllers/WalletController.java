@@ -117,7 +117,10 @@ public class WalletController {
                 .amount(transaction.getAmount())
                 .type(transaction.getType())
                 .status(transaction.getStatus())
+                .paymentMethod(transaction.getPaymentMethod())
+                .transactionCode(transaction.getTransactionCode())
                 .description(transaction.getDescription())
+                .metadata(transaction.getMetadata())
                 .createdAt(transaction.getCreatedAt())
                 .build();
     }

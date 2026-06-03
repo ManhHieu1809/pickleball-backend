@@ -33,6 +33,7 @@ public class BookingManagementService {
     private final CourtJpaRepository courtJpaRepository;
     private final PlayerJpaRepository playerJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final RankedPartyMatchLifecycleService rankedPartyMatchLifecycleService;
 
     public Page<AdminBookingDTO> getAllBookings(int page, int size, String search, String statusStr, String typeStr) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -94,6 +95,7 @@ public class BookingManagementService {
 
         booking.setStatus(BookingStatus.CANCELLED);
         BookingEntity saved = bookingJpaRepository.save(booking);
+        rankedPartyMatchLifecycleService.reopenMatchedPartiesForCancelledBooking(saved.getId());
         return mapToDTO(saved);
     }
 

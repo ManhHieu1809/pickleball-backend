@@ -17,7 +17,10 @@ public class Transaction {
     private BigDecimal amount;
     private String type;
     private String status;
+    private String paymentMethod;
+    private String transactionCode;
     private String description;
+    private String metadata;
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

@@ -9,6 +9,7 @@ import com.pickleball.infrastructure.persistence.repositories.MatchmakingTicketJ
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,8 +35,29 @@ public class MatchmakingTicketRepositoryAdapter implements MatchmakingTicketRepo
     }
 
     @Override
+    public List<MatchmakingTicket> findActiveTicketsByUserId(Long userId) {
+        return jpaRepository.findByUserIdAndIsActiveTrueOrderByJoinedAtDesc(userId).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MatchmakingTicket> findActiveTicketsByUserIdOverlapping(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        return jpaRepository.findActiveByUserIdOverlapping(userId, startTime, endTime).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<MatchmakingTicket> findActiveTicketsByRoleOrderByJoinedAtAsc(ParticipantRole role) {
         return jpaRepository.findByRoleAndIsActiveTrueOrderByJoinedAtAsc(role).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MatchmakingTicket> findActiveTicketsByPartyId(Long partyId) {
+        return jpaRepository.findByPartyIdAndIsActiveTrue(partyId).stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -49,6 +71,13 @@ public class MatchmakingTicketRepositoryAdapter implements MatchmakingTicketRepo
     public void deactivateTickets(List<Long> userIds) {
         if (userIds != null && !userIds.isEmpty()) {
             jpaRepository.deactivateByUserIds(userIds);
+        }
+    }
+
+    @Override
+    public void deactivateTicketsByPartyId(Long partyId) {
+        if (partyId != null) {
+            jpaRepository.deactivateByPartyId(partyId);
         }
     }
 }

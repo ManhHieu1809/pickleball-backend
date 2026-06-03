@@ -58,6 +58,13 @@ public class BookingController {
         return ResponseHelper.ok(matches);
     }
 
+    @GetMapping("/ranked/my-active")
+    public ResponseEntity<ApiResponse<List<RankedMatchDTO>>> getMyActiveRankedMatches(
+            @RequestParam Long userId) {
+        List<RankedMatchDTO> matches = bookingService.getMyActiveRankedMatches(userId);
+        return ResponseHelper.ok(matches, "Active ranked matches retrieved");
+    }
+
     @GetMapping("/{bookingId}/ranked-candidates")
     public ResponseEntity<ApiResponse<RankedMatchDTO>> getRankedMatchCandidates(
             @PathVariable Long bookingId) {

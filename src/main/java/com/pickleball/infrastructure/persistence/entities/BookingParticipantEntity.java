@@ -29,6 +29,9 @@ public class BookingParticipantEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "party_id")
+    private Long partyId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;

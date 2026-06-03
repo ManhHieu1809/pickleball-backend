@@ -20,6 +20,7 @@ public class BookingParticipant {
     private Long id;
     private Long bookingId;
     private Long userId;
+    private Long partyId;
     private ParticipantRole role;
     private String team;
     private JoinStatus joinStatus;

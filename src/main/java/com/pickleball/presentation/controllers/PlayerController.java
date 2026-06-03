@@ -1,7 +1,10 @@
 package com.pickleball.presentation.controllers;
 
+import com.pickleball.application.dtos.PlayerCareerStatsDTO;
+import com.pickleball.application.dtos.PlayerSearchResultDTO;
 import com.pickleball.application.dtos.requests.UpdateLocationRequest;
 import com.pickleball.application.dtos.EloHistoryDTO;
+import com.pickleball.application.services.PlayerQueryApplicationService;
 import com.pickleball.application.usecases.player.UpdatePlayerLocationUseCase;
 import com.pickleball.application.usecases.player.GetEloHistoryUseCase;
 import com.pickleball.application.usecases.player.GetPlayerProfileUseCase;
@@ -24,6 +27,7 @@ public class PlayerController {
     private final GetPlayerProfileUseCase getPlayerProfileUseCase;
     private final com.pickleball.application.usecases.player.GetPlayerWeeklyStatsUseCase getPlayerWeeklyStatsUseCase;
     private final com.pickleball.application.usecases.player.GetPlayerRankedStatsUseCase getPlayerRankedStatsUseCase;
+    private final PlayerQueryApplicationService playerQueryApplicationService;
 
     @PutMapping("/location")
     public ResponseEntity<ApiResponse<String>> updateLocation(
@@ -41,6 +45,18 @@ public class PlayerController {
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<com.pickleball.application.dtos.PlayerMatchDTO>> getPlayerProfile(@PathVariable Long userId) {
         return ResponseHelper.ok(getPlayerProfileUseCase.execute(userId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<PlayerSearchResultDTO>>> searchPlayers(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "20") int limit) {
+        return ResponseHelper.ok(playerQueryApplicationService.searchPlayers(query, limit), "Players retrieved");
+    }
+
+    @GetMapping("/{userId}/career-stats")
+    public ResponseEntity<ApiResponse<PlayerCareerStatsDTO>> getPlayerCareerStats(@PathVariable Long userId) {
+        return ResponseHelper.ok(playerQueryApplicationService.getCareerStats(userId), "Player career stats retrieved");
     }
 
     @GetMapping("/{userId}/stats/weekly")

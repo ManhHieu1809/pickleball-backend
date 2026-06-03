@@ -381,51 +381,8 @@
 <h2 class="text-xl font-bold text-on-surface">Yêu cầu rút tiền</h2>
 <button class="text-xs font-bold text-orange-600 bg-primary-fixed px-3 py-1 rounded-lg hover:opacity-80 transition-all">Xem tất cả</button>
 </div>
-<div class="space-y-4">
-<!-- Request Item -->
-<div class="group p-4 rounded-xl border border-transparent hover:bg-surface-container-low hover:border-outline-variant/20 transition-all">
-<div class="flex items-center justify-between mb-3">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
-<img alt="Owner" data-alt="Avatar of sports center owner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9486mmSbfyRIgttBMsIFhvms-0C8K8woCWA6AUKI0LblH_zK-ayuEq99Dx-lTpQkmqo2p64eAY5RyLiuxE_yhNXMbPNPvjn8yrWS9sG8z8gcou7_Nur1yXrrHdFbSoLgjhfFrrAfmoZcTpLHXpoPX8KCS2gcBIhxs-365pnT2dzv06mw3lM1GXGW39sAt41htTq4iglMn2eu7OD3YFhT2AVDU7SuH3NcDmkYu-NYEjFMAHZFJc18upagfbHCUTB6eR8q6Az0UyeE"/>
-</div>
-<div>
-<h4 class="text-sm font-bold text-orange-600">Baseline Quận 7</h4>
-<p class="text-[10px] text-on-surface-variant font-medium">10:42 AM • 24/05/2024</p>
-</div>
-</div>
-<div class="text-right">
-<p class="text-sm font-black text-orange-600">15.400.000 ₫</p>
-<p class="text-[10px] font-bold text-on-secondary-container bg-secondary-container/20 px-2 py-0.5 rounded-full inline-block">Chờ duyệt</p>
-</div>
-</div>
-<div class="flex gap-2">
-<button class="flex-1 py-2 rounded-lg bg-gradient-to-br from-primary to-primary-container text-white text-xs font-bold active:scale-95 transition-all">Duyệt Chi</button>
-<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface-variant text-xs font-bold hover:bg-white transition-all">Từ chối</button>
-</div>
-</div>
-<!-- Request Item -->
-<div class="group p-4 rounded-xl border border-transparent hover:bg-surface-container-low hover:border-outline-variant/20 transition-all">
-<div class="flex items-center justify-between mb-3">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
-<img alt="Owner" data-alt="Avatar of court manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxHw5CGQFFGlGGnnFWDtzN4LkmAo9i2AhdtPvuryC1nrAaVwm3pBLb0fVDvEf0n--PlQPYzZk-jWIJ-BEdg0q2dqeYDHt1MkHUpPNuBc8uU7K3VWm-3QEm9yYt3knDS4TEJzSSe0DtyE_SANm4qgrovG0adR63stNwnW7AiG8LRMFTJRRGQKiZ2KIfhmg8RowSBrhevkiCKcqitz8faHcmkmwrVffpAJ7-1BdbNzMNwfIXUo4cQI66MTOagIdyPxB-hgYX80YzS_c"/>
-</div>
-<div>
-<h4 class="text-sm font-bold text-orange-600">Hoàng Diệu Pickle</h4>
-<p class="text-[10px] text-on-surface-variant font-medium">09:15 AM • 24/05/2024</p>
-</div>
-</div>
-<div class="text-right">
-<p class="text-sm font-black text-orange-600">8.900.000 ₫</p>
-<p class="text-[10px] font-bold text-on-secondary-container bg-secondary-container/20 px-2 py-0.5 rounded-full inline-block">Chờ duyệt</p>
-</div>
-</div>
-<div class="flex gap-2">
-<button class="flex-1 py-2 rounded-lg bg-gradient-to-br from-primary to-primary-container text-white text-xs font-bold active:scale-95 transition-all">Duyệt Chi</button>
-<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface-variant text-xs font-bold hover:bg-white transition-all">Từ chối</button>
-</div>
-</div>
+<div id="withdrawal-requests-container" class="space-y-4">
+<div class="text-center text-sm text-slate-400 py-8">Đang tải danh sách yêu cầu...</div>
 </div>
 </div>
 <!-- Transaction History Table -->
@@ -537,6 +494,27 @@
 
 </div>
 
+        <!-- Reject Modal -->
+        <div id="reject-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeRejectModal()"></div>
+            <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden p-6 space-y-4 transform transition-all scale-100">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="text-lg font-bold text-slate-900">Từ chối yêu cầu rút tiền</h3>
+                    <button onclick="closeRejectModal()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Lý do từ chối</label>
+                    <textarea id="reject-reason" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-orange-500 focus:ring-orange-500/20 shadow-sm" placeholder="Nhập lý do từ chối rút tiền..." rows="3"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button onclick="closeRejectModal()" class="px-4 py-2 rounded-xl text-slate-600 font-medium text-sm hover:bg-slate-50 transition-colors">Hủy</button>
+                    <button id="confirm-reject-btn" class="px-5 py-2 rounded-xl bg-red-600 text-white font-bold text-sm shadow-md hover:bg-red-700 transition-colors">Xác nhận từ chối</button>
+                </div>
+            </div>
+        </div>
+
         </main>
     </div>
     <script src="/js/admin-auth.js"></script>
@@ -551,6 +529,7 @@
             // Xử lý load dữ liệu
             loadFinanceStats();
             loadTransactions();
+            loadPendingWithdrawals();
             loadFinanceChart('WEEK'); // default load week
         });
 
@@ -744,6 +723,198 @@
             div.textContent = str;
             return div.innerHTML;
         }
+
+        // --- YÊU CẦU RÚT TIỀN (PENDING WITHDRAWALS) ---
+        const userDetailsCache = {};
+        
+        async function fetchUserDetails(userId) {
+            if (userDetailsCache[userId]) {
+                return userDetailsCache[userId];
+            }
+            try {
+                const res = await AdminAuth.authFetch(`/api/admin/users/${userId}`);
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data) {
+                        userDetailsCache[userId] = json.data;
+                        return json.data;
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load user details for #" + userId, err);
+            }
+            return null;
+        }
+
+        async function loadPendingWithdrawals() {
+            const container = document.getElementById('withdrawal-requests-container');
+            if (!container) return;
+
+            try {
+                const res = await AdminAuth.authFetch('/api/admin/withdrawals/pending');
+                if (res && res.ok) {
+                    const json = await res.json();
+                    const pendingList = json.data || [];
+                    
+                    if (pendingList.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center py-8 text-slate-400">
+                                <i data-lucide="check-circle" class="w-10 h-10 mx-auto mb-2 text-green-400"></i>
+                                <p class="text-xs font-semibold">Không có yêu cầu rút tiền nào đang chờ duyệt</p>
+                            </div>
+                        `;
+                        if (window.lucide) lucide.createIcons();
+                        return;
+                    }
+
+                    container.innerHTML = `
+                        <div class="text-center text-xs text-slate-400 py-8">Đang tải thông tin người dùng...</div>
+                    `;
+
+                    const itemsHtml = await Promise.all(pendingList.map(async (item) => {
+                        const user = await fetchUserDetails(item.userId);
+                        const displayName = user ? (user.fullName || user.email) : `User #${item.userId}`;
+                        const avatarUrl = (user && user.profilePictureUrl) ? user.profilePictureUrl : 'https://i.pravatar.cc/150?u=' + item.userId;
+                        const formattedDate = item.createdAt ? item.createdAt.replace('T', ' ').substring(0, 16) : '';
+                        const amountFormatted = formatCurrency(item.amount);
+                        
+                        const bankName = user ? (user.bankName || 'Chưa cập nhật ngân hàng') : 'N/A';
+                        const bankAccount = user ? (user.bankAccountNumber || 'Chưa cập nhật tài khoản') : 'N/A';
+                        
+                        return `
+                        <div class="group p-4 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 hover:border-orange-500/20 transition-all shadow-sm">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+                                        <img alt="Owner Avatar" src="${avatarUrl}" class="w-full h-full object-cover"/>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-900">${escapeHtml(displayName)}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium">${formattedDate}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-black text-orange-600">${amountFormatted} ₫</p>
+                                    <p class="text-[9px] font-bold text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full inline-block">Chờ duyệt</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4 p-2.5 bg-slate-100/50 rounded-lg text-[11px] text-slate-600 space-y-1">
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Ngân hàng:</span>
+                                    <span class="font-bold text-slate-900">${escapeHtml(bankName)}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Số tài khoản:</span>
+                                    <span class="font-mono font-bold text-slate-900 select-all">${escapeHtml(bankAccount)}</span>
+                                </div>
+                                <div class="flex justify-between border-t border-slate-200/50 pt-1 mt-1">
+                                    <span class="font-medium">Mô tả:</span>
+                                    <span class="italic text-slate-500">${escapeHtml(item.description || 'Rút tiền ví')}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="approveWithdrawal(${item.id})" class="flex-1 py-2 rounded-lg bg-gradient-to-br from-primary to-primary-container hover:scale-[1.01] active:scale-95 text-white text-xs font-bold transition-all shadow-sm">Duyệt Chi</button>
+                                <button onclick="openRejectModal(${item.id})" class="px-4 py-2 rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-red-50 hover:text-red-600 text-xs font-bold transition-all">Từ chối</button>
+                            </div>
+                        </div>
+                        `;
+                    }));
+
+                    container.innerHTML = itemsHtml.join('');
+                    if (window.lucide) lucide.createIcons();
+                }
+            } catch (err) {
+                console.error("Lỗi tải yêu cầu rút tiền", err);
+                container.innerHTML = '<div class="text-center text-xs text-error py-8">Lỗi tải dữ liệu yêu cầu rút tiền</div>';
+            }
+        }
+
+        async function approveWithdrawal(transactionId) {
+            if (!confirm('Bạn có chắc chắn muốn DUYỆT yêu cầu rút tiền này?')) return;
+            
+            const adminUser = AdminAuth.getUser();
+            const adminId = adminUser ? adminUser.id : null;
+            if (!adminId) {
+                alert('Không tìm thấy thông tin Admin. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            try {
+                const res = await AdminAuth.authFetch(`/api/admin/withdrawals/${transactionId}/approve?adminId=${adminId}`, {
+                    method: 'POST'
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    alert('Đã phê duyệt yêu cầu rút tiền thành công!');
+                    loadPendingWithdrawals();
+                    loadFinanceStats();
+                    loadTransactions();
+                } else {
+                    alert('Lỗi phê duyệt: ' + (json.message || 'Không rõ nguyên nhân'));
+                }
+            } catch (err) {
+                console.error("Error approving withdrawal", err);
+                alert('Lỗi kết nối khi duyệt chi!');
+            }
+        }
+
+        let rejectTransactionId = null;
+
+        function openRejectModal(transactionId) {
+            rejectTransactionId = transactionId;
+            document.getElementById('reject-reason').value = '';
+            const modal = document.getElementById('reject-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRejectModal() {
+            rejectTransactionId = null;
+            const modal = document.getElementById('reject-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitRejection() {
+            if (!rejectTransactionId) return;
+            const reason = document.getElementById('reject-reason').value.trim();
+            if (!reason) {
+                alert('Vui lòng nhập lý do từ chối rút tiền!');
+                return;
+            }
+
+            const adminUser = AdminAuth.getUser();
+            const adminId = adminUser ? adminUser.id : null;
+            if (!adminId) {
+                alert('Không tìm thấy thông tin Admin. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            try {
+                const res = await AdminAuth.authFetch(`/api/admin/withdrawals/${rejectTransactionId}/reject?adminId=${adminId}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ notes: reason })
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    alert('Đã từ chối yêu cầu rút tiền thành công, tiền đã hoàn lại ví chủ sân!');
+                    closeRejectModal();
+                    loadPendingWithdrawals();
+                    loadFinanceStats();
+                    loadTransactions();
+                } else {
+                    alert('Lỗi từ chối: ' + (json.message || 'Không rõ nguyên nhân'));
+                }
+            } catch (err) {
+                console.error("Error rejecting withdrawal", err);
+                alert('Lỗi kết nối khi từ chối!');
+            }
+        }
+
+        document.getElementById('confirm-reject-btn').addEventListener('click', submitRejection);
+        lucide.createIcons();
     </script>
 </body>
 </html>

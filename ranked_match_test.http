@@ -316,7 +316,7 @@ Authorization: Bearer {{player4Token}}
 
 ### ================= CÁC THÀNH VIÊN XÁC NHẬN VÀ ĐÓNG CỌC =================
 ### (Lưu ý: Thay đổi {{rankedBookingId}} thành ID vừa lấy được ở bước trên)
-@rankedBookingId =64
+@rankedBookingId =71
 
 ### Player 1 chấp nhận và thanh toán
 POST {{baseUrl}}/bookings/{{rankedBookingId}}/accept-match?userId={{player1Id}}
@@ -372,8 +372,8 @@ Content-Type: application/json
 
 {
   "userId": {{player2Id}},
-  "latitude": 20.978890,
-  "longitude": 105.802197,
+  "latitude": 20.9811,
+  "longitude": 105.7952,
   "checkInMethod": "GPS"
 }
 
@@ -384,8 +384,8 @@ Content-Type: application/json
 
 {
   "userId": {{player3Id}},
-  "latitude": 20.978890,
-  "longitude": 105.802197,
+  "latitude": 20.9811,
+  "longitude": 105.7952,
   "checkInMethod": "GPS"
 }
 
@@ -396,8 +396,8 @@ Content-Type: application/json
 
 {
   "userId": {{player4Id}},
-  "latitude": 20.978890,
-  "longitude": 105.802197,
+  "latitude": 20.9811,
+  "longitude": 105.7952,
   "checkInMethod": "GPS"
 }
 
@@ -408,23 +408,23 @@ Content-Type: application/json
 
 {
   "userId": {{refereeId}},
-  "latitude": 21.03009,
-  "longitude": 105.78300,
+  "latitude": 20.9811,
+  "longitude": 105.7952,
   "checkInMethod": "GPS"
 }
 
 ########
 ### 7. Trọng tài Submit Kết Quả trận đấu cùng Bằng chứng (Video/Ảnh)
 ### Cập nhật API: Đã bao gồm evidenceUrl như bạn yêu cầu (áp dụng cho trường hợp Trọng tài nộp điểm kèm bằng chứng luôn)
-POST {{baseUrl}}/referee/matches/62/result
+POST {{baseUrl}}/referee/matches/69/result
 Authorization: Bearer {{refereeToken}}
 Content-Type: application/json
 
 {
   "refereeUserId": {{refereeId}},
-  "teamAScore": 11,
-  "teamBScore": 9,
-  "winningTeam": "A",
+  "teamAScore": 8,
+  "teamBScore": 11,
+  "winningTeam": "B",
   "evidenceUrl": "https://res.cloudinary.com/demo/video/upload/sample.mp4"
 }
 
@@ -494,7 +494,7 @@ Authorization: Bearer {{player1Token}}
 Content-Type: application/json
 
 {
-    "amount": 1000000,
+    "amount": 10000000,
     "description": "Nạp tiền vào ví"
 }
 
@@ -504,7 +504,7 @@ Authorization: Bearer {{player2Token}}
 Content-Type: application/json
 
 {
-  "amount": 1000000,
+  "amount": 10000000,
   "description": "Nạp tiền vào ví"
 }
 
@@ -514,7 +514,7 @@ Authorization: Bearer {{player3Token}}
 Content-Type: application/json
 
 {
-  "amount": 1000000,
+  "amount": 10000000,
   "description": "Nạp tiền vào ví"
 }
 

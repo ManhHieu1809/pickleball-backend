@@ -19,6 +19,9 @@ public class TransactionDTO {
     private BigDecimal amount;
     private String type; // DEPOSIT, BOOKING_PAYMENT, TOP_UP, WITHDRAWAL, REFUND, PENALTY, PAYOUT
     private String status; // PENDING, SUCCESS, FAILED
+    private String paymentMethod;
+    private String transactionCode;
     private String description;
+    private String metadata;
     private LocalDateTime createdAt;
 }

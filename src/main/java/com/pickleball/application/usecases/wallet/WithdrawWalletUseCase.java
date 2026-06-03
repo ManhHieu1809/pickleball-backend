@@ -3,6 +3,7 @@ package com.pickleball.application.usecases.wallet;
 import com.pickleball.domain.entities.Transaction;
 import com.pickleball.domain.entities.Wallet;
 import com.pickleball.domain.repositories.TransactionRepository;
+import com.pickleball.domain.repositories.VenueOwnerRepository;
 import com.pickleball.domain.repositories.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,30 +18,41 @@ public class WithdrawWalletUseCase {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final VenueOwnerRepository venueOwnerRepository;
 
     @Transactional
     public Wallet execute(Long userId, BigDecimal amount, String description) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Số tiền rút phải lớn hơn 0");
+            throw new IllegalArgumentException("So tien rut phai lon hon 0");
         }
 
         Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Ví không tồn tại"));
+                .orElseThrow(() -> new IllegalArgumentException("Vi khong ton tai"));
 
         if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new IllegalArgumentException("Số dư không đủ để rút tiền");
+            throw new IllegalArgumentException("So du khong du de rut tien");
         }
 
         wallet.debit(amount);
         Wallet updatedWallet = walletRepository.save(wallet);
+
+        boolean requiresAdminApproval = venueOwnerRepository.existsByUserId(userId);
+        String status = requiresAdminApproval ? "PENDING" : "SUCCESS";
+        String transactionCode = "WITHDRAW_" + userId + "_" + System.currentTimeMillis();
+        String defaultDescription = requiresAdminApproval
+                ? "Owner withdrawal pending admin approval"
+                : "Withdraw to ZaloPay";
 
         Transaction transaction = Transaction.builder()
                 .userId(userId)
                 .bookingId(null)
                 .amount(amount)
                 .type("WITHDRAWAL")
-                .status("SUCCESS")
-                .description(description != null ? description : "Rút tiền từ ví")
+                .status(status)
+                .paymentMethod("ZALOPAY")
+                .transactionCode(transactionCode)
+                .description(description != null ? description : defaultDescription)
+                .metadata("{\"approvalRequired\":" + requiresAdminApproval + "}")
                 .createdAt(LocalDateTime.now())
                 .build();
         transactionRepository.save(transaction);
@@ -48,4 +60,3 @@ public class WithdrawWalletUseCase {
         return updatedWallet;
     }
 }
-

@@ -86,6 +86,7 @@ public class BookingApplicationService {
     private final PaymentService paymentService;
     private final CourtRepository courtRepository;
     private final VenueRepository venueRepository;
+    private final RankedPartyMatchLifecycleService rankedPartyMatchLifecycleService;
 
     public BookingDTO createBooking(CreateBookingRequest request) {
         courtRepository.findById(request.getCourtId())
@@ -279,6 +280,43 @@ public class BookingApplicationService {
                 .collect(Collectors.toList());
     }
 
+    public List<RankedMatchDTO> getMyActiveRankedMatches(Long userId) {
+        return bookingRepository.findActiveRankedMatchesByUserId(userId).stream()
+                .map(this::buildRankedMatchSummary)
+                .collect(Collectors.toList());
+    }
+
+    private RankedMatchDTO buildRankedMatchSummary(Booking booking) {
+        long paidPlayerCount = booking.getParticipants().stream()
+                .filter(p -> p.getJoinStatus() == JoinStatus.PAID || p.getJoinStatus() == JoinStatus.CHECKED_IN)
+                .filter(p -> p.getRole() != com.pickleball.domain.enums.ParticipantRole.REFEREE)
+                .count();
+
+        boolean refereeAssigned = booking.getParticipants().stream()
+                .anyMatch(p -> p.getRole() == com.pickleball.domain.enums.ParticipantRole.REFEREE);
+
+        BigDecimal depositPerPlayer = booking.getTotalCost() != null
+                ? booking.getTotalCost().getAmount().multiply(new BigDecimal("0.25"))
+                : null;
+
+        RankedMatch rankedMatch = rankedMatchRepository.findByBookingId(booking.getId()).orElse(null);
+
+        return RankedMatchDTO.builder()
+                .booking(convertToDTO(booking))
+                .depositPerPlayer(depositPerPlayer)
+                .depositCurrency("VND")
+                .venueFee(booking.getVenueFee() != null ? booking.getVenueFee().getAmount() : null)
+                .refereeFee(booking.getRefereeFee() != null ? booking.getRefereeFee().getAmount() : null)
+                .platformFee(booking.getPlatformFee() != null ? booking.getPlatformFee().getAmount() : null)
+                .totalCost(booking.getTotalCost() != null ? booking.getTotalCost().getAmount() : null)
+                .currentPlayerCount((int) paidPlayerCount)
+                .requiredPlayerCount(4)
+                .refereeAssigned(refereeAssigned)
+                .rankedMatchId(rankedMatch != null ? rankedMatch.getId() : null)
+                .matchStatus(rankedMatch != null ? rankedMatch.getStatus().name() : null)
+                .build();
+    }
+
     public RankedMatchDTO getRankedMatchCandidates(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
@@ -429,6 +467,7 @@ public class BookingApplicationService {
         Money refundAmount = booking.calculateRefundAmount();
         booking.cancel();
         Booking cancelledBooking = bookingRepository.save(booking);
+        rankedPartyMatchLifecycleService.reopenMatchedPartiesForCancelledBooking(bookingId);
 
         BookingDTO dto = convertToDTO(cancelledBooking);
         if (refundAmount.getAmount().compareTo(BigDecimal.ZERO) > 0) {

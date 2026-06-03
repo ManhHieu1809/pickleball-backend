@@ -11,10 +11,13 @@ import java.time.LocalDateTime;
 public class MatchmakingTicketDTO {
     private Long id;
     private Long userId;
+    private Long partyId;
     private ParticipantRole role;
     private Double latitude;
     private Double longitude;
     private Integer elo;
+    private LocalDateTime requestedStartTime;
+    private LocalDateTime requestedEndTime;
     private LocalDateTime joinedAt;
     private Boolean isActive;
     private String matchStatus;

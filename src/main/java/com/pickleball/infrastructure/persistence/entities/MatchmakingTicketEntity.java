@@ -22,6 +22,9 @@ public class MatchmakingTicketEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "party_id")
+    private Long partyId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ParticipantRole role;
@@ -29,6 +32,12 @@ public class MatchmakingTicketEntity {
     private Double latitude;
     private Double longitude;
     private Integer elo;
+
+    @Column(name = "requested_start_time")
+    private LocalDateTime requestedStartTime;
+
+    @Column(name = "requested_end_time")
+    private LocalDateTime requestedEndTime;
 
     @Column(name = "joined_at", updatable = false)
     private LocalDateTime joinedAt;

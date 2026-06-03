@@ -51,6 +51,7 @@ public class BookingMapper {
                 bpe.setBookingId(bp.getBookingId());
                 bpe.setBooking(entity);
                 bpe.setUserId(bp.getUserId());
+                bpe.setPartyId(bp.getPartyId());
                 bpe.setRole(bp.getRole());
                 bpe.setTeam(bp.getTeam());
                 bpe.setJoinStatus(bp.getJoinStatus());
@@ -95,6 +96,7 @@ public class BookingMapper {
                 bp.setId(bpe.getId());
                 bp.setBookingId(bpe.getBookingId());
                 bp.setUserId(bpe.getUserId());
+                bp.setPartyId(bpe.getPartyId());
                 bp.setRole(bpe.getRole());
                 bp.setTeam(bpe.getTeam());
                 bp.setJoinStatus(bpe.getJoinStatus());

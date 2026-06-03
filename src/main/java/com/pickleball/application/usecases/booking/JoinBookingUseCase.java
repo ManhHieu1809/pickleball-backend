@@ -70,6 +70,14 @@ public class JoinBookingUseCase {
             throw new IllegalArgumentException("User already joined this booking");
         }
 
+        if (booking.getBookingType() == BookingType.RANKED) {
+            var overlappingRankedMatches = bookingRepository.findActiveRankedMatchesByUserIdOverlapping(
+                    userId, booking.getStartTime(), booking.getEndTime());
+            if (!overlappingRankedMatches.isEmpty()) {
+                throw new IllegalArgumentException("You already have an active ranked match in this time range");
+            }
+        }
+
         ParticipantRole role;
         if (asReferee) {
             role = ParticipantRole.REFEREE;
